@@ -6,6 +6,7 @@
 #include "SpectrumComponent.h"
 #include "VolumeControl.h"
 #include "SpectrogramComponent.h"
+#include "ResponseCurve.h"
 #include <atlstr.h>
 
 /*======================================================================================*/
@@ -55,6 +56,10 @@ MainComponent::MainComponent() : juce::AudioAppComponent(customDeviceManager)
     frequencyAnalyser2 = new SpectrumComponent(*this);
     addAndMakeVisible(frequencyAnalyser2);
     frequencyAnalyser2->setOpaque(true);
+
+    responseCurve = new ResponseCurve(*this);
+    addAndMakeVisible(responseCurve);
+    responseCurve->setOpaque(true);
 
     // Initialising the transport source state
     transportSourceState = Stopped;
@@ -200,6 +205,7 @@ void MainComponent::vSetParameter(int nParameterType, int nValue, bool bUpdateDi
         case PARAMETER_DISTANCE:
         {
             nDistance = nValue;
+            updateFilter(nDistance);
             break;
         }
     }
@@ -391,7 +397,7 @@ void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
 }
 
 /*======================================================================================*/
-void MainComponent::DSPEngine(juce::AudioBuffer<float>& buffer, const int nDistanceVal)
+void MainComponent::DSPEngine(juce::AudioBuffer<float>& buffer)
 /*======================================================================================*/
 {
     int numSamples = buffer.getNumSamples();
@@ -400,9 +406,6 @@ void MainComponent::DSPEngine(juce::AudioBuffer<float>& buffer, const int nDista
     float* channelDataR = buffer.getWritePointer(1);
 
     float gain = (float)juce::Decibels::decibelsToGain(volumeControl->getGain());
-    float cutOff = 5030.0 - (float)(5 * nDistanceVal);
-
-    lowPassFilter.coefficients = *juce::dsp::IIR::Coefficients<float>::makeLowPass(44100, cutOff, 0.5f);
 
     for (int i = 0; i < numSamples; i++)
     {
@@ -411,6 +414,15 @@ void MainComponent::DSPEngine(juce::AudioBuffer<float>& buffer, const int nDista
         channelDataL[i] = lowPassFilter.processSample(channelDataL[i]);
         channelDataR[i] = lowPassFilter.processSample(channelDataR[i]);
     }
+}
+
+/*======================================================================================*/
+void MainComponent::updateFilter(const int nDistanceVal)
+/*======================================================================================*/
+{
+    float cutOff = 5030.0f - (float)(5 * nDistanceVal);
+    lowPassFilter.coefficients = *juce::dsp::IIR::Coefficients<float>::makeLowPass(44100, cutOff, 0.5f);
+    responseCurve->setCoefficients(lowPassFilter.coefficients); // Update the curve
 }
 
 
@@ -460,7 +472,7 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
     spectrogram1->pushBuffer(buffer);   // Push to the unproccessed spectrogram
     frequencyAnalyser1->pushBuffer(buffer); // Push to the unproccessed frequency spectrum
 
-    DSPEngine(buffer, nDistance);
+    DSPEngine(buffer);
     spectrogram2->pushBuffer(buffer);
     frequencyAnalyser2->pushBuffer(buffer);
 
@@ -488,7 +500,6 @@ void MainComponent::releaseResources()
 {
     // This will be called when the audio device stops, or when it is being
     // restarted due to a setting change.
-
 }
 
 /*======================================================================================*/
@@ -547,4 +558,5 @@ void MainComponent::resized()
     frequencyAnalyser2->setBounds(430, 690, 520, 160);
     spectrogramButton.setBounds(865, 465, 80, 20);
     spectrumButton.setBounds(780, 465, 80, 20);
+    responseCurve->setBounds(10, 660, 410, 190);
 }

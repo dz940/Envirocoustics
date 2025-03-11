@@ -22,10 +22,14 @@ DistanceGraphic::DistanceGraphic(MainComponent& parentComponent)
     distanceText.setColour(TextEditor::backgroundColourId, Colours::white);
     distanceText.setColour(TextEditor::outlineColourId, Colours::black);
     distanceText.setText(String(distanceSlider.getValue()));
+    distanceText.setOpaque(true);
     addAndMakeVisible(&distanceText);
 
-    distanceSlider.onValueChange = [this] { distanceText.setText("Distance: " + String(distanceSlider.getValue()) + "m"); 
-    mainComponent.vSetParameter(PARAMETER_DISTANCE, (int)distanceSlider.getValue(), true); };
+    distanceSlider.onValueChange = [this] 
+    { 
+        distanceText.setText("Distance: " + String(distanceSlider.getValue()) + "m"); 
+        mainComponent.vSetParameter(PARAMETER_DISTANCE, (int)distanceSlider.getValue(), true); 
+    };
 
     // Load in image assets
     sunnyImage = ImageFileFormat::loadFrom(BinaryData::sunnyScene_png, BinaryData::sunnyScene_pngSize);

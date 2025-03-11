@@ -141,6 +141,7 @@
     <ClCompile Include="..\..\Source\ConditionControls.cpp" />
     <ClCompile Include="..\..\Source\DistanceGraphic.cpp" />
     <ClCompile Include="..\..\Source\FrequencySpectrum.cpp" />
+    <ClCompile Include="..\..\Source\ResponseCurve.cpp" />
     <ClCompile Include="..\..\Source\Spectrogram.cpp" />
     <ClCompile Include="..\..\Source\SpectrogramComponent.cpp" />
     <ClCompile Include="..\..\Source\SpectrumComponent.cpp" />
@@ -2935,6 +2936,7 @@
     <ClInclude Include="..\..\Source\ConditionControls.h" />
     <ClInclude Include="..\..\Source\DistanceGraphic.h" />
     <ClInclude Include="..\..\Source\FrequencySpectrum.h" />
+    <ClInclude Include="..\..\Source\ResponseCurve.h" />
     <ClInclude Include="..\..\Source\Spectrogram.h" />
     <ClInclude Include="..\..\Source\SpectrogramComponent.h" />
     <ClInclude Include="..\..\Source\SpectrumComponent.h" />

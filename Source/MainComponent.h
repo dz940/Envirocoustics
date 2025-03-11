@@ -39,6 +39,7 @@ class ConditionControls;
 class VolumeControl;
 class SpectrogramComponent;
 class SpectrumComponent;
+class ResponseCurve;
 
 class MainComponent : public AudioAppComponent,
     public ChangeListener
@@ -82,7 +83,9 @@ private:
     void thumbnailChanged();
     void changeListenerCallback(ChangeBroadcaster* source) override;
 
-    void DSPEngine(juce::AudioBuffer<float>& buffer, const int nDistanceVal);
+    void DSPEngine(juce::AudioBuffer<float>& buffer);
+
+    void updateFilter(const int nDistanceVal);
 
     TextButton openFileButton, playAudioButton, stopAudioButton, pauseAudioButton, spectrogramButton, spectrumButton;
 
@@ -98,6 +101,7 @@ private:
     VolumeControl* volumeControl;
     SpectrogramComponent* spectrogram1, *spectrogram2;
     SpectrumComponent* frequencyAnalyser1, *frequencyAnalyser2;
+    ResponseCurve* responseCurve;
 
     Image titleImage;
 
