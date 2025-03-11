@@ -510,8 +510,6 @@ void MainComponent::releaseResources()
 void MainComponent::paint(juce::Graphics& g)
 /*======================================================================================*/
 {
-    DBG("Painting main...\n");
-
     // Main window background
     g.fillAll(juce::Colours::white);
 

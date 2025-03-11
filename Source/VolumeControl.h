@@ -88,11 +88,11 @@ private:
     Image thumbImage;
 };
 
-class LevelMeter : public Component, public Timer
+class LevelMeter : public Component
 {
 public:
     LevelMeter() : level(0.0f)
-    { startTimerHz(20);  }
+    {}
 
     void setLevel(float newLevel)
     {
@@ -103,9 +103,6 @@ public:
 
     float getLevel()
     { return level; }
-
-    void timerCallback() override
-    { repaint(); }
 
     void paint(Graphics& g) override
     {

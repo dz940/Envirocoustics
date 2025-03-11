@@ -55,7 +55,6 @@ void VolumeControl::setMeterLevel(float newLevel)
 void VolumeControl::paint(Graphics& g)
 /*======================================================================================*/
 {
-    DBG("Painting volume controls...\n");
     Rectangle rect = getLocalBounds();
     //g.fillAll(Colours::darkseagreen);
     g.setColour(Colours::darkseagreen);

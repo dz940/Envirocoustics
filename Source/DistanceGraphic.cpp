@@ -85,7 +85,6 @@ void DistanceGraphic::resized()
 void DistanceGraphic::paint(Graphics& g)
 /*======================================================================================*/
 {
-    DBG("Painting distance graphics...\n");
     // Get current parameters
     int nTemp = mainComponent.nGetParameter(PARAMETER_TEMPERATURE);
     int nWindSpeed = mainComponent.nGetParameter(PARAMETER_WIND_SPEED);
