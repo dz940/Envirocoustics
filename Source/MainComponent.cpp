@@ -268,27 +268,27 @@ void MainComponent::openTextButtonClicked()
     chooser = std::make_unique<juce::FileChooser>(
         "Please select the mp3 you want to load...",
         juce::File::getSpecialLocation(juce::File::userHomeDirectory),
-        "*.mp3");
+        "*.mp3;*.wav");
 
     auto folderChooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
 
     // Launch file browser
     chooser->launchAsync(folderChooserFlags, [this](const juce::FileChooser& chooser)
         {
-            juce::File mp3File(chooser.getResult());
+            juce::File audioFile(chooser.getResult());
             transportSource.stop();
             transportSource.setSource(nullptr);  
 
-            if (auto* reader = formatManager.createReaderFor(mp3File))
+            if (auto* reader = formatManager.createReaderFor(audioFile))
             {
-                DBG("Loaded file: " + mp3File.getFullPathName());
+                DBG("Loaded file: " + audioFile.getFullPathName());
                 playSource.reset(new juce::AudioFormatReaderSource(reader, true));
                 transportSource.setSource(playSource.get(), 0, nullptr, reader->sampleRate);
                 transportSource.setPosition(0.0);
                 playAudioButton.setEnabled(true);
             }
             else
-            { DBG("Failed to load file: " + mp3File.getFullPathName()); }
+            { DBG("Failed to load file: " + audioFile.getFullPathName()); }
         });
 }
 
