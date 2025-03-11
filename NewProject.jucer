@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="jIgYQj" name="Envirocoustics" projectType="guiapp" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+  <MAINGROUP id="a1kbP3" name="Envirocoustics">
+    <GROUP id="{8B3A8E47-44FD-C99A-67F9-F35FBFACDA0F}" name="Source">
+      <GROUP id="{AAE1E9AB-FA99-BE54-AE13-48AFEBF1E96B}" name="Assets">
+        <FILE id="B1NYIm" name="app_icon_small.png" compile="0" resource="1"
+              file="Source/Assets/app_icon_small.png"/>
+        <FILE id="oprrTP" name="app_icon.png" compile="0" resource="1" file="Source/Assets/app_icon.png"/>
+        <FILE id="hnzqQD" name="cloudDown.png" compile="0" resource="1" file="Source/Assets/cloudDown.png"/>
+        <FILE id="EUDUp9" name="cloudOff.png" compile="0" resource="1" file="Source/Assets/cloudOff.png"/>
+        <FILE id="qgVgyc" name="cloudOn.png" compile="0" resource="1" file="Source/Assets/cloudOn.png"/>
+        <FILE id="RQ9dGD" name="knob1.png" compile="0" resource="1" file="Source/Assets/knob1.png"/>
+        <FILE id="HBdqqL" name="knob2.png" compile="0" resource="1" file="Source/Assets/knob2.png"/>
+        <FILE id="KDqWav" name="knob3.png" compile="0" resource="1" file="Source/Assets/knob3.png"/>
+        <FILE id="M4ztCM" name="knob4.png" compile="0" resource="1" file="Source/Assets/knob4.png"/>
+        <FILE id="eOCALV" name="knob5.png" compile="0" resource="1" file="Source/Assets/knob5.png"/>
+        <FILE id="dZiPZs" name="load.png" compile="0" resource="1" file="Source/Assets/load.png"/>
+        <FILE id="pVojz1" name="overlay_clouds_dark.png" compile="0" resource="1"
+              file="Source/Assets/overlay_clouds_dark.png"/>
+        <FILE id="nrzZqf" name="overlay_clouds_light.png" compile="0" resource="1"
+              file="Source/Assets/overlay_clouds_light.png"/>
+        <FILE id="tlkjdB" name="overlay_clouds_partial.png" compile="0" resource="1"
+              file="Source/Assets/overlay_clouds_partial.png"/>
+        <FILE id="xGHVRY" name="overlay_precipitation_rain.png" compile="0"
+              resource="1" file="Source/Assets/overlay_precipitation_rain.png"/>
+        <FILE id="A8hhDD" name="overlay_precipitation_snow.png" compile="0"
+              resource="1" file="Source/Assets/overlay_precipitation_snow.png"/>
+        <FILE id="X9swh5" name="overlay_stage_rainy.png" compile="0" resource="1"
+              file="Source/Assets/overlay_stage_rainy.png"/>
+        <FILE id="BR0Mgo" name="overlay_stage_snowy.png" compile="0" resource="1"
+              file="Source/Assets/overlay_stage_snowy.png"/>
+        <FILE id="hLG9wt" name="overlay_stage_standard.png" compile="0" resource="1"
+              file="Source/Assets/overlay_stage_standard.png"/>
+        <FILE id="fkXGiU" name="overlay_sun.png" compile="0" resource="1" file="Source/Assets/overlay_sun.png"/>
+        <FILE id="Pql6bq" name="overlay_wind_left_1.png" compile="0" resource="1"
+              file="Source/Assets/overlay_wind_left_1.png"/>
+        <FILE id="gLL7AP" name="overlay_wind_left_2.png" compile="0" resource="1"
+              file="Source/Assets/overlay_wind_left_2.png"/>
+        <FILE id="weSOIi" name="overlay_wind_left_3.png" compile="0" resource="1"
+              file="Source/Assets/overlay_wind_left_3.png"/>
+        <FILE id="PRFuwa" name="overlay_wind_left_4.png" compile="0" resource="1"
+              file="Source/Assets/overlay_wind_left_4.png"/>
+        <FILE id="Guh33X" name="overlay_wind_left_5.png" compile="0" resource="1"
+              file="Source/Assets/overlay_wind_left_5.png"/>
+        <FILE id="UfnQGQ" name="overlay_wind_right_1.png" compile="0" resource="1"
+              file="Source/Assets/overlay_wind_right_1.png"/>
+        <FILE id="hQ3pjU" name="overlay_wind_right_2.png" compile="0" resource="1"
+              file="Source/Assets/overlay_wind_right_2.png"/>
+        <FILE id="XBNf7z" name="overlay_wind_right_3.png" compile="0" resource="1"
+              file="Source/Assets/overlay_wind_right_3.png"/>
+        <FILE id="Gb0KpL" name="overlay_wind_right_4.png" compile="0" resource="1"
+              file="Source/Assets/overlay_wind_right_4.png"/>
+        <FILE id="i79t8G" name="overlay_wind_right_5.png" compile="0" resource="1"
+              file="Source/Assets/overlay_wind_right_5.png"/>
+        <FILE id="NunePR" name="pause.png" compile="0" resource="1" file="Source/Assets/pause.png"/>
+        <FILE id="wv2IOl" name="play.png" compile="0" resource="1" file="Source/Assets/play.png"/>
+        <FILE id="Mee7sj" name="rainDown.png" compile="0" resource="1" file="Source/Assets/rainDown.png"/>
+        <FILE id="mexDLy" name="rainOff.png" compile="0" resource="1" file="Source/Assets/rainOff.png"/>
+        <FILE id="bU4ehh" name="rainOn.png" compile="0" resource="1" file="Source/Assets/rainOn.png"/>
+        <FILE id="LmRbox" name="rainyScene.png" compile="0" resource="1" file="Source/Assets/rainyScene.png"/>
+        <FILE id="LHMoq8" name="sliderThumb.png" compile="0" resource="1" file="Source/Assets/sliderThumb.png"/>
+        <FILE id="WvsI3o" name="snowDown.png" compile="0" resource="1" file="Source/Assets/snowDown.png"/>
+        <FILE id="UIknir" name="snowOff.png" compile="0" resource="1" file="Source/Assets/snowOff.png"/>
+        <FILE id="fzNV6t" name="snowOn.png" compile="0" resource="1" file="Source/Assets/snowOn.png"/>
+        <FILE id="TgVCjZ" name="snowyScene.png" compile="0" resource="1" file="Source/Assets/snowyScene.png"/>
+        <FILE id="GcHVMW" name="stage.png" compile="0" resource="1" file="Source/Assets/stage.png"/>
+        <FILE id="MPgLSE" name="stickman.png" compile="0" resource="1" file="Source/Assets/stickman.png"/>
+        <FILE id="hobXP9" name="stickmanRainy.png" compile="0" resource="1"
+              file="Source/Assets/stickmanRainy.png"/>
+        <FILE id="ICfcO5" name="stickmanSnowy.png" compile="0" resource="1"
+              file="Source/Assets/stickmanSnowy.png"/>
+        <FILE id="XSKZU9" name="stop.png" compile="0" resource="1" file="Source/Assets/stop.png"/>
+        <FILE id="ToazxP" name="sunDown.png" compile="0" resource="1" file="Source/Assets/sunDown.png"/>
+        <FILE id="XkKlBZ" name="sunnyScene.png" compile="0" resource="1" file="Source/Assets/sunnyScene.png"/>
+        <FILE id="bCCGx2" name="sunOff.png" compile="0" resource="1" file="Source/Assets/sunOff.png"/>
+        <FILE id="UiSaAc" name="sunOn.png" compile="0" resource="1" file="Source/Assets/sunOn.png"/>
+        <FILE id="X9qGIM" name="title.png" compile="0" resource="1" file="Source/Assets/title.png"/>
+        <FILE id="lcgBg7" name="windDown.png" compile="0" resource="1" file="Source/Assets/windDown.png"/>
+        <FILE id="DRr0Hi" name="windOff.png" compile="0" resource="1" file="Source/Assets/windOff.png"/>
+        <FILE id="V0XTvl" name="windOn.png" compile="0" resource="1" file="Source/Assets/windOn.png"/>
+        <FILE id="PuYHcj" name="windyScene.png" compile="0" resource="1" file="Source/Assets/windyScene.png"/>
+      </GROUP>
+      <FILE id="rrCS2I" name="AudioReader.cpp" compile="1" resource="0" file="Source/AudioReader.cpp"/>
+      <FILE id="ui6cCM" name="AudioReader.h" compile="0" resource="0" file="Source/AudioReader.h"/>
+      <FILE id="Y9rsTU" name="ConditionControls.cpp" compile="1" resource="0"
+            file="Source/ConditionControls.cpp"/>
+      <FILE id="LGuYuX" name="ConditionControls.h" compile="0" resource="0"
+            file="Source/ConditionControls.h"/>
+      <FILE id="jWvF6j" name="DistanceGraphic.cpp" compile="1" resource="0"
+            file="Source/DistanceGraphic.cpp"/>
+      <FILE id="NDg30E" name="DistanceGraphic.h" compile="0" resource="0"
+            file="Source/DistanceGraphic.h"/>
+      <FILE id="lydyAR" name="FrequencyAnalyzerComponent.cpp" compile="1"
+            resource="0" file="Source/FrequencyAnalyzerComponent.cpp"/>
+      <FILE id="Hwcgbr" name="FrequencyAnalyzerComponent.h" compile="0" resource="0"
+            file="Source/FrequencyAnalyzerComponent.h"/>
+      <FILE id="sfiQHv" name="FrequencySpectrum.cpp" compile="1" resource="0"
+            file="Source/FrequencySpectrum.cpp"/>
+      <FILE id="ejR1YY" name="FrequencySpectrum.h" compile="0" resource="0"
+            file="Source/FrequencySpectrum.h"/>
+      <FILE id="AFxk4c" name="Spectrogram.cpp" compile="1" resource="0" file="Source/Spectrogram.cpp"/>
+      <FILE id="G8Bkf6" name="Spectrogram.h" compile="0" resource="0" file="Source/Spectrogram.h"/>
+      <FILE id="fhqTBh" name="SpectrogramComponent.cpp" compile="1" resource="0"
+            file="Source/SpectrogramComponent.cpp"/>
+      <FILE id="QOwgZU" name="SpectrogramComponent.h" compile="0" resource="0"
+            file="Source/SpectrogramComponent.h"/>
+      <FILE id="pGCLmb" name="SpectrumComponent.cpp" compile="1" resource="0"
+            file="Source/SpectrumComponent.cpp"/>
+      <FILE id="qVrryO" name="SpectrumComponent.h" compile="0" resource="0"
+            file="Source/SpectrumComponent.h"/>
+      <FILE id="sW2jHr" name="VolumeControl.cpp" compile="1" resource="0"
+            file="Source/VolumeControl.cpp"/>
+      <FILE id="o4NDsT" name="VolumeControl.h" compile="0" resource="0" file="Source/VolumeControl.h"/>
+      <FILE id="ujvPE5" name="VolumeSlider.cpp" compile="1" resource="0"
+            file="Source/VolumeSlider.cpp"/>
+      <FILE id="WsgnX8" name="VolumeSlider.h" compile="0" resource="0" file="Source/VolumeSlider.h"/>
+      <FILE id="IXubZz" name="WaveformDisplay.cpp" compile="1" resource="0"
+            file="Source/WaveformDisplay.cpp"/>
+      <FILE id="xwJSiW" name="WaveformDisplay.h" compile="0" resource="0"
+            file="Source/WaveformDisplay.h"/>
+      <FILE id="LM5arE" name="WeatherPresets.cpp" compile="1" resource="0"
+            file="Source/WeatherPresets.cpp"/>
+      <FILE id="Iv3UBj" name="WeatherPresets.h" compile="0" resource="0"
+            file="Source/WeatherPresets.h"/>
+      <FILE id="IgaIAm" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="KztIgx" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="jV9mMm" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+  <EXPORTFORMATS>
+    <VS2022 targetFolder="Builds/VisualStudio2022" smallIcon="B1NYIm" bigIcon="oprrTP">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../../../JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2022>
+  </EXPORTFORMATS>
+</JUCERPROJECT>
