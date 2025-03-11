@@ -70,13 +70,13 @@ MainComponent::MainComponent() : juce::AudioAppComponent(customDeviceManager)
     playAudioButton.setButtonText("Play");
     playAudioButton.onClick = [this] {playAudioButtonClicked(); };
     playAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
-    playAudioButton.setEnabled(true);
+    playAudioButton.setEnabled(false);
     addAndMakeVisible(&playAudioButton);
 
     pauseAudioButton.setButtonText("Pause");
     pauseAudioButton.onClick = [this] {pauseAudioButtonClicked(); };
     pauseAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
-    pauseAudioButton.setEnabled(true);
+    pauseAudioButton.setEnabled(false);
     addAndMakeVisible(&pauseAudioButton);
 
     stopAudioButton.setButtonText("Stop");
@@ -285,6 +285,7 @@ void MainComponent::openTextButtonClicked()
                 playSource.reset(new juce::AudioFormatReaderSource(reader, true));
                 transportSource.setSource(playSource.get(), 0, nullptr, reader->sampleRate);
                 transportSource.setPosition(0.0);
+                playAudioButton.setEnabled(true);
             }
             else
             { DBG("Failed to load file: " + mp3File.getFullPathName()); }
@@ -324,11 +325,6 @@ void MainComponent::transportSourceStateChanged(transportSourceState_t state)
         {
             case Stopped:
             {
-                playAudioButton.setEnabled(true);
-                openFileButton.setEnabled(true);
-                pauseAudioButton.setEnabled(false);
-                stopAudioButton.setEnabled(true);
-
                 double position = transportSource.getCurrentPosition();
                 double length = transportSource.getLengthInSeconds();
                 if (std::abs(position - length) < 0.01)
@@ -363,7 +359,7 @@ void MainComponent::transportSourceStateChanged(transportSourceState_t state)
             case Stopping:
             {
                 playAudioButton.setEnabled(true);
-                stopAudioButton.setEnabled(true);
+                stopAudioButton.setEnabled(false);
                 pauseAudioButton.setEnabled(false);
                 openFileButton.setEnabled(true);
                 transportSource.stop();
