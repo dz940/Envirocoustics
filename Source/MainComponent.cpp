@@ -399,12 +399,15 @@ void MainComponent::DSPEngine(juce::AudioBuffer<float>& buffer, const int nDista
     float* channelDataL = buffer.getWritePointer(0);
     float* channelDataR = buffer.getWritePointer(1);
 
+    float gain = (float)juce::Decibels::decibelsToGain(volumeControl->getGain());
     float cutOff = 5030.0 - (float)(5 * nDistanceVal);
 
     lowPassFilter.coefficients = *juce::dsp::IIR::Coefficients<float>::makeLowPass(44100, cutOff, 0.5f);
 
     for (int i = 0; i < numSamples; i++)
     {
+        channelDataL[i] *= gain;
+        channelDataR[i] *= gain;
         channelDataL[i] = lowPassFilter.processSample(channelDataL[i]);
         channelDataR[i] = lowPassFilter.processSample(channelDataR[i]);
     }
@@ -457,35 +460,21 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
     spectrogram1->pushBuffer(buffer);   // Push to the unproccessed spectrogram
     frequencyAnalyser1->pushBuffer(buffer); // Push to the unproccessed frequency spectrum
 
-    // Apply the volume level to the buffer
-    float gain = (float)juce::Decibels::decibelsToGain(volumeControl->getGain());
-    if (bufferToFill.buffer != nullptr)
-    {
-        for (int channel = 0; channel < bufferToFill.buffer->getNumChannels(); ++channel)
-        {
-            auto* channelData = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
-            for (int sample = 0; sample < bufferToFill.numSamples; ++sample)
-            { channelData[sample] *= gain; }
-        }
-    }
+    DSPEngine(buffer, nDistance);
+    spectrogram2->pushBuffer(buffer);
+    frequencyAnalyser2->pushBuffer(buffer);
+
     // Calculate rms level to the audio meter
     float rmsLevel = 0.0f;
-    if (bufferToFill.buffer != nullptr)
+    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {
-        for (int channel = 0; channel < bufferToFill.buffer->getNumChannels(); ++channel)
-        {
-            rmsLevel += bufferToFill.buffer->getRMSLevel(channel, bufferToFill.startSample, bufferToFill.numSamples);
-        }
-        rmsLevel /= bufferToFill.buffer->getNumChannels(); // Average across channels
+        rmsLevel += buffer.getRMSLevel(channel, bufferToFill.startSample, bufferToFill.numSamples);
     }
+    rmsLevel /= buffer.getNumChannels(); // Average across channels
 
     // Convert RMS to a meter-friendly scale
     rmsLevel = juce::jmap(juce::Decibels::gainToDecibels(rmsLevel), -60.0f, 0.0f, 0.0f, 1.0f);
     rmsLevel = juce::jlimit(0.0f, 1.0f, rmsLevel); // Ensure it's within 0-1 range
-
-    DSPEngine(buffer, nDistance);
-    spectrogram2->pushBuffer(buffer);
-    frequencyAnalyser2->pushBuffer(buffer);
 
     // Update the level meter asynchronously to avoid UI issues
     juce::MessageManager::callAsync([this, rmsLevel] {
