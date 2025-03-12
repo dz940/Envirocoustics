@@ -164,12 +164,14 @@ void MainComponent::vSetParameter(int nParameterType, int nValue, bool bUpdateDi
     {
         case PARAMETER_TEMPERATURE:
         {
-            nTemperature = nValue;    
+            nTemperature = nValue; 
+            updateSystemResponse();
             break;
         }
         case PARAMETER_HUMIDITY:
         {
             nHumidity = nValue;
+            updateSystemResponse();
             break;
         }
         case PARAMETER_WIND_SPEED:
@@ -195,6 +197,7 @@ void MainComponent::vSetParameter(int nParameterType, int nValue, bool bUpdateDi
         case PARAMETER_PRESSURE:
         {
             nPressure = nValue;
+            updateSystemResponse();
             break;
         }
         case PARAMETER_CLOUD_COVER:
@@ -205,7 +208,8 @@ void MainComponent::vSetParameter(int nParameterType, int nValue, bool bUpdateDi
         case PARAMETER_DISTANCE:
         {
             nDistance = nValue;
-            updateFilter(nDistance);
+            updateSystemResponse();
+            //updateFilter(nDistance);
             break;
         }
     }
@@ -417,6 +421,13 @@ void MainComponent::DSPEngine(juce::AudioBuffer<float>& buffer)
 }
 
 /*======================================================================================*/
+void MainComponent::updateSystemResponse()
+/*======================================================================================*/
+{
+    responseCurve->repaint();
+}
+
+/*======================================================================================*/
 void MainComponent::updateFilter(const int nDistanceVal)
 /*======================================================================================*/
 {
@@ -435,9 +446,9 @@ double MainComponent::dCalculateAirAttenuationPerMetre(const double dFreq, const
 #define TEMP_T0				293.15
 #define REFERENCE_PRESSURE	101325
 
-    //double dPressure = REFERENCE_PRESSURE;
+    double dPressure = dAtmosphericPressure * 100;
     // Calculate relative pressure
-    double dRelativePressure = dAtmosphericPressure / REFERENCE_PRESSURE;
+    double dRelativePressure = dPressure / REFERENCE_PRESSURE;
     double dTempKelvin = (dTemperature + TEMP_0DEGS_KELVIN);
     // Calculate the absolute humidity (percentage mole ratio)
     double dAbsoluteHumidity = 4.6151 - (6.8346 * pow((TEMP_0DEGS_KELVIN / dTempKelvin), 1.261));
@@ -453,7 +464,6 @@ double MainComponent::dCalculateAirAttenuationPerMetre(const double dFreq, const
     double dAlpha = 8.686 * dFreq * dFreq * (dTemp3 + dTemp4);
     return dAlpha;
 }
-
 
 /*======================================================================================*/
 void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)

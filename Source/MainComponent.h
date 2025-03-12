@@ -85,6 +85,8 @@ private:
 
     void DSPEngine(juce::AudioBuffer<float>& buffer);
 
+    void updateSystemResponse();
+
     void updateFilter(const int nDistanceVal);
 
     TextButton openFileButton, playAudioButton, stopAudioButton, pauseAudioButton, spectrogramButton, spectrumButton;
