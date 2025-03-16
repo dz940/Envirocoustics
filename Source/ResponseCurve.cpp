@@ -89,7 +89,7 @@ void ResponseCurve::paint(juce::Graphics& g)
     g.fillAll(juce::Colours::darkseagreen);
     g.setColour(juce::Colours::black);
     g.setFont(20.0f);
-    g.drawText("System Response Curve (Air Attenuation)", getLocalBounds().getX(), getLocalBounds().getY(), getLocalBounds().getWidth(), 30, juce::Justification::centred, true);
+    g.drawText("System Response Curve", getLocalBounds().getX(), getLocalBounds().getY(), getLocalBounds().getWidth(), 30, juce::Justification::centred, true);
 
     juce::Path responseCurve;
     float width = (float)getWidth();
@@ -111,7 +111,7 @@ void ResponseCurve::paint(juce::Graphics& g)
 
         // Normalize to graph height (-60 dB to 0 dB range)
         float x = (float)i / 199.0f * width;
-        float y = 30 + juce::jmap((float)-totalAttenuationDb, -60.0f, 0.0f, height - 30, 0.0f);
+        float y = 30 + juce::jmap((float)-totalAttenuationDb, -30.0f, 0.0f, height - 30, 0.0f);
 
         if (i == 0)
             responseCurve.startNewSubPath(x, y);

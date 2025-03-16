@@ -127,6 +127,7 @@ MainComponent::~MainComponent()
     delete waveformDisplay;
     delete conditionControls;
     delete volumeControl;
+    delete responseCurve;
     delete spectrogram1;
     delete spectrogram2;
     delete frequencyAnalyser1;
@@ -187,6 +188,13 @@ void MainComponent::vSetParameter(int nParameterType, int nValue, bool bUpdateDi
         case PARAMETER_PRECIPITATION:
         {
             bPrecipitation = (bool)nValue;
+
+            // Precipitation automatically sets humidity to 90%
+            if (bPrecipitation)
+            { nHumidity = 90; }
+            else
+            { nHumidity = 50; }
+            updateSystemResponse();
             break;
         }
         case PARAMETER_TEMP_GRADIENT:
@@ -409,12 +417,8 @@ void MainComponent::DSPEngine(juce::AudioBuffer<float>& buffer)
     float* channelDataL = buffer.getWritePointer(0);
     float* channelDataR = buffer.getWritePointer(1);
 
-    float gain = (float)juce::Decibels::decibelsToGain(volumeControl->getGain());
-
     for (int i = 0; i < numSamples; i++)
     {
-        channelDataL[i] *= gain;
-        channelDataR[i] *= gain;
         channelDataL[i] = lowPassFilter.processSample(channelDataL[i]);
         channelDataR[i] = lowPassFilter.processSample(channelDataR[i]);
     }
@@ -485,6 +489,18 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
     DSPEngine(buffer);
     spectrogram2->pushBuffer(buffer);
     frequencyAnalyser2->pushBuffer(buffer);
+
+    // Apply the volume level to the buffer
+    float gain = (float)juce::Decibels::decibelsToGain(volumeControl->getGain());
+    if (bufferToFill.buffer != nullptr)
+    {
+        for (int channel = 0; channel < bufferToFill.buffer->getNumChannels(); ++channel)
+        {
+            auto* channelData = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
+            for (int sample = 0; sample < bufferToFill.numSamples; ++sample)
+            { channelData[sample] *= gain; }
+        }
+    }
 
     // Calculate rms level to the audio meter
     float rmsLevel = 0.0f;

@@ -66,6 +66,8 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
             { 
                 mainComponent.vSetParameter(PARAMETER_PRECIPITATION, !precipitationOffBtn.getToggleState(), true); 
                 cloudOffBtn.setEnabled(true);
+                humidityKnob.setValue(50);
+                humidityKnob.setEnabled(true);
             }
     };
     precipitationOffBtn.setClickingTogglesState(true);
@@ -84,6 +86,8 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
             mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, precipitationOnBtn.getToggleState(), true);
             cloudOnBtn.setToggleState(true, juce::dontSendNotification);
             cloudOffBtn.setEnabled(false);
+            humidityKnob.setValue(90);
+            humidityKnob.setEnabled(false);
         }
     };
     precipitationOnBtn.setButtonText("ON");
