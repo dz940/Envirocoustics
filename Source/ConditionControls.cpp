@@ -8,54 +8,54 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
 {
     // Initialise controls
     temperatureKnob.onValueChange = [this] {mainComponent.vSetParameter(PARAMETER_TEMPERATURE, (int)temperatureKnob.getValue(), true); };
-    temperatureKnob.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    temperatureKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
     temperatureKnob.setTextValueSuffix("C");
     temperatureKnob.setRange(-10, 50, 1);
     temperatureKnob.setValue(20);
-    temperatureKnob.setTextBoxStyle(juce::Slider::TextBoxRight, false, 55, 20);
+    temperatureKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
     temperatureKnob.setLookAndFeel(&rotaryLookAndFeel);
     addAndMakeVisible(&temperatureKnob);
 
     windSpeedKnob.onValueChange = [this] {mainComponent.vSetParameter(PARAMETER_WIND_SPEED, (int)windSpeedKnob.getValue(), true); };
-    windSpeedKnob.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    windSpeedKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
     windSpeedKnob.setTextValueSuffix("km/h");
     windSpeedKnob.setRange(0, 100, 1);
     windSpeedKnob.setValue(10);
-    windSpeedKnob.setTextBoxStyle(juce::Slider::TextBoxRight, false, 55, 20);
+    windSpeedKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
     windSpeedKnob.setLookAndFeel(&rotaryLookAndFeel);
     addAndMakeVisible(&windSpeedKnob);
 
     humidityKnob.onValueChange = [this] {mainComponent.vSetParameter(PARAMETER_HUMIDITY, (int)humidityKnob.getValue(), false); };
-    humidityKnob.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    humidityKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
     humidityKnob.setTextValueSuffix("%");
-    humidityKnob.setRange(0, 100, 1);
+    humidityKnob.setRange(5, 100, 1);
     humidityKnob.setValue(50);
-    humidityKnob.setTextBoxStyle(juce::Slider::TextBoxRight, false, 55, 20);
+    humidityKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
     humidityKnob.setLookAndFeel(&rotaryLookAndFeel);
     addAndMakeVisible(&humidityKnob);
 
     pressureKnob.onValueChange = [this] {mainComponent.vSetParameter(PARAMETER_PRESSURE, (int)pressureKnob.getValue(), false); };
-    pressureKnob.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
+    pressureKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
     pressureKnob.setTextValueSuffix("mb");
     pressureKnob.setRange(850, 1150, 1);
     pressureKnob.setValue(1000);
-    pressureKnob.setTextBoxStyle(juce::Slider::TextBoxRight, false, 55, 20);
+    pressureKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
     pressureKnob.setLookAndFeel(&rotaryLookAndFeel);
     addAndMakeVisible(&pressureKnob);
 
     temperatureLapseBtn.onClick = [this] { mainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, temperatureInversionBtn.getToggleState(), false); };
     temperatureLapseBtn.setButtonText("Lapse");
     temperatureLapseBtn.setClickingTogglesState(true);
-    temperatureLapseBtn.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    temperatureLapseBtn.setColour(TextButton::buttonOnColourId, Colours::green);
     temperatureLapseBtn.setEnabled(true);
     temperatureLapseBtn.setRadioGroupId(1);
-    temperatureLapseBtn.setToggleState(true, juce::dontSendNotification);
+    temperatureLapseBtn.setToggleState(true, dontSendNotification);
     addAndMakeVisible(&temperatureLapseBtn);
 
     temperatureInversionBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, temperatureInversionBtn.getToggleState(), false); };
     temperatureInversionBtn.setButtonText("Inversion");
     temperatureInversionBtn.setClickingTogglesState(true);
-    temperatureInversionBtn.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    temperatureInversionBtn.setColour(TextButton::buttonOnColourId, Colours::green);
     temperatureInversionBtn.setEnabled(true);
     temperatureInversionBtn.setRadioGroupId(1);
     addAndMakeVisible(&temperatureInversionBtn);
@@ -72,10 +72,10 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
     };
     precipitationOffBtn.setClickingTogglesState(true);
     precipitationOffBtn.setButtonText("OFF");
-    precipitationOffBtn.setColour(juce::TextButton::buttonOnColourId, juce::Colours::red);
+    precipitationOffBtn.setColour(TextButton::buttonOnColourId, Colours::red);
     precipitationOffBtn.setEnabled(true);
     precipitationOffBtn.setRadioGroupId(2);
-    precipitationOffBtn.setToggleState(true, juce::dontSendNotification);
+    precipitationOffBtn.setToggleState(true, dontSendNotification);
     addAndMakeVisible(&precipitationOffBtn);
 
     precipitationOnBtn.onClick = [this] 
@@ -84,7 +84,7 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
         {
             mainComponent.vSetParameter(PARAMETER_PRECIPITATION, precipitationOnBtn.getToggleState(), false);
             mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, precipitationOnBtn.getToggleState(), true);
-            cloudOnBtn.setToggleState(true, juce::dontSendNotification);
+            cloudOnBtn.setToggleState(true, dontSendNotification);
             cloudOffBtn.setEnabled(false);
             humidityKnob.setValue(90);
             humidityKnob.setEnabled(false);
@@ -92,24 +92,24 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
     };
     precipitationOnBtn.setButtonText("ON");
     precipitationOnBtn.setClickingTogglesState(true);
-    precipitationOnBtn.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    precipitationOnBtn.setColour(TextButton::buttonOnColourId, Colours::green);
     precipitationOnBtn.setEnabled(true);
     precipitationOnBtn.setRadioGroupId(2);
     addAndMakeVisible(&precipitationOnBtn);
 
     windLeftBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, windRightBtn.getToggleState(), true); };
-    windLeftBtn.setButtonText("Left");
+    windLeftBtn.setButtonText("Upwind");
     windLeftBtn.setClickingTogglesState(true);
-    windLeftBtn.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    windLeftBtn.setColour(TextButton::buttonOnColourId, Colours::green);
     windLeftBtn.setEnabled(true);
     windLeftBtn.setRadioGroupId(3);
-    windLeftBtn.setToggleState(true, juce::dontSendNotification);
+    windLeftBtn.setToggleState(true, dontSendNotification);
     addAndMakeVisible(&windLeftBtn);
 
     windRightBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, windRightBtn.getToggleState(), true); };
-    windRightBtn.setButtonText("Right");
+    windRightBtn.setButtonText("Downwind");
     windRightBtn.setClickingTogglesState(true);
-    windRightBtn.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    windRightBtn.setColour(TextButton::buttonOnColourId, Colours::green);
     windRightBtn.setEnabled(true);
     windRightBtn.setRadioGroupId(3);
     addAndMakeVisible(&windRightBtn);
@@ -117,16 +117,16 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
     cloudOffBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, cloudOnBtn.getToggleState(), true); };
     cloudOffBtn.setClickingTogglesState(true);
     cloudOffBtn.setButtonText("OFF");
-    cloudOffBtn.setColour(juce::TextButton::buttonOnColourId, juce::Colours::red);
+    cloudOffBtn.setColour(TextButton::buttonOnColourId, Colours::red);
     cloudOffBtn.setEnabled(true);
     cloudOffBtn.setRadioGroupId(5);
-    cloudOffBtn.setToggleState(true, juce::dontSendNotification);
+    cloudOffBtn.setToggleState(true, dontSendNotification);
     addAndMakeVisible(&cloudOffBtn);
 
     cloudOnBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, cloudOnBtn.getToggleState(), true); };
     cloudOnBtn.setButtonText("ON");
     cloudOnBtn.setClickingTogglesState(true);
-    cloudOnBtn.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    cloudOnBtn.setColour(TextButton::buttonOnColourId, Colours::green);
     cloudOnBtn.setEnabled(true);
     cloudOnBtn.setRadioGroupId(5);
     addAndMakeVisible(&cloudOnBtn);
@@ -169,27 +169,27 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
         {
             if (nValue == OFF)
             {
-                precipitationOnBtn.setToggleState(false, juce::dontSendNotification);
-                precipitationOffBtn.setToggleState(true, juce::dontSendNotification);
+                precipitationOnBtn.setToggleState(false, dontSendNotification);
+                precipitationOffBtn.setToggleState(true, dontSendNotification);
             }
             else if (nValue == ON)
             {
-                precipitationOnBtn.setToggleState(true, juce::dontSendNotification);
-                precipitationOffBtn.setToggleState(false, juce::dontSendNotification);
+                precipitationOnBtn.setToggleState(true, dontSendNotification);
+                precipitationOffBtn.setToggleState(false, dontSendNotification);
             }
             break;
         }
         case PARAMETER_WIND_DIRECTION:
         {
-            if (nValue == WIND_DIRECTION_LEFT)
+            if (nValue == WIND_DIRECTION_UPWIND)
             {
-                windLeftBtn.setToggleState(true, juce::dontSendNotification);
-                windRightBtn.setToggleState(false, juce::dontSendNotification);
+                windLeftBtn.setToggleState(true, dontSendNotification);
+                windRightBtn.setToggleState(false, dontSendNotification);
             }
-            else if (nValue == WIND_DIRECTION_RIGHT)
+            else if (nValue == WIND_DIRECTION_DOWNWIND)
             {
-                windLeftBtn.setToggleState(false, juce::dontSendNotification);
-                windRightBtn.setToggleState(true, juce::dontSendNotification);
+                windLeftBtn.setToggleState(false, dontSendNotification);
+                windRightBtn.setToggleState(true, dontSendNotification);
             }
             break;
         }
@@ -197,13 +197,13 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
         {
             if (nValue == TEMPERATURE_LAPSE)
             {
-                temperatureLapseBtn.setToggleState(true, juce::dontSendNotification);
-                temperatureInversionBtn.setToggleState(false, juce::dontSendNotification);
+                temperatureLapseBtn.setToggleState(true, dontSendNotification);
+                temperatureInversionBtn.setToggleState(false, dontSendNotification);
             }
             else if (nValue == TEMPERATURE_INVERSION)
             {
-                temperatureLapseBtn.setToggleState(false, juce::dontSendNotification);
-                temperatureInversionBtn.setToggleState(true, juce::dontSendNotification);
+                temperatureLapseBtn.setToggleState(false, dontSendNotification);
+                temperatureInversionBtn.setToggleState(true, dontSendNotification);
             }
             break;
         }
@@ -216,13 +216,13 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
         {
             if (nValue == OFF)
             {
-                cloudOnBtn.setToggleState(false, juce::dontSendNotification);
-                cloudOffBtn.setToggleState(true, juce::dontSendNotification);
+                cloudOnBtn.setToggleState(false, dontSendNotification);
+                cloudOffBtn.setToggleState(true, dontSendNotification);
             }
             else if (nValue == ON)
             {
-                cloudOnBtn.setToggleState(true, juce::dontSendNotification);
-                cloudOffBtn.setToggleState(false, juce::dontSendNotification);
+                cloudOnBtn.setToggleState(true, dontSendNotification);
+                cloudOffBtn.setToggleState(false, dontSendNotification);
             }
             break;
         }
@@ -233,8 +233,8 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
 void ConditionControls::resized()
 /*======================================================================================*/
 {
-    juce::Rectangle rect = getLocalBounds();
-    juce::Rectangle<int> rcConditionControls = rect;
+    Rectangle rect = getLocalBounds();
+    Rectangle<int> rcConditionControls = rect;
     int nControlWidth = rcConditionControls.getWidth() / 4;
     int nButtonBorderWidth = 5;
 
@@ -257,70 +257,70 @@ void ConditionControls::resized()
 }
 
 /*======================================================================================*/
-void ConditionControls::paint(juce::Graphics& g)
+void ConditionControls::paint(Graphics& g)
 /*======================================================================================*/
 {
-    juce::Rectangle rect = getLocalBounds();
+    Rectangle rect = getLocalBounds();
 
     // Condition controls
-    g.setColour(juce::Colours::darkseagreen);
-    juce::Rectangle<int> rcConditionControls = rect; // x, y, width, height
+    g.setColour(Colours::darkseagreen);
+    Rectangle<int> rcConditionControls = rect; // x, y, width, height
     g.fillRect(rcConditionControls); // Fill the rectangle
     g.setFont(20.0f);
-    g.setColour(juce::Colours::black);
-    juce::Rectangle<int> rcConditionControlsTitle(rcConditionControls.getX(),
+    g.setColour(Colours::black);
+    Rectangle<int> rcConditionControlsTitle(rcConditionControls.getX(),
                             rcConditionControls.getY(),
                             rcConditionControls.getWidth(),
                             30);
-    g.drawText("Condition controls", rcConditionControlsTitle, juce::Justification::centred, true);
+    g.drawText("Condition controls", rcConditionControlsTitle, Justification::centred, true);
 
     int nPanelWidths = (rcConditionControls.getWidth() - 20) / 4;
     g.setFont(15.0f);
-    juce::Rectangle<int> rcTemperatureText(rcConditionControls.getX() + rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+    Rectangle<int> rcTemperatureText(rcConditionControls.getX() + rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
                             rcConditionControls.getY() + 35,
                             nPanelWidths,
                             20);
-    g.drawText("Temperature", rcTemperatureText, juce::Justification::centred, true);
+    g.drawText("Temperature", rcTemperatureText, Justification::centred, true);
 
-    juce::Rectangle<int> rcGradientText(rcConditionControls.getX() + rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+    Rectangle<int> rcGradientText(rcConditionControls.getX() + rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
                             rcConditionControls.getY() + 110,
                             nPanelWidths,
                             20);
-    g.drawText("Gradient", rcGradientText, juce::Justification::centred, true);
+    g.drawText("Gradient", rcGradientText, Justification::centred, true);
 
-    juce::Rectangle<int> rcWindControlsTitle(rcConditionControls.getX() + 3 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+    Rectangle<int> rcWindControlsTitle(rcConditionControls.getX() + 3 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
                             rcConditionControls.getY() + 35,
                             nPanelWidths,
                             20);
-    g.drawText("Wind Speed", rcWindControlsTitle, juce::Justification::centred, true);
+    g.drawText("Wind Speed", rcWindControlsTitle, Justification::centred, true);
 
-    juce::Rectangle<int> rcWindDirectionText(rcConditionControls.getX() + 3 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+    Rectangle<int> rcWindDirectionText(rcConditionControls.getX() + 3 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
                             rcConditionControls.getY() + 110,
                             nPanelWidths,
                             20);
-    g.drawText("Direction", rcWindDirectionText, juce::Justification::centred, true);
+    g.drawText("Direction", rcWindDirectionText, Justification::centred, true);
 
-    juce::Rectangle<int> rcHumidityControlsTitle(rcConditionControls.getX() + 5 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+    Rectangle<int> rcHumidityControlsTitle(rcConditionControls.getX() + 5 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
         rcConditionControls.getY() + 35,
         nPanelWidths,
         20);
-    g.drawText("Humidity", rcHumidityControlsTitle, juce::Justification::centred, true);
+    g.drawText("Humidity", rcHumidityControlsTitle, Justification::centred, true);
 
-    juce::Rectangle<int> rcPrecipitationText(rcConditionControls.getX() + 5 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+    Rectangle<int> rcPrecipitationText(rcConditionControls.getX() + 5 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
         rcConditionControls.getY() + 110,
         nPanelWidths,
         20);
-    g.drawText("Precipitation", rcPrecipitationText, juce::Justification::centred, true);
+    g.drawText("Precipitation", rcPrecipitationText, Justification::centred, true);
 
-    juce::Rectangle<int> rcPressureControlsTitle(rcConditionControls.getX() + 7 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+    Rectangle<int> rcPressureControlsTitle(rcConditionControls.getX() + 7 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
         rcConditionControls.getY() + 35,
         nPanelWidths,
         20);
-    g.drawText("Pressure", rcPressureControlsTitle, juce::Justification::centred, true);
+    g.drawText("Pressure", rcPressureControlsTitle, Justification::centred, true);
 
-    juce::Rectangle<int> rcCloudCoverText(rcConditionControls.getX() + 7 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+    Rectangle<int> rcCloudCoverText(rcConditionControls.getX() + 7 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
         rcConditionControls.getY() + 110,
         nPanelWidths,
         20);
-    g.drawText("Clouds", rcCloudCoverText, juce::Justification::centred, true);
+    g.drawText("Clouds", rcCloudCoverText, Justification::centred, true);
 }

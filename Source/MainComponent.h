@@ -18,8 +18,8 @@ using namespace juce;
 #define PARAMETER_CLOUD_COVER       8
 #define PARAMETER_DISTANCE          9
 
-#define WIND_DIRECTION_LEFT     0
-#define WIND_DIRECTION_RIGHT    1
+#define WIND_DIRECTION_UPWIND       0
+#define WIND_DIRECTION_DOWNWIND     1
 
 #define TEMPERATURE_LAPSE       0
 #define TEMPERATURE_INVERSION   1
@@ -54,8 +54,11 @@ public:
     void vUpdateConditionControls();
     int nGetParameter(int nParameterType);
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
+    double dCalculateWindLoss(const double dFrequency, const double dDistance, const double dTemperature, const double dWindSpeed, const bool bWindDirection);
+    double windAttenuation(double frequency, double windSpeedKmh, double distance);
+    double calculateWindAttenuation(double windSpeed, int windDirection, double frequency, double distance);
     double dCalculateAirAttenuationPerMetre(const double dFreq, const double dTemperature, const double dRelativeHumidity, const double dAtmosphericPressure);
+    void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
     void releaseResources() override;
     void paint(Graphics& g) override;
     void resized() override;
@@ -89,6 +92,10 @@ private:
 
     void updateFilter(const int nDistanceVal);
 
+    double dCalculateEffectiveDistanceTravelled(const double dDistance, const double dTemperature, const double dWindSpeed, const bool bWindDirection);
+
+    //double dCalculateEffectiveDistanceTravelled(const double dTemperature, const double dWindSpeed, const bool bWindDirection);
+
     TextButton openFileButton, playAudioButton, stopAudioButton, pauseAudioButton, spectrogramButton, spectrumButton;
 
     AudioFormatManager formatManager;
@@ -112,7 +119,7 @@ private:
     int nHumidity = 50;
     int nWindSpeed = 10;
     int nPressure = 950;
-    int nWindDirection = WIND_DIRECTION_LEFT;
+    int nWindDirection = WIND_DIRECTION_UPWIND;
     bool bPrecipitation = OFF;
     int nTempGradient = TEMPERATURE_LAPSE;
     bool bCloudCover = OFF;

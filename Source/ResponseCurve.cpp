@@ -100,6 +100,8 @@ void ResponseCurve::paint(juce::Graphics& g)
     double humidity = mainComponent.nGetParameter(PARAMETER_HUMIDITY);      // Percentage
     double pressure = mainComponent.nGetParameter(PARAMETER_PRESSURE);
     double distance = mainComponent.nGetParameter(PARAMETER_DISTANCE);      // Distance in meters
+    double windSpeed = mainComponent.nGetParameter(PARAMETER_WIND_SPEED);
+    bool windDirection = mainComponent.nGetParameter(PARAMETER_WIND_DIRECTION);
 
     for (int i = 0; i < 200; ++i)
     {
@@ -107,11 +109,12 @@ void ResponseCurve::paint(juce::Graphics& g)
 
         // Calculate air attenuation in dB per meter
         double attenuationPerMeter = mainComponent.dCalculateAirAttenuationPerMetre(freq, temperature, humidity, pressure);
-        double totalAttenuationDb = attenuationPerMeter * distance; // Loss over given distance
+        double windLoss = mainComponent.dCalculateWindLoss(freq, distance, temperature, windSpeed, windDirection); 
+        double totalAttenuationDb = attenuationPerMeter * distance + windLoss; // Loss over given distance
 
         // Normalize to graph height (-60 dB to 0 dB range)
         float x = (float)i / 199.0f * width;
-        float y = 30 + juce::jmap((float)-totalAttenuationDb, -30.0f, 0.0f, height - 30, 0.0f);
+        float y = 30 + juce::jmap((float)-totalAttenuationDb, -30.0f, 10.0f, height - 30, 0.0f);
 
         if (i == 0)
             responseCurve.startNewSubPath(x, y);

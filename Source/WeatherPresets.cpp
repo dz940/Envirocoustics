@@ -60,7 +60,7 @@ WeatherPresets::WeatherPresets(MainComponent& parentComponent)
     windBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_TEMPERATURE, 15, false);
                                 mainComponent.vSetParameter(PARAMETER_WIND_SPEED, 100, false);
                                 mainComponent.vSetParameter(PARAMETER_PRECIPITATION, OFF, false);
-                                mainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, WIND_DIRECTION_LEFT, false);
+                                mainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, WIND_DIRECTION_UPWIND, false);
                                 mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, OFF, false);
                                 mainComponent.vSetParameter(PARAMETER_HUMIDITY, 45, false);
                                 mainComponent.vSetParameter(PARAMETER_PRESSURE, 950, true);

@@ -130,7 +130,7 @@ void DistanceGraphic::paint(Graphics& g)
     { g.drawImage(sunOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
 
     // Drawing wind
-    if (nWindDirection == WIND_DIRECTION_LEFT)
+    if (nWindDirection == WIND_DIRECTION_UPWIND)
     {
         if (nWindSpeed == 0)
         { }
@@ -145,7 +145,7 @@ void DistanceGraphic::paint(Graphics& g)
         else
         { g.drawImage(windLeft5, rcGraphicsBounds, RectanglePlacement::centred, false); }
     }
-    else if (nWindDirection == WIND_DIRECTION_RIGHT)
+    else if (nWindDirection == WIND_DIRECTION_DOWNWIND)
     {
         if (nWindSpeed == 0)
         { }

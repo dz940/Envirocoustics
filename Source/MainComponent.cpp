@@ -178,11 +178,13 @@ void MainComponent::vSetParameter(int nParameterType, int nValue, bool bUpdateDi
         case PARAMETER_WIND_SPEED:
         {
             nWindSpeed = nValue;
+            updateSystemResponse();
             break;
         }
         case PARAMETER_WIND_DIRECTION:
         {
             nWindDirection = nValue;
+            updateSystemResponse();
             break;
         }
         case PARAMETER_PRECIPITATION:
@@ -442,6 +444,21 @@ void MainComponent::updateFilter(const int nDistanceVal)
 
 
 /*======================================================================================*/
+double MainComponent::dCalculateWindLoss(const double dFrequency, const double dDistance, const double dTemperature, const double dWindSpeed, const bool bWindDirection)
+/*======================================================================================*/
+{
+    // Empirical wind attenuation constant
+    const double WIND_ATTENUATION_CONSTANT = 1.0e-5;
+
+    // Wind attenuation loss
+    double windLoss = WIND_ATTENUATION_CONSTANT * dWindSpeed * sqrt(dFrequency) * dDistance;
+    if (bWindDirection == WIND_DIRECTION_DOWNWIND)
+    { windLoss *= -0.5; }
+    return windLoss;
+
+}
+
+/*======================================================================================*/
 double MainComponent::dCalculateAirAttenuationPerMetre(const double dFreq, const double dTemperature, const double dRelativeHumidity, const double dAtmosphericPressure)
 // Uses the source of this page : http://www.sengpielaudio.com/calculator-air.htm
 /*======================================================================================*/
@@ -465,7 +482,7 @@ double MainComponent::dCalculateAirAttenuationPerMetre(const double dFreq, const
     double dTemp2 = 0.1068 * (exp(-3352 / dTempKelvin) * 1 / (dFrN + ((dFreq * dFreq) / dFrN)));
     double dTemp3 = (1.84e-11 * (1 / dRelativePressure) * sqrt(dTempRel));
     double dTemp4 = (pow(dTempRel, -2.5) * (dTemp1 + dTemp2));
-    double dAlpha = 8.686 * dFreq * dFreq * (dTemp3 + dTemp4);
+    double dAlpha = 8.686 * dFreq * dFreq * (dTemp3 + dTemp4);    
     return dAlpha;
 }
 
