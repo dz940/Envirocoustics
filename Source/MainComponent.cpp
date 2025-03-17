@@ -110,6 +110,7 @@ MainComponent::MainComponent() : juce::AudioAppComponent(customDeviceManager)
     formatManager.registerBasicFormats();
     transportSource.addChangeListener(this);
 
+    tooltipWindow.setMillisecondsBeforeTipAppears(500);
     // Set the size of the component after adding child components.
     setSize(960, 860);
 }
@@ -202,6 +203,7 @@ void MainComponent::vSetParameter(int nParameterType, int nValue, bool bUpdateDi
         case PARAMETER_TEMP_GRADIENT:
         {
             nTempGradient = nValue;
+            updateSystemResponse();
             break;
         }
         case PARAMETER_PRESSURE:
@@ -447,15 +449,29 @@ void MainComponent::updateFilter(const int nDistanceVal)
 double MainComponent::dCalculateWindLoss(const double dFrequency, const double dDistance, const double dTemperature, const double dWindSpeed, const bool bWindDirection)
 /*======================================================================================*/
 {
-    // Empirical wind attenuation constant
-    const double WIND_ATTENUATION_CONSTANT = 1.0e-5;
-
     // Wind attenuation loss
-    double windLoss = WIND_ATTENUATION_CONSTANT * dWindSpeed * sqrt(dFrequency) * dDistance;
+    double windLoss = 1.0e-5 * dWindSpeed * sqrt(dFrequency) * dDistance;
     if (bWindDirection == WIND_DIRECTION_DOWNWIND)
-    { windLoss *= -0.5; }
+    { windLoss *= -0.45; }
     return windLoss;
 
+}
+
+/*======================================================================================*/
+double MainComponent::dCalculateTemperatureGradientLoss(const double dFrequency, const double dDistance,
+    const int nTemperatureGradient)
+    /*======================================================================================*/
+{
+    double dTemperatureGradient = 0;
+    if(nTemperatureGradient == TEMPERATURE_LAPSE)
+    { dTemperatureGradient = -0.0065; }
+    else
+    { dTemperatureGradient = 0.001; }
+
+    // Compute attenuation loss based on gradient
+    double tempLoss = -0.03 * dTemperatureGradient * sqrt(dFrequency) * dDistance;
+
+    return tempLoss;
 }
 
 /*======================================================================================*/

@@ -67,13 +67,13 @@ void SpectrogramComponent::paint(juce::Graphics& g)
     g.setFont(10.0f);
     g.setColour(juce::Colours::white);
 
-    int dBValue = 50;
+    int dBValue = 10;
 
     int labelX = rect.getX() + 10; // Position for labels (just before the gradient)
     for (int y = rect.getY(); y <= rect.getY() + (rect.getHeight() - 10); y += ((rect.getHeight() - 10) / 5)) // 6 label positions (spread out)
     {
         // Draw label with dB value
-        g.drawText(juce::String(dBValue) + "dB", labelX, y, 30, 10, juce::Justification::centredLeft);
+        g.drawText(juce::String(dBValue) + "dB", labelX, y, 30, 10, juce::Justification::centred);
         dBValue -= 10;
     }
  
@@ -82,7 +82,7 @@ void SpectrogramComponent::paint(juce::Graphics& g)
     const float maxFreq = 20000.0f; // Maximum frequency (e.g., 20 kHz)
 
     // Define the major frequencies for fewer labels, linearly spaced
-    std::vector<int> majorFrequencies = { 0, 5000, 10000, 15000, 20000 }; // Linearly spaced frequencies
+    std::vector<int> majorFrequencies = { 20, 5000, 10000, 15000, 20000 }; // Linearly spaced frequencies
 
     labelX = getLocalBounds().getX();  // Position for labels (just before the gradient)
 
@@ -99,7 +99,7 @@ void SpectrogramComponent::paint(juce::Graphics& g)
         // Adjust the 'y' position based on the normalized frequency
         // Ensure that 0 Hz is placed at the topmost visible position
         int y;
-        if (freq == 0) 
+        if (freq == 20) 
         {
             // Place 0 Hz at the top of the spectrogram area (or a little below)
             y = getLocalBounds().getY() + getLocalBounds().getHeight() - 10; // Adding a margin of 10 pixels for visibility
@@ -111,7 +111,7 @@ void SpectrogramComponent::paint(juce::Graphics& g)
         }
 
         // Format the label and display it
-        if (freq != 0) 
+        if (freq != 20) 
         {
             // Use kHz for frequencies >= 1000 Hz
             g.drawText(juce::String(freq / 1000.0f, 0) + "kHz", labelX, y, 30, 10, juce::Justification::centredRight);

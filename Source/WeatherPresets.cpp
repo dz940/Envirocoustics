@@ -43,6 +43,7 @@ WeatherPresets::WeatherPresets(MainComponent& parentComponent)
     snowBtn.setClickingTogglesState(true);
     snowBtn.setEnabled(true);
     snowBtn.setRadioGroupId(4);
+    snowBtn.setTooltip("Snowy");
     addAndMakeVisible(&snowBtn);
 
     rainBtn.setEnabled(true);
@@ -55,6 +56,7 @@ WeatherPresets::WeatherPresets(MainComponent& parentComponent)
                                 mainComponent.vSetParameter(PARAMETER_PRESSURE, 1013, true);
                                 mainComponent.vUpdateConditionControls(); };
     rainBtn.setRadioGroupId(4);
+    rainBtn.setTooltip("Rainy");
     addAndMakeVisible(&rainBtn);
 
     windBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_TEMPERATURE, 15, false);
@@ -68,6 +70,7 @@ WeatherPresets::WeatherPresets(MainComponent& parentComponent)
     windBtn.setClickingTogglesState(true);
     windBtn.setEnabled(true);
     windBtn.setRadioGroupId(4);
+    windBtn.setTooltip("Windy");
     addAndMakeVisible(&windBtn);
 
     sunBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_TEMPERATURE, 30, false);
@@ -80,6 +83,7 @@ WeatherPresets::WeatherPresets(MainComponent& parentComponent)
     sunBtn.setClickingTogglesState(true);
     sunBtn.setEnabled(true);
     sunBtn.setRadioGroupId(4);
+    sunBtn.setTooltip("Sunny");
     sunBtn.setToggleState(true, dontSendNotification);
     addAndMakeVisible(&sunBtn);
 

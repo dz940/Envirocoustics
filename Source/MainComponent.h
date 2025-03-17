@@ -55,8 +55,7 @@ public:
     int nGetParameter(int nParameterType);
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
     double dCalculateWindLoss(const double dFrequency, const double dDistance, const double dTemperature, const double dWindSpeed, const bool bWindDirection);
-    double windAttenuation(double frequency, double windSpeedKmh, double distance);
-    double calculateWindAttenuation(double windSpeed, int windDirection, double frequency, double distance);
+    double dCalculateTemperatureGradientLoss(const double dFrequency, const double dDistance, const int nTemperatureGradient);
     double dCalculateAirAttenuationPerMetre(const double dFreq, const double dTemperature, const double dRelativeHumidity, const double dAtmosphericPressure);
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
     void releaseResources() override;
@@ -87,14 +86,8 @@ private:
     void changeListenerCallback(ChangeBroadcaster* source) override;
 
     void DSPEngine(juce::AudioBuffer<float>& buffer);
-
     void updateSystemResponse();
-
     void updateFilter(const int nDistanceVal);
-
-    double dCalculateEffectiveDistanceTravelled(const double dDistance, const double dTemperature, const double dWindSpeed, const bool bWindDirection);
-
-    //double dCalculateEffectiveDistanceTravelled(const double dTemperature, const double dWindSpeed, const bool bWindDirection);
 
     TextButton openFileButton, playAudioButton, stopAudioButton, pauseAudioButton, spectrogramButton, spectrumButton;
 
@@ -125,6 +118,7 @@ private:
     bool bCloudCover = OFF;
 
     juce::dsp::IIR::Filter<float> lowPassFilter;
+    juce::TooltipWindow tooltipWindow{ this }; // Enables tooltips in this component
 
     //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
