@@ -13,6 +13,7 @@ ResponseCurve::ResponseCurve(MainComponent& parentComponent)
 ResponseCurve::~ResponseCurve()
 /*======================================================================================*/
 {
+
 }
 
 /*======================================================================================*/
@@ -133,60 +134,24 @@ void ResponseCurve::paint(juce::Graphics& g)
 /*======================================================================================*/
 {
     g.fillAll(juce::Colours::darkseagreen);
-    g.setColour(juce::Colours::black);
-    g.setFont(20.0f);
-
-    // Title
-    g.drawText("System Response Curve", 0, 0, getWidth(), 30, juce::Justification::centred, true);
 
     // Define drawing bounds
     float width = (float)getWidth();
     float height = (float)getHeight();
 
-    float topOffset = 30.0f;        // 30px for title
-    float bottomOffset = 15.0f;     // 10px space at bottom for labels
-    float leftMargin = 35.0f;       // Reduced left margin, still enough for dB labels
-    float rightMargin = 15.0f;      // Ensure space on the right
-    float graphWidth = width - leftMargin - rightMargin;
-    float graphHeight = height - topOffset - bottomOffset;
-
     juce::Path responseCurve;
     g.setFont(10.0f); // Smaller font for labels
-
-    // Draw Magnitude Labels (+10 dB at top, -50 dB at bottom)
-    for (int dB = 10; dB >= -50; dB -= 10)
-    {
-        float y = topOffset + juce::jmap((float)dB, 10.0f, -50.0f, 0.0f, graphHeight);
-
-        g.setColour(juce::Colours::black);
-        g.drawText(juce::String(dB) + " dB", 0, y - 5, 30, 10, juce::Justification::right, false);
-
-        // Draw horizontal grid line
-        g.setColour(juce::Colours::grey.withAlpha(0.3f));
-        g.drawLine(leftMargin, y, width - rightMargin, y);
-    }
 
     // Frequency labels & grid lines (logarithmic spacing)
     std::vector<double> majorFreqs = { 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000 };
 
     for (double freq : majorFreqs)
     {
-        float x = leftMargin + juce::jmap((float)std::log10(freq), 1.3f, 4.3f, 0.0f, graphWidth);
-
-        g.setColour(juce::Colours::black);
-        if (freq < 1000)
-        {
-            g.drawText(juce::String((int)freq) + "Hz", x - 15, height - 15, 30, 15, juce::Justification::centred, false);
-        }
-        else
-        {
-            int newFreq = freq / 1000;
-            g.drawText(juce::String((int)newFreq) + "kHz", x - 15, height - 15, 30, 15, juce::Justification::centred, false);
-        }
+        float x = juce::jmap((float)std::log10(freq), 1.3f, 4.3f, 0.0f, width);
 
         // Draw vertical grid line
         g.setColour(juce::Colours::grey.withAlpha(0.3f));
-        g.drawLine(x, topOffset, x, height - bottomOffset);
+        g.drawLine(x, 0, x, height);
     }
 
     // Retrieve parameters
@@ -210,15 +175,13 @@ void ResponseCurve::paint(juce::Graphics& g)
         double totalAttenuationDb = attenuationPerMeter * distance + windLoss + gradientLoss;
 
         // Map dB value to screen space (ensuring +10 dB is at top, -50 dB at bottom)
-        float x = leftMargin + (float)i / 199.0f * graphWidth;
-        float y = topOffset + juce::jmap((float)-totalAttenuationDb, 10.0f, -50.0f, 0.0f, graphHeight);
+        float x = (float)i / 199.0f * width;
+        float y = juce::jmap((float)-totalAttenuationDb, 10.0f, -50.0f, 0.0f, height);
 
         if (i == 0)
             responseCurve.startNewSubPath(x, y);
-        else if( y < topOffset + graphHeight)
+        else 
             responseCurve.lineTo(x, y);
-        else
-            responseCurve.lineTo(x, topOffset + graphHeight);
     }
 
     g.setColour(juce::Colours::blue);

@@ -39,7 +39,7 @@ class ConditionControls;
 class VolumeControl;
 class SpectrogramComponent;
 class SpectrumComponent;
-class ResponseCurve;
+class ResponseComponent;
 
 class MainComponent : public AudioAppComponent,
     public ChangeListener
@@ -103,7 +103,7 @@ private:
     VolumeControl* volumeControl;
     SpectrogramComponent* spectrogram1, *spectrogram2;
     SpectrumComponent* frequencyAnalyser1, *frequencyAnalyser2;
-    ResponseCurve* responseCurve;
+    ResponseComponent* responseCurve;
 
     Image titleImage;
 

@@ -3537,6 +3537,9 @@
     <ClCompile Include="..\..\Source\ResponseCurve.cpp">
       <Filter>Envirocoustics\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\ResponseComponent.cpp">
+      <Filter>Envirocoustics\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\ConditionControls.h">
@@ -7563,6 +7566,9 @@
       <Filter>JUCE Library Code</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\ResponseCurve.h">
+      <Filter>Envirocoustics\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\ResponseComponent.h">
       <Filter>Envirocoustics\Source</Filter>
     </ClInclude>
   </ItemGroup>

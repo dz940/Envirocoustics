@@ -52,7 +52,7 @@ void FrequencySpectrum::drawNextFrameOfFrequencySpectrum()
     HeapBlock<float> fftData(fftSize * 2, true);
     FloatVectorOperations::copy(fftData, fifo.getReadPointer(0), fftSize);
     forwardFFT.performFrequencyOnlyForwardTransform(fftData);
-
+    
     applyDecay();
 
     auto width = frequencySpectrumImage.getWidth();
@@ -113,6 +113,19 @@ void FrequencySpectrum::drawNextFrameOfFrequencySpectrum()
     g.setGradientFill(gradient);
     g.fillPath(frequencyCurve); // **Now properly enclosed and filled!**
 
+    // Frequency labels & grid lines (logarithmic spacing)
+    std::vector<double> majorFreqs = { 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000 };
+    float logMinFreq = std::log10(20.0f);
+    float logMaxFreq = std::log10(20000.0f);
+    for (double freq : majorFreqs)
+    {
+        float x = jmap((float)std::log10(freq), logMinFreq, logMaxFreq, 0.0f, (float)width);
+
+        // Draw vertical grid line
+        g.setColour(juce::Colours::grey.withAlpha(0.3f));
+        g.drawLine(x, 0, x, height);
+    }
+
     repaint();
 }
 
@@ -133,28 +146,4 @@ void FrequencySpectrum::resized()
 /*======================================================================================*/
 {
 
-}
-
-/*======================================================================================*/
-void FrequencySpectrum::smoothFFTData(float* fftData, int size)
-/*======================================================================================*/
-{
-    for (int i = 1; i < size - 1; ++i)
-    {
-        fftData[i] = (fftData[i - 1] + fftData[i] + fftData[i + 1]) / 3.0f;
-    }
-}
-
-/*======================================================================================*/
-float FrequencySpectrum::interpolate(float v1, float v2, float t)
-/*======================================================================================*/
-{
-    return v1 + t * (v2 - v1); // Linear interpolation
-}
-
-/*======================================================================================*/
-Colour FrequencySpectrum::blendColors(Colour c1, Colour c2, float alpha)
-/*======================================================================================*/
-{
-    return c1.interpolatedWith(c2, alpha);
 }

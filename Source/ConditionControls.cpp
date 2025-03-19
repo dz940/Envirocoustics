@@ -272,7 +272,7 @@ void ConditionControls::paint(Graphics& g)
                             rcConditionControls.getY(),
                             rcConditionControls.getWidth(),
                             30);
-    g.drawText("Condition controls", rcConditionControlsTitle, Justification::centred, true);
+    g.drawText("Weather controls", rcConditionControlsTitle, Justification::centred, true);
 
     int nPanelWidths = (rcConditionControls.getWidth() - 20) / 4;
     g.setFont(15.0f);

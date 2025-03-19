@@ -43,6 +43,11 @@ void Spectrogram::drawNextFrameOfSpectrogram()
 
     HeapBlock<float> fftData(fftSize * 2, true); // Zero-initialized FFT buffer
     FloatVectorOperations::copy(fftData, fifo.getReadPointer(0), fftSize);
+
+    HeapBlock<float> window(fftSize);
+    dsp::WindowingFunction<float>::fillWindowingTables(window.getData(), fftSize, dsp::WindowingFunction<float>::hann, false);
+    FloatVectorOperations::multiply(fftData, window.getData(), fftSize);
+
     forwardFFT.performFrequencyOnlyForwardTransform(fftData);
     int spectrogramWidth = spectrogramImage.getWidth();
     shiftImageLeft(); // Scroll image left for real-time effect
@@ -59,49 +64,6 @@ void Spectrogram::drawNextFrameOfSpectrogram()
     }
     repaint();
 }
-
-//void Spectrogram::drawNextFrameOfSpectrogram()
-//{
-//    // Ensure thread safety when modifying UI components
-//    const MessageManagerLock mmLock;
-//    if (!mmLock.lockWasGained()) return; // If lock fails, exit safely
-//
-//    HeapBlock<float> fftData(fftSize * 2, true); // Zero-initialized FFT buffer
-//    FloatVectorOperations::copy(fftData, fifo.getReadPointer(0), fftSize);
-//    forwardFFT.performFrequencyOnlyForwardTransform(fftData); // Perform the FFT
-//
-//    int spectrogramWidth = spectrogramImage.getWidth();
-//    shiftImageLeft(); // Scroll image left for real-time effect
-//
-//    int sampleRate = 44100;
-//    // Logarithmic scaling for frequency axis (mapping pixel to frequency)
-//    const float minFreq = 20.0f; // Minimum frequency (e.g., 20 Hz for human hearing)
-//    const float maxFreq = sampleRate / 2.0f; // Maximum frequency is Nyquist (half the sample rate)
-//
-//    // Loop through each row (y-axis), which corresponds to a frequency band
-//    for (int y = 0; y < spectrogramImage.getHeight(); ++y)
-//    {
-//        // Logarithmic frequency scaling: map y position to a logarithmic frequency
-//        // Invert the y-axis to ensure low frequencies are at the bottom (reverse the calculation)
-//        float logFreq = minFreq * pow(10.0f, float(spectrogramImage.getHeight() - y - 1) / spectrogramImage.getHeight() * log10(maxFreq / minFreq));
-//
-//        // Map this logarithmic frequency to the corresponding FFT index
-//        int fftIndex = int(logFreq / (sampleRate / fftSize));  // Convert logFreq to FFT bin index
-//        fftIndex = jlimit(0, (fftSize / 2) - 1, fftIndex);  // Ensure within bounds of FFT bins
-//
-//        // Compute the magnitude of the frequency at this bin and scale it for visual representation
-//        float magnitude = fftData[fftIndex] * 20.0f;  // Adjust scale for better visibility
-//
-//        // Map the magnitude to a color hue: higher magnitudes -> red, lower magnitudes -> blue
-//        float hue = jlimit(0.0f, 0.67f, 0.67f - (magnitude * 0.005f));
-//        Colour color = Colour::fromHSV(hue, 1.0f, 1.0f, 1.0f);  // Create color for pixel
-//
-//        // Set the pixel color at the corresponding y position for the current frequency bin
-//        spectrogramImage.setPixelAt(spectrogramWidth - 1, y, color);
-//    }
-//
-//    repaint(); // Safe repaint since we have the lock
-//}
 
 /*======================================================================================*/
 void Spectrogram::shiftImageLeft()

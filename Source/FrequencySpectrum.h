@@ -12,9 +12,6 @@ public:
     void pushBuffer(const AudioBuffer<float>& buffer);
     void paint(Graphics& g) override;
     void resized() override;
-    void smoothFFTData(float* fftData, int size);
-    float interpolate(float v1, float v2, float t);
-    Colour blendColors(Colour c1, Colour c2, float alpha);
 
 private:
     void drawNextFrameOfFrequencySpectrum();

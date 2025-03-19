@@ -6,7 +6,7 @@
 #include "SpectrumComponent.h"
 #include "VolumeControl.h"
 #include "SpectrogramComponent.h"
-#include "ResponseCurve.h"
+#include "ResponseComponent.h"
 #include <atlstr.h>
 
 /*======================================================================================*/
@@ -57,7 +57,7 @@ MainComponent::MainComponent() : juce::AudioAppComponent(customDeviceManager)
     addAndMakeVisible(frequencyAnalyser2);
     frequencyAnalyser2->setOpaque(true);
 
-    responseCurve = new ResponseCurve(*this);
+    responseCurve = new ResponseComponent(*this);
     addAndMakeVisible(responseCurve);
     responseCurve->setOpaque(true);
 
@@ -441,7 +441,7 @@ void MainComponent::updateFilter(const int nDistanceVal)
 {
     float cutOff = 5030.0f - (float)(5 * nDistanceVal);
     lowPassFilter.coefficients = *juce::dsp::IIR::Coefficients<float>::makeLowPass(44100, cutOff, 0.5f);
-    responseCurve->setCoefficients(lowPassFilter.coefficients); // Update the curve
+    //responseCurve->setCoefficients(lowPassFilter.coefficients); // Update the curve
 }
 
 
