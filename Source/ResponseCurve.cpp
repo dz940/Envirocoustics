@@ -142,6 +142,16 @@ void ResponseCurve::paint(juce::Graphics& g)
     juce::Path responseCurve;
     g.setFont(10.0f); // Smaller font for labels
 
+    // Draw horizontal grid lines
+    for (int dB = 10; dB >= -50; dB -= 10)
+    {
+        float y = juce::jmap((float)dB, 10.0f, -50.0f, 0.0f, height);
+
+        // Draw horizontal grid line
+        g.setColour(juce::Colours::grey.withAlpha(0.3f));
+        g.drawLine(0, y, width, y);
+    }
+
     // Frequency labels & grid lines (logarithmic spacing)
     std::vector<double> majorFreqs = { 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000 };
 
