@@ -3,133 +3,133 @@
 
 /*======================================================================================*/
 ConditionControls::ConditionControls(MainComponent& parentComponent)
-    : mainComponent(parentComponent)
+    : m_cMainComponent(parentComponent)
 /*======================================================================================*/
 {
     // Initialise controls
-    temperatureKnob.onValueChange = [this] {mainComponent.vSetParameter(PARAMETER_TEMPERATURE, (int)temperatureKnob.getValue(), true); };
-    temperatureKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    temperatureKnob.setTextValueSuffix("C");
-    temperatureKnob.setRange(-10, 50, 1);
-    temperatureKnob.setValue(20);
-    temperatureKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
-    temperatureKnob.setLookAndFeel(&rotaryLookAndFeel);
-    addAndMakeVisible(&temperatureKnob);
+    m_cTemperatureKnob.onValueChange = [this] {m_cMainComponent.vSetParameter(PARAMETER_TEMPERATURE, (int)m_cTemperatureKnob.getValue(), true); };
+    m_cTemperatureKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+    m_cTemperatureKnob.setTextValueSuffix("C");
+    m_cTemperatureKnob.setRange(-10, 50, 1);
+    m_cTemperatureKnob.setValue(20);
+    m_cTemperatureKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
+    m_cTemperatureKnob.setLookAndFeel(&m_lfRotaryLookAndFeel);
+    addAndMakeVisible(&m_cTemperatureKnob);
 
-    windSpeedKnob.onValueChange = [this] {mainComponent.vSetParameter(PARAMETER_WIND_SPEED, (int)windSpeedKnob.getValue(), true); };
-    windSpeedKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    windSpeedKnob.setTextValueSuffix("km/h");
-    windSpeedKnob.setRange(0, 100, 1);
-    windSpeedKnob.setValue(10);
-    windSpeedKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
-    windSpeedKnob.setLookAndFeel(&rotaryLookAndFeel);
-    addAndMakeVisible(&windSpeedKnob);
+    m_cWindSpeedKnob.onValueChange = [this] {m_cMainComponent.vSetParameter(PARAMETER_WIND_SPEED, (int)m_cWindSpeedKnob.getValue(), true); };
+    m_cWindSpeedKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+    m_cWindSpeedKnob.setTextValueSuffix("km/h");
+    m_cWindSpeedKnob.setRange(0, 100, 1);
+    m_cWindSpeedKnob.setValue(10);
+    m_cWindSpeedKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
+    m_cWindSpeedKnob.setLookAndFeel(&m_lfRotaryLookAndFeel);
+    addAndMakeVisible(&m_cWindSpeedKnob);
 
-    humidityKnob.onValueChange = [this] {mainComponent.vSetParameter(PARAMETER_HUMIDITY, (int)humidityKnob.getValue(), false); };
-    humidityKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    humidityKnob.setTextValueSuffix("%");
-    humidityKnob.setRange(5, 100, 1);
-    humidityKnob.setValue(50);
-    humidityKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
-    humidityKnob.setLookAndFeel(&rotaryLookAndFeel);
-    addAndMakeVisible(&humidityKnob);
+    m_cHumidityKnob.onValueChange = [this] {m_cMainComponent.vSetParameter(PARAMETER_HUMIDITY, (int)m_cHumidityKnob.getValue(), false); };
+    m_cHumidityKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+    m_cHumidityKnob.setTextValueSuffix("%");
+    m_cHumidityKnob.setRange(5, 100, 1);
+    m_cHumidityKnob.setValue(50);
+    m_cHumidityKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
+    m_cHumidityKnob.setLookAndFeel(&m_lfRotaryLookAndFeel);
+    addAndMakeVisible(&m_cHumidityKnob);
 
-    pressureKnob.onValueChange = [this] {mainComponent.vSetParameter(PARAMETER_PRESSURE, (int)pressureKnob.getValue(), false); };
-    pressureKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
-    pressureKnob.setTextValueSuffix("mb");
-    pressureKnob.setRange(850, 1150, 1);
-    pressureKnob.setValue(1000);
-    pressureKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
-    pressureKnob.setLookAndFeel(&rotaryLookAndFeel);
-    addAndMakeVisible(&pressureKnob);
+    m_cPressureKnob.onValueChange = [this] {m_cMainComponent.vSetParameter(PARAMETER_PRESSURE, (int)m_cPressureKnob.getValue(), false); };
+    m_cPressureKnob.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+    m_cPressureKnob.setTextValueSuffix("mb");
+    m_cPressureKnob.setRange(850, 1150, 1);
+    m_cPressureKnob.setValue(1000);
+    m_cPressureKnob.setTextBoxStyle(Slider::TextBoxRight, false, 55, 20);
+    m_cPressureKnob.setLookAndFeel(&m_lfRotaryLookAndFeel);
+    addAndMakeVisible(&m_cPressureKnob);
 
-    temperatureLapseBtn.onClick = [this] { mainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, temperatureInversionBtn.getToggleState(), false); };
-    temperatureLapseBtn.setButtonText("Lapse");
-    temperatureLapseBtn.setClickingTogglesState(true);
-    temperatureLapseBtn.setColour(TextButton::buttonOnColourId, Colours::green);
-    temperatureLapseBtn.setEnabled(true);
-    temperatureLapseBtn.setRadioGroupId(1);
-    temperatureLapseBtn.setToggleState(true, dontSendNotification);
-    addAndMakeVisible(&temperatureLapseBtn);
+    m_cTemperatureLapseBtn.onClick = [this] { m_cMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, m_cTemperatureInversionBtn.getToggleState(), false); };
+    m_cTemperatureLapseBtn.setButtonText("Lapse");
+    m_cTemperatureLapseBtn.setClickingTogglesState(true);
+    m_cTemperatureLapseBtn.setColour(TextButton::buttonOnColourId, Colours::green);
+    m_cTemperatureLapseBtn.setEnabled(true);
+    m_cTemperatureLapseBtn.setRadioGroupId(1);
+    m_cTemperatureLapseBtn.setToggleState(true, dontSendNotification);
+    addAndMakeVisible(&m_cTemperatureLapseBtn);
 
-    temperatureInversionBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, temperatureInversionBtn.getToggleState(), false); };
-    temperatureInversionBtn.setButtonText("Inversion");
-    temperatureInversionBtn.setClickingTogglesState(true);
-    temperatureInversionBtn.setColour(TextButton::buttonOnColourId, Colours::green);
-    temperatureInversionBtn.setEnabled(true);
-    temperatureInversionBtn.setRadioGroupId(1);
-    addAndMakeVisible(&temperatureInversionBtn);
+    m_cTemperatureInversionBtn.onClick = [this] {m_cMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, m_cTemperatureInversionBtn.getToggleState(), false); };
+    m_cTemperatureInversionBtn.setButtonText("Inversion");
+    m_cTemperatureInversionBtn.setClickingTogglesState(true);
+    m_cTemperatureInversionBtn.setColour(TextButton::buttonOnColourId, Colours::green);
+    m_cTemperatureInversionBtn.setEnabled(true);
+    m_cTemperatureInversionBtn.setRadioGroupId(1);
+    addAndMakeVisible(&m_cTemperatureInversionBtn);
 
-    precipitationOffBtn.onClick = [this] 
+    m_cPrecipitationOffBtn.onClick = [this] 
     {
-            if (precipitationOffBtn.getToggleState() == ON)
+            if (m_cPrecipitationOffBtn.getToggleState() == ON)
             { 
-                mainComponent.vSetParameter(PARAMETER_PRECIPITATION, !precipitationOffBtn.getToggleState(), true); 
-                cloudOffBtn.setEnabled(true);
-                humidityKnob.setValue(50);
-                humidityKnob.setEnabled(true);
+                m_cMainComponent.vSetParameter(PARAMETER_PRECIPITATION, !m_cPrecipitationOffBtn.getToggleState(), true);
+                m_cCloudOffBtn.setEnabled(true);
+                m_cHumidityKnob.setValue(50);
+                m_cHumidityKnob.setEnabled(true);
             }
     };
-    precipitationOffBtn.setClickingTogglesState(true);
-    precipitationOffBtn.setButtonText("OFF");
-    precipitationOffBtn.setColour(TextButton::buttonOnColourId, Colours::red);
-    precipitationOffBtn.setEnabled(true);
-    precipitationOffBtn.setRadioGroupId(2);
-    precipitationOffBtn.setToggleState(true, dontSendNotification);
-    addAndMakeVisible(&precipitationOffBtn);
+    m_cPrecipitationOffBtn.setClickingTogglesState(true);
+    m_cPrecipitationOffBtn.setButtonText("OFF");
+    m_cPrecipitationOffBtn.setColour(TextButton::buttonOnColourId, Colours::red);
+    m_cPrecipitationOffBtn.setEnabled(true);
+    m_cPrecipitationOffBtn.setRadioGroupId(2);
+    m_cPrecipitationOffBtn.setToggleState(true, dontSendNotification);
+    addAndMakeVisible(&m_cPrecipitationOffBtn);
 
-    precipitationOnBtn.onClick = [this] 
+    m_cPrecipitationOnBtn.onClick = [this] 
     {
-        if (precipitationOnBtn.getToggleState() == ON)
+        if (m_cPrecipitationOnBtn.getToggleState() == ON)
         {
-            mainComponent.vSetParameter(PARAMETER_PRECIPITATION, precipitationOnBtn.getToggleState(), false);
-            mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, precipitationOnBtn.getToggleState(), true);
-            cloudOnBtn.setToggleState(true, dontSendNotification);
-            cloudOffBtn.setEnabled(false);
-            humidityKnob.setValue(90);
-            humidityKnob.setEnabled(false);
+            m_cMainComponent.vSetParameter(PARAMETER_PRECIPITATION, m_cPrecipitationOnBtn.getToggleState(), false);
+            m_cMainComponent.vSetParameter(PARAMETER_CLOUD_COVER, m_cPrecipitationOnBtn.getToggleState(), true);
+            m_cCloudOnBtn.setToggleState(true, dontSendNotification);
+            m_cCloudOffBtn.setEnabled(false);
+            m_cHumidityKnob.setValue(90);
+            m_cHumidityKnob.setEnabled(false);
         }
     };
-    precipitationOnBtn.setButtonText("ON");
-    precipitationOnBtn.setClickingTogglesState(true);
-    precipitationOnBtn.setColour(TextButton::buttonOnColourId, Colours::green);
-    precipitationOnBtn.setEnabled(true);
-    precipitationOnBtn.setRadioGroupId(2);
-    addAndMakeVisible(&precipitationOnBtn);
+    m_cPrecipitationOnBtn.setButtonText("ON");
+    m_cPrecipitationOnBtn.setClickingTogglesState(true);
+    m_cPrecipitationOnBtn.setColour(TextButton::buttonOnColourId, Colours::green);
+    m_cPrecipitationOnBtn.setEnabled(true);
+    m_cPrecipitationOnBtn.setRadioGroupId(2);
+    addAndMakeVisible(&m_cPrecipitationOnBtn);
 
-    windLeftBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, windRightBtn.getToggleState(), true); };
-    windLeftBtn.setButtonText("Upwind");
-    windLeftBtn.setClickingTogglesState(true);
-    windLeftBtn.setColour(TextButton::buttonOnColourId, Colours::green);
-    windLeftBtn.setEnabled(true);
-    windLeftBtn.setRadioGroupId(3);
-    windLeftBtn.setToggleState(true, dontSendNotification);
-    addAndMakeVisible(&windLeftBtn);
+    m_cWindLeftBtn.onClick = [this] {m_cMainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, m_cWindRightBtn.getToggleState(), true); };
+    m_cWindLeftBtn.setButtonText("Upwind");
+    m_cWindLeftBtn.setClickingTogglesState(true);
+    m_cWindLeftBtn.setColour(TextButton::buttonOnColourId, Colours::green);
+    m_cWindLeftBtn.setEnabled(true);
+    m_cWindLeftBtn.setRadioGroupId(3);
+    m_cWindLeftBtn.setToggleState(true, dontSendNotification);
+    addAndMakeVisible(&m_cWindLeftBtn);
 
-    windRightBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, windRightBtn.getToggleState(), true); };
-    windRightBtn.setButtonText("Downwind");
-    windRightBtn.setClickingTogglesState(true);
-    windRightBtn.setColour(TextButton::buttonOnColourId, Colours::green);
-    windRightBtn.setEnabled(true);
-    windRightBtn.setRadioGroupId(3);
-    addAndMakeVisible(&windRightBtn);
+    m_cWindRightBtn.onClick = [this] {m_cMainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, m_cWindRightBtn.getToggleState(), true); };
+    m_cWindRightBtn.setButtonText("Downwind");
+    m_cWindRightBtn.setClickingTogglesState(true);
+    m_cWindRightBtn.setColour(TextButton::buttonOnColourId, Colours::green);
+    m_cWindRightBtn.setEnabled(true);
+    m_cWindRightBtn.setRadioGroupId(3);
+    addAndMakeVisible(&m_cWindRightBtn);
 
-    cloudOffBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, cloudOnBtn.getToggleState(), true); };
-    cloudOffBtn.setClickingTogglesState(true);
-    cloudOffBtn.setButtonText("OFF");
-    cloudOffBtn.setColour(TextButton::buttonOnColourId, Colours::red);
-    cloudOffBtn.setEnabled(true);
-    cloudOffBtn.setRadioGroupId(5);
-    cloudOffBtn.setToggleState(true, dontSendNotification);
-    addAndMakeVisible(&cloudOffBtn);
+    m_cCloudOffBtn.onClick = [this] {m_cMainComponent.vSetParameter(PARAMETER_CLOUD_COVER, m_cCloudOnBtn.getToggleState(), true); };
+    m_cCloudOffBtn.setClickingTogglesState(true);
+    m_cCloudOffBtn.setButtonText("OFF");
+    m_cCloudOffBtn.setColour(TextButton::buttonOnColourId, Colours::red);
+    m_cCloudOffBtn.setEnabled(true);
+    m_cCloudOffBtn.setRadioGroupId(5);
+    m_cCloudOffBtn.setToggleState(true, dontSendNotification);
+    addAndMakeVisible(&m_cCloudOffBtn);
 
-    cloudOnBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, cloudOnBtn.getToggleState(), true); };
-    cloudOnBtn.setButtonText("ON");
-    cloudOnBtn.setClickingTogglesState(true);
-    cloudOnBtn.setColour(TextButton::buttonOnColourId, Colours::green);
-    cloudOnBtn.setEnabled(true);
-    cloudOnBtn.setRadioGroupId(5);
-    addAndMakeVisible(&cloudOnBtn);
+    m_cCloudOnBtn.onClick = [this] {m_cMainComponent.vSetParameter(PARAMETER_CLOUD_COVER, m_cCloudOnBtn.getToggleState(), true); };
+    m_cCloudOnBtn.setButtonText("ON");
+    m_cCloudOnBtn.setClickingTogglesState(true);
+    m_cCloudOnBtn.setColour(TextButton::buttonOnColourId, Colours::green);
+    m_cCloudOnBtn.setEnabled(true);
+    m_cCloudOnBtn.setRadioGroupId(5);
+    addAndMakeVisible(&m_cCloudOnBtn);
 }
 
 /*======================================================================================*/
@@ -137,10 +137,10 @@ ConditionControls::~ConditionControls()
 /*======================================================================================*/
 {
     // Release resources
-    temperatureKnob.setLookAndFeel(nullptr);
-    humidityKnob.setLookAndFeel(nullptr);
-    windSpeedKnob.setLookAndFeel(nullptr);
-    pressureKnob.setLookAndFeel(nullptr);
+    m_cTemperatureKnob.setLookAndFeel(nullptr);
+    m_cHumidityKnob.setLookAndFeel(nullptr);
+    m_cWindSpeedKnob.setLookAndFeel(nullptr);
+    m_cPressureKnob.setLookAndFeel(nullptr);
 }
 
 /*======================================================================================*/
@@ -152,30 +152,30 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
     {
         case PARAMETER_TEMPERATURE:
         {
-            temperatureKnob.setValue(nValue);
+            m_cTemperatureKnob.setValue(nValue);
             break;
         }
         case PARAMETER_HUMIDITY:
         {
-            humidityKnob.setValue(nValue);
+            m_cHumidityKnob.setValue(nValue);
             break;
         }
         case PARAMETER_WIND_SPEED:
         {
-            windSpeedKnob.setValue(nValue);
+            m_cWindSpeedKnob.setValue(nValue);
             break;
         }
         case PARAMETER_PRECIPITATION:
         {
             if (nValue == OFF)
             {
-                precipitationOnBtn.setToggleState(false, dontSendNotification);
-                precipitationOffBtn.setToggleState(true, dontSendNotification);
+                m_cPrecipitationOnBtn.setToggleState(false, dontSendNotification);
+                m_cPrecipitationOffBtn.setToggleState(true, dontSendNotification);
             }
             else if (nValue == ON)
             {
-                precipitationOnBtn.setToggleState(true, dontSendNotification);
-                precipitationOffBtn.setToggleState(false, dontSendNotification);
+                m_cPrecipitationOnBtn.setToggleState(true, dontSendNotification);
+                m_cPrecipitationOffBtn.setToggleState(false, dontSendNotification);
             }
             break;
         }
@@ -183,13 +183,13 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
         {
             if (nValue == WIND_DIRECTION_UPWIND)
             {
-                windLeftBtn.setToggleState(true, dontSendNotification);
-                windRightBtn.setToggleState(false, dontSendNotification);
+                m_cWindLeftBtn.setToggleState(true, dontSendNotification);
+                m_cWindRightBtn.setToggleState(false, dontSendNotification);
             }
             else if (nValue == WIND_DIRECTION_DOWNWIND)
             {
-                windLeftBtn.setToggleState(false, dontSendNotification);
-                windRightBtn.setToggleState(true, dontSendNotification);
+                m_cWindLeftBtn.setToggleState(false, dontSendNotification);
+                m_cWindRightBtn.setToggleState(true, dontSendNotification);
             }
             break;
         }
@@ -197,32 +197,32 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
         {
             if (nValue == TEMPERATURE_LAPSE)
             {
-                temperatureLapseBtn.setToggleState(true, dontSendNotification);
-                temperatureInversionBtn.setToggleState(false, dontSendNotification);
+                m_cTemperatureLapseBtn.setToggleState(true, dontSendNotification);
+                m_cTemperatureInversionBtn.setToggleState(false, dontSendNotification);
             }
             else if (nValue == TEMPERATURE_INVERSION)
             {
-                temperatureLapseBtn.setToggleState(false, dontSendNotification);
-                temperatureInversionBtn.setToggleState(true, dontSendNotification);
+                m_cTemperatureLapseBtn.setToggleState(false, dontSendNotification);
+                m_cTemperatureInversionBtn.setToggleState(true, dontSendNotification);
             }
             break;
         }
         case PARAMETER_PRESSURE:
         {
-            pressureKnob.setValue(nValue);
+            m_cPressureKnob.setValue(nValue);
             break;
         }
         case PARAMETER_CLOUD_COVER:
         {
             if (nValue == OFF)
             {
-                cloudOnBtn.setToggleState(false, dontSendNotification);
-                cloudOffBtn.setToggleState(true, dontSendNotification);
+                m_cCloudOnBtn.setToggleState(false, dontSendNotification);
+                m_cCloudOffBtn.setToggleState(true, dontSendNotification);
             }
             else if (nValue == ON)
             {
-                cloudOnBtn.setToggleState(true, dontSendNotification);
-                cloudOffBtn.setToggleState(false, dontSendNotification);
+                m_cCloudOnBtn.setToggleState(true, dontSendNotification);
+                m_cCloudOffBtn.setToggleState(false, dontSendNotification);
             }
             break;
         }
@@ -238,22 +238,22 @@ void ConditionControls::resized()
     int nControlWidth = rcConditionControls.getWidth() / 4;
     int nButtonBorderWidth = 5;
 
-    temperatureKnob.setBounds(rcConditionControls.getX(), rcConditionControls.getY() + 60, nControlWidth, 35);
-    windSpeedKnob.setBounds(rcConditionControls.getX() + nControlWidth, rcConditionControls.getY() + 60, nControlWidth, 35);
-    humidityKnob.setBounds(rcConditionControls.getX() + nControlWidth * 2, rcConditionControls.getY() + 60, nControlWidth, 35);
-    pressureKnob.setBounds(rcConditionControls.getX() + nControlWidth * 3, rcConditionControls.getY() + 60, nControlWidth, 35);
+    m_cTemperatureKnob.setBounds(rcConditionControls.getX(), rcConditionControls.getY() + 60, nControlWidth, 35);
+    m_cWindSpeedKnob.setBounds(rcConditionControls.getX() + nControlWidth, rcConditionControls.getY() + 60, nControlWidth, 35);
+    m_cHumidityKnob.setBounds(rcConditionControls.getX() + nControlWidth * 2, rcConditionControls.getY() + 60, nControlWidth, 35);
+    m_cPressureKnob.setBounds(rcConditionControls.getX() + nControlWidth * 3, rcConditionControls.getY() + 60, nControlWidth, 35);
 
-    temperatureLapseBtn.setBounds(rcConditionControls.getX() + nButtonBorderWidth, rcConditionControls.getY() + 135, nControlWidth - 2 * nButtonBorderWidth, 20);
-    temperatureInversionBtn.setBounds(rcConditionControls.getX() + nButtonBorderWidth, rcConditionControls.getY() + 160, nControlWidth - 2 * nButtonBorderWidth, 20);
+    m_cTemperatureLapseBtn.setBounds(rcConditionControls.getX() + nButtonBorderWidth, rcConditionControls.getY() + 135, nControlWidth - 2 * nButtonBorderWidth, 20);
+    m_cTemperatureInversionBtn.setBounds(rcConditionControls.getX() + nButtonBorderWidth, rcConditionControls.getY() + 160, nControlWidth - 2 * nButtonBorderWidth, 20);
 
-    windLeftBtn.setBounds(rcConditionControls.getX() + nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 135, nControlWidth - 2 * nButtonBorderWidth, 20);
-    windRightBtn.setBounds(rcConditionControls.getX() + nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 160, nControlWidth - 2 * nButtonBorderWidth, 20);
+    m_cWindLeftBtn.setBounds(rcConditionControls.getX() + nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 135, nControlWidth - 2 * nButtonBorderWidth, 20);
+    m_cWindRightBtn.setBounds(rcConditionControls.getX() + nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 160, nControlWidth - 2 * nButtonBorderWidth, 20);
 
-    precipitationOnBtn.setBounds(rcConditionControls.getX() + 2 * nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 135, nControlWidth - 2 * nButtonBorderWidth, 20);
-    precipitationOffBtn.setBounds(rcConditionControls.getX() + 2 * nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 160, nControlWidth - 2 * nButtonBorderWidth, 20);
+    m_cPrecipitationOnBtn.setBounds(rcConditionControls.getX() + 2 * nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 135, nControlWidth - 2 * nButtonBorderWidth, 20);
+    m_cPrecipitationOffBtn.setBounds(rcConditionControls.getX() + 2 * nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 160, nControlWidth - 2 * nButtonBorderWidth, 20);
 
-    cloudOnBtn.setBounds(rcConditionControls.getX() + 3 * nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 135, nControlWidth - 2 * nButtonBorderWidth, 20);
-    cloudOffBtn.setBounds(rcConditionControls.getX() + 3 * nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 160, nControlWidth - 2 * nButtonBorderWidth, 20);
+    m_cCloudOnBtn.setBounds(rcConditionControls.getX() + 3 * nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 135, nControlWidth - 2 * nButtonBorderWidth, 20);
+    m_cCloudOffBtn.setBounds(rcConditionControls.getX() + 3 * nControlWidth + nButtonBorderWidth, rcConditionControls.getY() + 160, nControlWidth - 2 * nButtonBorderWidth, 20);
 }
 
 /*======================================================================================*/

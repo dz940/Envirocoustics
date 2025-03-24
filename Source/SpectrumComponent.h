@@ -13,14 +13,12 @@ public:
     SpectrumComponent(MainComponent& parentComponent);
     ~SpectrumComponent();
 
-    void pushBuffer(const juce::AudioBuffer<float>& buffer);
-
+    void vPushBuffer(const juce::AudioBuffer<float>& buffer);
     // Component override to handle resizing
     void resized() override;
     void paint(juce::Graphics& g) override;
 
 private:
-    FrequencySpectrum* freqSpectrum;
-    MainComponent& mainComponent;
-    bool gradientDrawn = false;
+    FrequencySpectrum* m_pcFreqSpectrum;
+    MainComponent& m_pcMainComponent;
 };

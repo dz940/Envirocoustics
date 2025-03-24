@@ -3,66 +3,66 @@
 
 /*======================================================================================*/
 DistanceGraphic::DistanceGraphic(MainComponent& parentComponent)
-    : mainComponent(parentComponent)
+    : m_pcMainComponent(parentComponent)
 /*======================================================================================*/
 {
-    distanceSlider.setSliderStyle(Slider::LinearHorizontal);
-    distanceSlider.setRange(0, 1000, 10);
-    distanceSlider.setValue(100);
-    distanceSlider.setTextBoxStyle(Slider::NoTextBox, false, 20 , 40);
-    distanceSlider.setLookAndFeel(&stickmanLookAndFeel);
-    distanceSlider.setMouseCursor(juce::MouseCursor::NormalCursor);
-    addAndMakeVisible(&distanceSlider);
+    m_cDistanceSlider.setSliderStyle(Slider::LinearHorizontal);
+    m_cDistanceSlider.setRange(0, 1000, 10);
+    m_cDistanceSlider.setValue(100);
+    m_cDistanceSlider.setTextBoxStyle(Slider::NoTextBox, false, 20 , 40);
+    m_cDistanceSlider.setLookAndFeel(&m_lfStickmanLookAndFeel);
+    m_cDistanceSlider.setMouseCursor(juce::MouseCursor::NormalCursor);
+    addAndMakeVisible(&m_cDistanceSlider);
 
-    distanceText.setMultiLine(false);
-    distanceText.setReadOnly(false);   
-    distanceText.setScrollbarsShown(false);
-    distanceText.setCaretVisible(false);
-    distanceText.setColour(TextEditor::textColourId, Colours::black);
-    distanceText.setColour(TextEditor::backgroundColourId, Colours::white);
-    distanceText.setColour(TextEditor::outlineColourId, Colours::black);
-    distanceText.setText(String(distanceSlider.getValue()));
-    distanceText.setOpaque(true);
-    addAndMakeVisible(&distanceText);
+    m_cDistanceText.setMultiLine(false);
+    m_cDistanceText.setReadOnly(false);   
+    m_cDistanceText.setScrollbarsShown(false);
+    m_cDistanceText.setCaretVisible(false);
+    m_cDistanceText.setColour(TextEditor::textColourId, Colours::black);
+    m_cDistanceText.setColour(TextEditor::backgroundColourId, Colours::white);
+    m_cDistanceText.setColour(TextEditor::outlineColourId, Colours::black);
+    m_cDistanceText.setText(String(m_cDistanceSlider.getValue()));
+    m_cDistanceText.setOpaque(true);
+    addAndMakeVisible(&m_cDistanceText);
 
-    distanceSlider.onValueChange = [this] 
+    m_cDistanceSlider.onValueChange = [this] 
     { 
-        distanceText.setText("Distance: " + String(distanceSlider.getValue()) + "m"); 
-        mainComponent.vSetParameter(PARAMETER_DISTANCE, (int)distanceSlider.getValue(), true); 
+        m_cDistanceText.setText("Distance: " + String(m_cDistanceSlider.getValue()) + "m"); 
+        m_pcMainComponent.vSetParameter(PARAMETER_DISTANCE, (int)m_cDistanceSlider.getValue(), true);
     };
 
     // Load in image assets
-    sunnyImage = ImageFileFormat::loadFrom(BinaryData::sunnyScene_png, BinaryData::sunnyScene_pngSize);
-    windyImage = ImageFileFormat::loadFrom(BinaryData::windyScene_png, BinaryData::windyScene_pngSize);
-    rainyImage = ImageFileFormat::loadFrom(BinaryData::rainyScene_png, BinaryData::rainyScene_pngSize);
-    snowyImage = ImageFileFormat::loadFrom(BinaryData::snowyScene_png, BinaryData::snowyScene_pngSize);
+    m_iSunnyImage = ImageFileFormat::loadFrom(BinaryData::sunnyScene_png, BinaryData::sunnyScene_pngSize);
+    m_iWindyImage = ImageFileFormat::loadFrom(BinaryData::windyScene_png, BinaryData::windyScene_pngSize);
+    m_iRainyImage = ImageFileFormat::loadFrom(BinaryData::rainyScene_png, BinaryData::rainyScene_pngSize);
+    m_iSnowyImage = ImageFileFormat::loadFrom(BinaryData::snowyScene_png, BinaryData::snowyScene_pngSize);
 
     // Stage images
-    stageNormal = ImageFileFormat::loadFrom(BinaryData::overlay_stage_standard_png, BinaryData::overlay_stage_standard_pngSize);
-    stageRainy = ImageFileFormat::loadFrom(BinaryData::overlay_stage_rainy_png, BinaryData::overlay_stage_rainy_pngSize);
-    stageSnowy = ImageFileFormat::loadFrom(BinaryData::overlay_stage_snowy_png, BinaryData::overlay_stage_snowy_pngSize);
+    m_iStageNormal = ImageFileFormat::loadFrom(BinaryData::overlay_stage_standard_png, BinaryData::overlay_stage_standard_pngSize);
+    m_iStageRainy = ImageFileFormat::loadFrom(BinaryData::overlay_stage_rainy_png, BinaryData::overlay_stage_rainy_pngSize);
+    m_iStageSnowy = ImageFileFormat::loadFrom(BinaryData::overlay_stage_snowy_png, BinaryData::overlay_stage_snowy_pngSize);
 
     // Wind overlays
-    windLeft1 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_1_png, BinaryData::overlay_wind_left_1_pngSize);
-    windLeft2 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_2_png, BinaryData::overlay_wind_left_2_pngSize);
-    windLeft3 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_3_png, BinaryData::overlay_wind_left_3_pngSize);
-    windLeft4 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_4_png, BinaryData::overlay_wind_left_4_pngSize);
-    windLeft5 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_5_png, BinaryData::overlay_wind_left_5_pngSize);
-    windRight1 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_right_1_png, BinaryData::overlay_wind_right_1_pngSize);
-    windRight2 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_right_2_png, BinaryData::overlay_wind_right_2_pngSize);
-    windRight3 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_right_3_png, BinaryData::overlay_wind_right_3_pngSize);
-    windRight4 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_right_4_png, BinaryData::overlay_wind_right_4_pngSize);
-    windRight5 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_right_5_png, BinaryData::overlay_wind_right_5_pngSize);
+    m_iWindLeft1 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_1_png, BinaryData::overlay_wind_left_1_pngSize);
+    m_iWindLeft2 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_2_png, BinaryData::overlay_wind_left_2_pngSize);
+    m_iWindLeft3 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_3_png, BinaryData::overlay_wind_left_3_pngSize);
+    m_iWindLeft4 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_4_png, BinaryData::overlay_wind_left_4_pngSize);
+    m_iWindLeft5 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_5_png, BinaryData::overlay_wind_left_5_pngSize);
+    m_iWindRight1 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_right_1_png, BinaryData::overlay_wind_right_1_pngSize);
+    m_iWindRight2 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_right_2_png, BinaryData::overlay_wind_right_2_pngSize);
+    m_iWindRight3 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_right_3_png, BinaryData::overlay_wind_right_3_pngSize);
+    m_iWindRight4 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_right_4_png, BinaryData::overlay_wind_right_4_pngSize);
+    m_iWindRight5 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_right_5_png, BinaryData::overlay_wind_right_5_pngSize);
 
     // Cloud overlays
-    cloudsPartial = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_partial_png, BinaryData::overlay_clouds_partial_pngSize);
-    cloudsLight = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_light_png, BinaryData::overlay_clouds_light_pngSize);
-    cloudsDark = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_dark_png, BinaryData::overlay_clouds_dark_pngSize);
+    m_iCloudsPartial = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_partial_png, BinaryData::overlay_clouds_partial_pngSize);
+    m_iCloudsLight = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_light_png, BinaryData::overlay_clouds_light_pngSize);
+    m_iCloudsDark = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_dark_png, BinaryData::overlay_clouds_dark_pngSize);
 
     // Other
-    rainOverlay = ImageFileFormat::loadFrom(BinaryData::overlay_precipitation_rain_png, BinaryData::overlay_precipitation_rain_pngSize);
-    snowOverlay = ImageFileFormat::loadFrom(BinaryData::overlay_precipitation_snow_png, BinaryData::overlay_precipitation_snow_pngSize);
-    sunOverlay = ImageFileFormat::loadFrom(BinaryData::overlay_sun_png, BinaryData::overlay_sun_pngSize);
+    m_iRainOverlay = ImageFileFormat::loadFrom(BinaryData::overlay_precipitation_rain_png, BinaryData::overlay_precipitation_rain_pngSize);
+    m_iSnowOverlay = ImageFileFormat::loadFrom(BinaryData::overlay_precipitation_snow_png, BinaryData::overlay_precipitation_snow_pngSize);
+    m_iSunOverlay = ImageFileFormat::loadFrom(BinaryData::overlay_sun_png, BinaryData::overlay_sun_pngSize);
 
 }
 
@@ -70,7 +70,7 @@ DistanceGraphic::DistanceGraphic(MainComponent& parentComponent)
 DistanceGraphic::~DistanceGraphic()
 /*======================================================================================*/
 {
-    distanceSlider.setLookAndFeel(nullptr);
+    m_cDistanceSlider.setLookAndFeel(nullptr);
 }
 
 
@@ -78,11 +78,11 @@ DistanceGraphic::~DistanceGraphic()
 void DistanceGraphic::resized()
 /*======================================================================================*/
 {
-    Rectangle rect = getLocalBounds();
-    Rectangle<int> rcDistanceGraph = rect;
+    Rectangle rcRect = getLocalBounds();
+    Rectangle<int> rcDistanceGraph = rcRect;
 
-    distanceSlider.setBounds(rcDistanceGraph.getX() + 100, rcDistanceGraph.getY() + 105, rcDistanceGraph.getWidth() - 120, 60);
-    distanceText.setBounds(rcDistanceGraph.getX() + rcDistanceGraph.getWidth() - 120, rcDistanceGraph.getY() + 10, 110, 20);
+    m_cDistanceSlider.setBounds(rcDistanceGraph.getX() + 100, rcDistanceGraph.getY() + 105, rcDistanceGraph.getWidth() - 120, 60);
+    m_cDistanceText.setBounds(rcDistanceGraph.getX() + rcDistanceGraph.getWidth() - 120, rcDistanceGraph.getY() + 10, 110, 20);
 }
 
 /*======================================================================================*/
@@ -90,22 +90,22 @@ void DistanceGraphic::paint(Graphics& g)
 /*======================================================================================*/
 {
     // Get current parameters
-    int nTemp = mainComponent.nGetParameter(PARAMETER_TEMPERATURE);
-    int nWindSpeed = mainComponent.nGetParameter(PARAMETER_WIND_SPEED);
-    bool bPrecipitation = mainComponent.nGetParameter(PARAMETER_PRECIPITATION);
-    int nWindDirection = mainComponent.nGetParameter(PARAMETER_WIND_DIRECTION);
-    bool bCloudCover = mainComponent.nGetParameter(PARAMETER_CLOUD_COVER);
+    int nTemp = m_pcMainComponent.nGetParameter(PARAMETER_TEMPERATURE);
+    int nWindSpeed = m_pcMainComponent.nGetParameter(PARAMETER_WIND_SPEED);
+    bool bPrecipitation = m_pcMainComponent.nGetParameter(PARAMETER_PRECIPITATION);
+    int nWindDirection = m_pcMainComponent.nGetParameter(PARAMETER_WIND_DIRECTION);
+    bool bCloudCover = m_pcMainComponent.nGetParameter(PARAMETER_CLOUD_COVER);
 
     // Set stickman
     if (nTemp <= 0)
-    { distanceSlider.setLookAndFeel(&stickmanSnowyLookAndFeel); }
+    { m_cDistanceSlider.setLookAndFeel(&m_lfStickmanSnowyLookAndFeel); }
     else if (nTemp > 0 && bPrecipitation == ON)
-    { distanceSlider.setLookAndFeel(&stickmanRainyLookAndFeel); }
+    { m_cDistanceSlider.setLookAndFeel(&m_lfStickmanRainyLookAndFeel); }
     else
-    { distanceSlider.setLookAndFeel(&stickmanLookAndFeel); }
+    { m_cDistanceSlider.setLookAndFeel(&m_lfStickmanLookAndFeel); }
 
     // Set the background fill
-    Rectangle rect = getLocalBounds();
+    Rectangle rcRect = getLocalBounds();
     if(bPrecipitation == ON && nTemp > 0)
     { g.setColour(Colours::grey); }
     else if (bPrecipitation && nTemp <= 0)
@@ -113,21 +113,21 @@ void DistanceGraphic::paint(Graphics& g)
     else
     { g.setColour(Colours::deepskyblue); }
 
-    Rectangle<int> rcDistanceGraph = rect; // x, y, width, height
+    Rectangle<int> rcDistanceGraph = rcRect; // x, y, width, height
     Rectangle<float> rcGraphicsBounds((float)rcDistanceGraph.getX(), (float)rcDistanceGraph.getY(), (float)rcDistanceGraph.getWidth(), (float)rcDistanceGraph.getHeight());
     g.fillRect(rcDistanceGraph); // Fill the rectangle
 
     // Drawing stage
     if (nTemp <= 0)
-    { g.drawImage(stageSnowy, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    { g.drawImage(m_iStageSnowy, rcGraphicsBounds, RectanglePlacement::centred, false); }
     else if (nTemp > 0 && bPrecipitation == ON)
-    { g.drawImage(stageRainy, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    { g.drawImage(m_iStageRainy, rcGraphicsBounds, RectanglePlacement::centred, false); }
     else
-    { g.drawImage(stageNormal, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    { g.drawImage(m_iStageNormal, rcGraphicsBounds, RectanglePlacement::centred, false); }
 
     // Drawing sun
     if (bPrecipitation == OFF)
-    { g.drawImage(sunOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    { g.drawImage(m_iSunOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
 
     // Drawing wind
     if (nWindDirection == WIND_DIRECTION_UPWIND)
@@ -135,43 +135,43 @@ void DistanceGraphic::paint(Graphics& g)
         if (nWindSpeed == 0)
         { }
         else if (nWindSpeed < 20)
-        { g.drawImage(windLeft1, rcGraphicsBounds, RectanglePlacement::centred, false); }
+        { g.drawImage(m_iWindLeft1, rcGraphicsBounds, RectanglePlacement::centred, false); }
         else if(nWindSpeed < 40)
-        { g.drawImage(windLeft2, rcGraphicsBounds, RectanglePlacement::centred, false); }
+        { g.drawImage(m_iWindLeft2, rcGraphicsBounds, RectanglePlacement::centred, false); }
         else if(nWindSpeed < 60)
-        { g.drawImage(windLeft3, rcGraphicsBounds, RectanglePlacement::centred, false); }
+        { g.drawImage(m_iWindLeft3, rcGraphicsBounds, RectanglePlacement::centred, false); }
         else if(nWindSpeed < 80)
-        { g.drawImage(windLeft4, rcGraphicsBounds, RectanglePlacement::centred, false); }
+        { g.drawImage(m_iWindLeft4, rcGraphicsBounds, RectanglePlacement::centred, false); }
         else
-        { g.drawImage(windLeft5, rcGraphicsBounds, RectanglePlacement::centred, false); }
+        { g.drawImage(m_iWindLeft5, rcGraphicsBounds, RectanglePlacement::centred, false); }
     }
     else if (nWindDirection == WIND_DIRECTION_DOWNWIND)
     {
         if (nWindSpeed == 0)
         { }
         else if (nWindSpeed < 20)
-        { g.drawImage(windRight1, rcGraphicsBounds, RectanglePlacement::centred, false); }
+        { g.drawImage(m_iWindRight1, rcGraphicsBounds, RectanglePlacement::centred, false); }
         else if (nWindSpeed < 40)
-        { g.drawImage(windRight2, rcGraphicsBounds, RectanglePlacement::centred, false); }
+        { g.drawImage(m_iWindRight2, rcGraphicsBounds, RectanglePlacement::centred, false); }
         else if (nWindSpeed < 60)
-        { g.drawImage(windRight3, rcGraphicsBounds, RectanglePlacement::centred, false); }
+        { g.drawImage(m_iWindRight3, rcGraphicsBounds, RectanglePlacement::centred, false); }
         else if (nWindSpeed < 80)
-        { g.drawImage(windRight4, rcGraphicsBounds, RectanglePlacement::centred, false); }
+        { g.drawImage(m_iWindRight4, rcGraphicsBounds, RectanglePlacement::centred, false); }
         else
-        { g.drawImage(windRight5, rcGraphicsBounds, RectanglePlacement::centred, false); }
+        { g.drawImage(m_iWindRight5, rcGraphicsBounds, RectanglePlacement::centred, false); }
     }
 
     // Drawing clouds
     if (nTemp <= 0 && bPrecipitation == ON)
-    { g.drawImage(cloudsLight, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    { g.drawImage(m_iCloudsLight, rcGraphicsBounds, RectanglePlacement::centred, false); }
     else if (nTemp > 0 && bPrecipitation == ON)
-    { g.drawImage(cloudsDark, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    { g.drawImage(m_iCloudsDark, rcGraphicsBounds, RectanglePlacement::centred, false); }
     else if (bCloudCover == ON)
-    { g.drawImage(cloudsPartial, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    { g.drawImage(m_iCloudsPartial, rcGraphicsBounds, RectanglePlacement::centred, false); }
 
     // Drawing precipitation
     if (nTemp <= 0 && bPrecipitation == ON)
-    { g.drawImage(snowOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    { g.drawImage(m_iSnowOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
     else if (nTemp > 0 && bPrecipitation == ON)
-    { g.drawImage(rainOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    { g.drawImage(m_iRainOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
 }

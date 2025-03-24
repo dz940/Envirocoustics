@@ -9,40 +9,40 @@ class RotaryLookAndFeel : public LookAndFeel_V4
 public:
     RotaryLookAndFeel()
     {
-        knobImage = ImageFileFormat::loadFrom(BinaryData::knob5_png, BinaryData::knob5_pngSize);
+        m_iKnobImage = ImageFileFormat::loadFrom(BinaryData::knob5_png, BinaryData::knob5_pngSize);
     }
 
-    void drawRotarySlider(Graphics& g, int x, int y, int width, int height,
-        float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle,
-        Slider& slider) override
+    void drawRotarySlider(Graphics& g, int x, int y, int nWidth, int nHeight,
+        float fSliderPosProportional, float fRotaryStartAngle, float fRotaryEndAngle,
+        Slider& cSlider) override
     {
-        (void)slider;
-        if (knobImage.isValid())
+        (void)cSlider;
+        if (m_iKnobImage.isValid())
         {
             // Determine available size for the knob
-            float availableSize = std::min(width, height) * 0.9f; // Scale knob to 90% of the slider area
-            Image resizedKnob = knobImage.rescaled((int)availableSize, (int)availableSize, Graphics::highResamplingQuality);
+            float fAvailableSize = std::min(nWidth, nHeight) * 0.9f; // Scale knob to 90% of the slider area
+            Image iResizedKnob = m_iKnobImage.rescaled((int)fAvailableSize, (int)fAvailableSize, Graphics::highResamplingQuality);
 
             // Calculate center position
-            float centerX = x + width * 0.5f;
-            float centerY = y + height * 0.5f;
+            float fCenterX = x + nWidth * 0.5f;
+            float fCenterY = y + nHeight * 0.5f;
 
             // Compute the rotation angle
-            float angle = rotaryStartAngle + sliderPosProportional * (rotaryEndAngle - rotaryStartAngle);
+            float fAngle = fRotaryStartAngle + fSliderPosProportional * (fRotaryEndAngle - fRotaryStartAngle);
 
             // Create transformation matrix
             AffineTransform transform =
-                AffineTransform::translation(-availableSize * 0.5f, -availableSize * 0.5f) // Center image around (0,0)
-                .rotated(angle) // Rotate image
-                .translated(centerX, centerY); // Move to slider center
+                AffineTransform::translation(-fAvailableSize * 0.5f, -fAvailableSize * 0.5f) // Center image around (0,0)
+                .rotated(fAngle) // Rotate image
+                .translated(fCenterX, fCenterY); // Move to slider center
 
             // Draw the transformed image
-            g.drawImageTransformed(resizedKnob, transform, false);
+            g.drawImageTransformed(iResizedKnob, transform, false);
         }
     }
 
 private:
-    Image knobImage;
+    Image m_iKnobImage;
 };
 
 class ConditionControls : public Component
@@ -55,12 +55,12 @@ public:
     void paint(Graphics& g) override;
 
 private:
-    Slider temperatureKnob, windSpeedKnob, humidityKnob, pressureKnob;
-    TextButton temperatureLapseBtn, temperatureInversionBtn;
-    TextButton precipitationOnBtn, precipitationOffBtn;
-    TextButton windLeftBtn, windRightBtn;
-    TextButton cloudOnBtn, cloudOffBtn;
+    Slider m_cTemperatureKnob, m_cWindSpeedKnob, m_cHumidityKnob, m_cPressureKnob;
+    TextButton m_cTemperatureLapseBtn, m_cTemperatureInversionBtn;
+    TextButton m_cPrecipitationOnBtn, m_cPrecipitationOffBtn;
+    TextButton m_cWindLeftBtn, m_cWindRightBtn;
+    TextButton m_cCloudOnBtn, m_cCloudOffBtn;
 
-    MainComponent& mainComponent;
-    RotaryLookAndFeel rotaryLookAndFeel;
+    MainComponent& m_cMainComponent;
+    RotaryLookAndFeel m_lfRotaryLookAndFeel;
 };

@@ -4,7 +4,7 @@
 VolumeSlider::VolumeSlider()
 /*======================================================================================*/
 {
-    setLookAndFeel(&volumeSliderLookAndFeel);
+    setLookAndFeel(&m_lfVolumeSliderLookAndFeel);
 
     setSliderStyle(Slider::LinearVertical);
     setTextValueSuffix("dB");

@@ -8,14 +8,13 @@ using namespace juce;
 class SpectrogramComponent : public Component
 {
 public:
-    SpectrogramComponent(MainComponent& parentComponent);
+    SpectrogramComponent(MainComponent& pcParentComponent);
     ~SpectrogramComponent();
-    void pushBuffer(const AudioBuffer<float>& buffer);
+    void vPushBuffer(const AudioBuffer<float>& buffer);
     void resized() override;
     void paint(Graphics& g) override;
 
 private:
-    Spectrogram *spectrogram;
-    MainComponent& mainComponent;
-    bool gradientDrawn = false;
+    Spectrogram *m_pcSpectrogram;
+    MainComponent& m_pcMainComponent;
 };

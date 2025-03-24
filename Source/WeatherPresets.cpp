@@ -2,96 +2,96 @@
 #include "MainComponent.h"
 
 /*======================================================================================*/
-WeatherPresets::WeatherPresets(MainComponent& parentComponent)
-    : mainComponent(parentComponent)
+WeatherPresets::WeatherPresets(MainComponent& pcParentComponent)
+    : m_pcMainComponent(pcParentComponent)
 /*======================================================================================*/
 {
     // Load images assets
-    sunOffImage = ImageFileFormat::loadFrom(BinaryData::sunOff_png, BinaryData::sunOff_pngSize);
-    sunOffImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    rainOffImage = ImageFileFormat::loadFrom(BinaryData::rainOff_png, BinaryData::rainOff_pngSize);
-    rainOffImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    windOffImage = ImageFileFormat::loadFrom(BinaryData::windOff_png, BinaryData::windOff_pngSize);
-    windOffImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    snowOffImage = ImageFileFormat::loadFrom(BinaryData::snowOff_png, BinaryData::snowOff_pngSize);
-    snowOffImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    sunOnImage = ImageFileFormat::loadFrom(BinaryData::sunOn_png, BinaryData::sunOn_pngSize);
-    sunOnImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    rainOnImage = ImageFileFormat::loadFrom(BinaryData::rainOn_png, BinaryData::rainOn_pngSize);
-    rainOnImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    windOnImage = ImageFileFormat::loadFrom(BinaryData::windOn_png, BinaryData::windOn_pngSize);
-    windOnImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    snowOnImage = ImageFileFormat::loadFrom(BinaryData::snowOn_png, BinaryData::snowOn_pngSize);
-    snowOnImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    sunDownImage = ImageFileFormat::loadFrom(BinaryData::sunDown_png, BinaryData::sunDown_pngSize);
-    sunDownImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    rainDownImage = ImageFileFormat::loadFrom(BinaryData::rainDown_png, BinaryData::rainDown_pngSize);
-    rainDownImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    windDownImage = ImageFileFormat::loadFrom(BinaryData::windDown_png, BinaryData::windDown_pngSize);
-    windDownImage.rescaled(40, 40, Graphics::highResamplingQuality);
-    snowDownImage = ImageFileFormat::loadFrom(BinaryData::snowDown_png, BinaryData::snowDown_pngSize);
-    snowDownImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iSunOffImage = ImageFileFormat::loadFrom(BinaryData::sunOff_png, BinaryData::sunOff_pngSize);
+    m_iSunOffImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iRainOffImage = ImageFileFormat::loadFrom(BinaryData::rainOff_png, BinaryData::rainOff_pngSize);
+    m_iRainOffImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iWindOffImage = ImageFileFormat::loadFrom(BinaryData::windOff_png, BinaryData::windOff_pngSize);
+    m_iWindOffImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iSnowOffImage = ImageFileFormat::loadFrom(BinaryData::snowOff_png, BinaryData::snowOff_pngSize);
+    m_iSnowOffImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iSunOnImage = ImageFileFormat::loadFrom(BinaryData::sunOn_png, BinaryData::sunOn_pngSize);
+    m_iSunOnImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iRainOnImage = ImageFileFormat::loadFrom(BinaryData::rainOn_png, BinaryData::rainOn_pngSize);
+    m_iRainOnImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iWindOnImage = ImageFileFormat::loadFrom(BinaryData::windOn_png, BinaryData::windOn_pngSize);
+    m_iWindOnImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iSnowOnImage = ImageFileFormat::loadFrom(BinaryData::snowOn_png, BinaryData::snowOn_pngSize);
+    m_iSnowOnImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iSunDownImage = ImageFileFormat::loadFrom(BinaryData::sunDown_png, BinaryData::sunDown_pngSize);
+    m_iSunDownImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iRainDownImage = ImageFileFormat::loadFrom(BinaryData::rainDown_png, BinaryData::rainDown_pngSize);
+    m_iRainDownImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iWindDownImage = ImageFileFormat::loadFrom(BinaryData::windDown_png, BinaryData::windDown_pngSize);
+    m_iWindDownImage.rescaled(40, 40, Graphics::highResamplingQuality);
+    m_iSnowDownImage = ImageFileFormat::loadFrom(BinaryData::snowDown_png, BinaryData::snowDown_pngSize);
+    m_iSnowDownImage.rescaled(40, 40, Graphics::highResamplingQuality);
 
     // Create buttons
-    snowBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_TEMPERATURE, -10, false);
-                                mainComponent.vSetParameter(PARAMETER_WIND_SPEED, 0, false);
-                                mainComponent.vSetParameter(PARAMETER_PRECIPITATION, ON, false);
-                                mainComponent.vSetParameter(PARAMETER_PRESSURE, 925, false);
-                                mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, ON, false);
-                                mainComponent.vSetParameter(PARAMETER_HUMIDITY, 65, true);
-                                mainComponent.vUpdateConditionControls(); };
-    snowBtn.setClickingTogglesState(true);
-    snowBtn.setEnabled(true);
-    snowBtn.setRadioGroupId(4);
-    snowBtn.setTooltip("Snowy");
-    addAndMakeVisible(&snowBtn);
+    m_pcSnowBtn.onClick = [this] {m_pcMainComponent.vSetParameter(PARAMETER_TEMPERATURE, -10, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_WIND_SPEED, 0, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_PRECIPITATION, ON, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_PRESSURE, 925, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_CLOUD_COVER, ON, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_HUMIDITY, 65, true);
+                                m_pcMainComponent.vUpdateConditionControls(); };
+    m_pcSnowBtn.setClickingTogglesState(true);
+    m_pcSnowBtn.setEnabled(true);
+    m_pcSnowBtn.setRadioGroupId(4);
+    m_pcSnowBtn.setTooltip("Snowy");
+    addAndMakeVisible(&m_pcSnowBtn);
 
-    rainBtn.setEnabled(true);
-    rainBtn.setClickingTogglesState(true);
-    rainBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_TEMPERATURE, 15, false);
-                                mainComponent.vSetParameter(PARAMETER_WIND_SPEED, 0, false);
-                                mainComponent.vSetParameter(PARAMETER_PRECIPITATION, ON, false);
-                                mainComponent.vSetParameter(PARAMETER_HUMIDITY, 80, false);
-                                mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, ON, false);
-                                mainComponent.vSetParameter(PARAMETER_PRESSURE, 1013, true);
-                                mainComponent.vUpdateConditionControls(); };
-    rainBtn.setRadioGroupId(4);
-    rainBtn.setTooltip("Rainy");
-    addAndMakeVisible(&rainBtn);
+    m_pcRainBtn.setEnabled(true);
+    m_pcRainBtn.setClickingTogglesState(true);
+    m_pcRainBtn.onClick = [this] {m_pcMainComponent.vSetParameter(PARAMETER_TEMPERATURE, 15, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_WIND_SPEED, 0, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_PRECIPITATION, ON, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_HUMIDITY, 80, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_CLOUD_COVER, ON, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_PRESSURE, 1013, true);
+                                m_pcMainComponent.vUpdateConditionControls(); };
+    m_pcRainBtn.setRadioGroupId(4);
+    m_pcRainBtn.setTooltip("Rainy");
+    addAndMakeVisible(&m_pcRainBtn);
 
-    windBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_TEMPERATURE, 15, false);
-                                mainComponent.vSetParameter(PARAMETER_WIND_SPEED, 100, false);
-                                mainComponent.vSetParameter(PARAMETER_PRECIPITATION, OFF, false);
-                                mainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, WIND_DIRECTION_UPWIND, false);
-                                mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, OFF, false);
-                                mainComponent.vSetParameter(PARAMETER_HUMIDITY, 45, false);
-                                mainComponent.vSetParameter(PARAMETER_PRESSURE, 950, true);
-                                mainComponent.vUpdateConditionControls(); };
-    windBtn.setClickingTogglesState(true);
-    windBtn.setEnabled(true);
-    windBtn.setRadioGroupId(4);
-    windBtn.setTooltip("Windy");
-    addAndMakeVisible(&windBtn);
+    m_pcWindBtn.onClick = [this] {m_pcMainComponent.vSetParameter(PARAMETER_TEMPERATURE, 15, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_WIND_SPEED, 100, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_PRECIPITATION, OFF, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, WIND_DIRECTION_UPWIND, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_CLOUD_COVER, OFF, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_HUMIDITY, 45, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_PRESSURE, 950, true);
+                                m_pcMainComponent.vUpdateConditionControls(); };
+    m_pcWindBtn.setClickingTogglesState(true);
+    m_pcWindBtn.setEnabled(true);
+    m_pcWindBtn.setRadioGroupId(4);
+    m_pcWindBtn.setTooltip("Windy");
+    addAndMakeVisible(&m_pcWindBtn);
 
-    sunBtn.onClick = [this] {mainComponent.vSetParameter(PARAMETER_TEMPERATURE, 30, false);
-                                mainComponent.vSetParameter(PARAMETER_WIND_SPEED, 0, false);
-                                mainComponent.vSetParameter(PARAMETER_PRECIPITATION, OFF, false);
-                                mainComponent.vSetParameter(PARAMETER_CLOUD_COVER, OFF, false);
-                                mainComponent.vSetParameter(PARAMETER_HUMIDITY, 50, false);
-                                mainComponent.vSetParameter(PARAMETER_PRESSURE, 1065, true);
-                                mainComponent.vUpdateConditionControls(); };
-    sunBtn.setClickingTogglesState(true);
-    sunBtn.setEnabled(true);
-    sunBtn.setRadioGroupId(4);
-    sunBtn.setTooltip("Sunny");
-    sunBtn.setToggleState(true, dontSendNotification);
-    addAndMakeVisible(&sunBtn);
+    m_pcSunBtn.onClick = [this] {m_pcMainComponent.vSetParameter(PARAMETER_TEMPERATURE, 30, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_WIND_SPEED, 0, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_PRECIPITATION, OFF, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_CLOUD_COVER, OFF, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_HUMIDITY, 50, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_PRESSURE, 1065, true);
+                                m_pcMainComponent.vUpdateConditionControls(); };
+    m_pcSunBtn.setClickingTogglesState(true);
+    m_pcSunBtn.setEnabled(true);
+    m_pcSunBtn.setRadioGroupId(4);
+    m_pcSunBtn.setTooltip("Sunny");
+    m_pcSunBtn.setToggleState(true, dontSendNotification);
+    addAndMakeVisible(&m_pcSunBtn);
 
     // Map the images to the buttons
-    sunBtn.setImages(false, true, true, sunOffImage, 1.0f, Colours::transparentBlack, sunDownImage, 1.0f, Colours::transparentBlack, sunOnImage, 1.0f, Colours::transparentBlack);
-    rainBtn.setImages(false, true, true, rainOffImage, 1.0f, Colours::transparentBlack, rainDownImage, 1.0f, Colours::transparentBlack, rainOnImage, 1.0f, Colours::transparentBlack);
-    windBtn.setImages(false, true, true, windOffImage, 1.0f, Colours::transparentBlack, windDownImage, 1.0f, Colours::transparentBlack, windOnImage, 1.0f, Colours::transparentBlack);
-    snowBtn.setImages(false, true, true, snowOffImage, 1.0f, Colours::transparentBlack, snowDownImage, 1.0f, Colours::transparentBlack, snowOnImage, 1.0f, Colours::transparentBlack);
+    m_pcSunBtn.setImages(false, true, true, m_iSunOffImage, 1.0f, Colours::transparentBlack, m_iSunDownImage, 1.0f, Colours::transparentBlack, m_iSunOnImage, 1.0f, Colours::transparentBlack);
+    m_pcRainBtn.setImages(false, true, true, m_iRainOffImage, 1.0f, Colours::transparentBlack, m_iRainDownImage, 1.0f, Colours::transparentBlack, m_iRainOnImage, 1.0f, Colours::transparentBlack);
+    m_pcWindBtn.setImages(false, true, true, m_iWindOffImage, 1.0f, Colours::transparentBlack, m_iWindDownImage, 1.0f, Colours::transparentBlack, m_iWindOnImage, 1.0f, Colours::transparentBlack);
+    m_pcSnowBtn.setImages(false, true, true, m_iSnowOffImage, 1.0f, Colours::transparentBlack, m_iSnowDownImage, 1.0f, Colours::transparentBlack, m_iSnowOnImage, 1.0f, Colours::transparentBlack);
 }
 
 /*======================================================================================*/
@@ -104,24 +104,21 @@ WeatherPresets::~WeatherPresets()
 void WeatherPresets::resized()
 /*======================================================================================*/
 {
-    Rectangle rect = getLocalBounds();
-    Rectangle<int> rcWeatherPresets = rect;
+    Rectangle<int> rcWeatherPresets = getLocalBounds();
 
     int nButtonWidth = (rcWeatherPresets.getWidth() - 15) / 2;
-    sunBtn.setBounds(rcWeatherPresets.getX() + 5, rcWeatherPresets.getY() + 60, nButtonWidth, nButtonWidth);
-    windBtn.setBounds(rcWeatherPresets.getX() + 10 + nButtonWidth, rcWeatherPresets.getY() + 60, nButtonWidth, nButtonWidth);
-    rainBtn.setBounds(rcWeatherPresets.getX() + 5, rcWeatherPresets.getY() + 65 + nButtonWidth, nButtonWidth, nButtonWidth);
-    snowBtn.setBounds(rcWeatherPresets.getX() + 10 + nButtonWidth, rcWeatherPresets.getY() + 65 + nButtonWidth, nButtonWidth, nButtonWidth);
+    m_pcSunBtn.setBounds(rcWeatherPresets.getX() + 5, rcWeatherPresets.getY() + 60, nButtonWidth, nButtonWidth);
+    m_pcWindBtn.setBounds(rcWeatherPresets.getX() + 10 + nButtonWidth, rcWeatherPresets.getY() + 60, nButtonWidth, nButtonWidth);
+    m_pcRainBtn.setBounds(rcWeatherPresets.getX() + 5, rcWeatherPresets.getY() + 65 + nButtonWidth, nButtonWidth, nButtonWidth);
+    m_pcSnowBtn.setBounds(rcWeatherPresets.getX() + 10 + nButtonWidth, rcWeatherPresets.getY() + 65 + nButtonWidth, nButtonWidth, nButtonWidth);
 }
 
 /*======================================================================================*/
 void WeatherPresets::paint(Graphics& g)
 /*======================================================================================*/
 {
-    Rectangle rect = getLocalBounds();
-
     g.setColour(Colours::darkseagreen);
-    Rectangle<int> rcWeatherPresets = rect; // x, y, width, height
+    Rectangle<int> rcWeatherPresets = getLocalBounds(); // x, y, width, height
     g.fillRect(rcWeatherPresets);
 
     g.setFont(20.0f);

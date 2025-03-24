@@ -3,7 +3,7 @@
 
 /*======================================================================================*/
 FrequencySpectrum::FrequencySpectrum(int nWidth, int nHeight)
-    : frequencySpectrumImage(Image::ARGB, nWidth, nHeight, true)
+    : m_iFrequencySpectrumImage(Image::ARGB, nWidth, nHeight, true)
 /*======================================================================================*/
 {
     fifo.setSize(1, fftSize); // One-channel buffer
@@ -16,34 +16,34 @@ FrequencySpectrum::~FrequencySpectrum()
 }
 
 /*======================================================================================*/
-void FrequencySpectrum::pushBuffer(const AudioBuffer<float>& buffer)
+void FrequencySpectrum::vPushBuffer(const AudioBuffer<float>& buffer)
 /*======================================================================================*/
 {
-    auto* channelData = buffer.getReadPointer(0);
+    auto* pChannelData = buffer.getReadPointer(0);
     for (int i = 0; i < buffer.getNumSamples(); ++i)
     {
-        fifo.getWritePointer(0)[fifoIndex++] = channelData[i];
+        fifo.getWritePointer(0)[m_nFifoIndex++] = pChannelData[i];
 
-        if (fifoIndex >= fftSize)
+        if (m_nFifoIndex >= fftSize)
         {
-            fifoIndex = 0;
-            drawNextFrameOfFrequencySpectrum();
+            m_nFifoIndex = 0;
+            vDrawNextFrameOfFrequencySpectrum();
         }
     }
 }
 
 /*======================================================================================*/
-void FrequencySpectrum::applyDecay()
+void FrequencySpectrum::vApplyDecay()
 /*======================================================================================*/
 {
-    float decayFactor = 0.1f;
-    Graphics g(frequencySpectrumImage);
-    g.setColour(Colours::black.withAlpha(1.0f - decayFactor));
-    g.fillRect(frequencySpectrumImage.getBounds()); // Fades out the old image
+    float fDecayFactor = 0.1f;
+    Graphics g(m_iFrequencySpectrumImage);
+    g.setColour(Colours::black.withAlpha(1.0f - fDecayFactor));
+    g.fillRect(m_iFrequencySpectrumImage.getBounds()); // Fades out the old image
 }
 
 /*======================================================================================*/
-void FrequencySpectrum::drawNextFrameOfFrequencySpectrum()
+void FrequencySpectrum::vDrawNextFrameOfFrequencySpectrum()
 /*======================================================================================*/
 {
     const MessageManagerLock mmLock;
@@ -53,79 +53,78 @@ void FrequencySpectrum::drawNextFrameOfFrequencySpectrum()
     FloatVectorOperations::copy(fftData, fifo.getReadPointer(0), fftSize);
     forwardFFT.performFrequencyOnlyForwardTransform(fftData);
     
-    applyDecay();
+    vApplyDecay();
 
-    auto width = frequencySpectrumImage.getWidth();
-    auto height = frequencySpectrumImage.getHeight();
+    int nWidth = m_iFrequencySpectrumImage.getWidth();
+    int nHeight = m_iFrequencySpectrumImage.getHeight();
 
     Path frequencyCurve;
 
-    float minBin = 1.0f;
-    float maxBin = fftSize / 2;
-    float logMin = std::log10(minBin);
-    float logMax = std::log10(maxBin);
+    float fMinBin = 1.0f;
+    float fMaxBin = fftSize / 2;
+    float fLogMin = std::log10(fMinBin);
+    float fLogMax = std::log10(fMaxBin);
 
-    float prevX = 0, prevY = (float)height;
+    float fPrevX = 0, fPrevY = (float)nHeight;
 
-    frequencyCurve.startNewSubPath(0, (float)height); // **Anchor the path to bottom-left**
+    frequencyCurve.startNewSubPath(0, (float)nHeight); // **Anchor the path to bottom-left**
 
-    for (int x = 0; x < width; ++x)
+    for (int x = 0; x < nWidth; ++x)
     {
-        float normX = (float)x / width;
-        float logBin = logMin + normX * (logMax - logMin);
-        float binPos = std::pow(10.0f, logBin);
+        float fNormX = (float)x / nWidth;
+        float fLogBin = fLogMin + fNormX * (fLogMax - fLogMin);
+        float fBinPos = std::pow(10.0f, fLogBin);
 
-        int binIndex = jlimit(0, (fftSize / 2) - 1, (int)binPos);
-        int nextBinIndex = jlimit(0, (fftSize / 2) - 1, binIndex + 1);
-        float binFraction = binPos - binIndex;
+        int nBinIndex = jlimit(0, (fftSize / 2) - 1, (int)fBinPos);
+        int nNextBinIndex = jlimit(0, (fftSize / 2) - 1, nBinIndex + 1);
+        float fBinFraction = fBinPos - nBinIndex;
 
-        float magnitude1 = fftData[binIndex];
-        float magnitude2 = fftData[nextBinIndex];
+        float fMagnitude1 = fftData[nBinIndex];
+        float fMagnitude2 = fftData[nNextBinIndex];
 
-        float magnitude = magnitude1 * (1.0f - binFraction) + magnitude2 * binFraction;
-        magnitude = Decibels::gainToDecibels(magnitude + 1e-6f);
-        magnitude = jmap(magnitude, 0.0f, 50.0f, 0.0f, 1.0f);
-        magnitude = jlimit(0.0f, 1.0f, magnitude);
+        float fMagnitude = fMagnitude1 * (1.0f - fBinFraction) + fMagnitude2 * fBinFraction;
+        fMagnitude = Decibels::gainToDecibels(fMagnitude + 1e-6f);
+        fMagnitude = jmap(fMagnitude, 0.0f, 50.0f, 0.0f, 1.0f);
+        fMagnitude = jlimit(0.0f, 1.0f, fMagnitude);
 
-        int yPos = (int)(height - 1 - (magnitude * height));
+        int yPos = (int)(nHeight - 1 - (fMagnitude * nHeight));
 
         if (x == 0)
             frequencyCurve.lineTo((float)x, (float)yPos); // Start connecting from (0, yPos)
         else
-            frequencyCurve.quadraticTo(prevX, prevY, (float)x, (float)yPos); // Smooth transition
+            frequencyCurve.quadraticTo(fPrevX, fPrevY, (float)x, (float)yPos); // Smooth transition
 
-        prevX = (float)x;
-        prevY = (float)yPos;
+        fPrevX = (float)x;
+        fPrevY = (float)yPos;
     }
 
-    frequencyCurve.lineTo((float)width, (float)height); // **Close at bottom-right**
-    frequencyCurve.lineTo(0, (float)height);     // **Return to bottom-left**
+    frequencyCurve.lineTo((float)nWidth, (float)nHeight); // **Close at bottom-right**
+    frequencyCurve.lineTo(0, (float)nHeight);     // **Return to bottom-left**
     frequencyCurve.closeSubPath();        // **Ensure a fully enclosed fill**
 
     // **Apply a Vertical Gradient**
     ColourGradient gradient(
-        Colours::cyan.withAlpha(0.9f), (float)(width / 2), 0,
-        Colours::blue.withAlpha(0.3f), (float)(width / 2), (float)height,
+        Colours::cyan.withAlpha(0.9f), (float)(nWidth / 2), 0,
+        Colours::blue.withAlpha(0.3f), (float)(nWidth / 2), (float)nHeight,
         false
     );
 
-    Graphics g(frequencySpectrumImage);
+    Graphics g(m_iFrequencySpectrumImage);
     g.setGradientFill(gradient);
     g.fillPath(frequencyCurve); // **Now properly enclosed and filled!**
 
     // Frequency labels & grid lines (logarithmic spacing)
-    std::vector<double> majorFreqs = { 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000 };
-    float logMinFreq = std::log10(20.0f);
-    float logMaxFreq = std::log10(20000.0f);
-    for (double freq : majorFreqs)
+    std::vector<double> dMajorFreqs = { 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000 };
+    float fLogMinFreq = std::log10(20.0f);
+    float fLogMaxFreq = std::log10(20000.0f);
+    for (double freq : dMajorFreqs)
     {
-        float x = jmap((float)std::log10(freq), logMinFreq, logMaxFreq, 0.0f, (float)width);
+        float x = jmap((float)std::log10(freq), fLogMinFreq, fLogMaxFreq, 0.0f, (float)nWidth);
 
         // Draw vertical grid line
         g.setColour(juce::Colours::grey.withAlpha(0.3f));
-        g.drawLine(x, 0, x, height);
+        g.drawLine(x, 0, x, (float)nHeight);
     }
-
     repaint();
 }
 
@@ -137,13 +136,6 @@ void FrequencySpectrum::paint(Graphics& g)
     Rectangle<float> rcImage(getLocalBounds().toFloat());
 
     // Draw the spectrogram image, aligning it correctly to its bounds
-    g.drawImage(frequencySpectrumImage, 0, 0, frequencySpectrumImage.getWidth(), frequencySpectrumImage.getHeight(),
-        0, 0, frequencySpectrumImage.getWidth(), frequencySpectrumImage.getHeight());
-}
-
-/*======================================================================================*/
-void FrequencySpectrum::resized() 
-/*======================================================================================*/
-{
-
+    g.drawImage(m_iFrequencySpectrumImage, 0, 0, m_iFrequencySpectrumImage.getWidth(), m_iFrequencySpectrumImage.getHeight(),
+        0, 0, m_iFrequencySpectrumImage.getWidth(), m_iFrequencySpectrumImage.getHeight());
 }

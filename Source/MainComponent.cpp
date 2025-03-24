@@ -10,107 +10,106 @@
 #include <atlstr.h>
 
 /*======================================================================================*/
-MainComponent::MainComponent() : juce::AudioAppComponent(customDeviceManager)
+MainComponent::MainComponent() : juce::AudioAppComponent(m_cAudioDeviceManager)
 /*======================================================================================*/
 {
     // Load logo
-    titleImage = ImageFileFormat::loadFrom(BinaryData::title_png, BinaryData::title_pngSize);
+    m_iTitleImage = ImageFileFormat::loadFrom(BinaryData::title_png, BinaryData::title_pngSize);
     setOpaque(true);
-    lowPassFilter.reset();
 
     // Creating all components
-    distanceGraphic = new DistanceGraphic(*this);
-    addAndMakeVisible(distanceGraphic);
-    distanceGraphic->setOpaque(true);
+    m_pcDistanceGraphic = new DistanceGraphic(*this);
+    addAndMakeVisible(m_pcDistanceGraphic);
+    m_pcDistanceGraphic->setOpaque(true);
 
-    weatherPresets = new WeatherPresets(*this);
-    addAndMakeVisible(weatherPresets);
-    weatherPresets->setOpaque(true);
+    m_pcWeatherPresets = new WeatherPresets(*this);
+    addAndMakeVisible(m_pcWeatherPresets);
+    m_pcWeatherPresets->setOpaque(true);
 
-    waveformDisplay = new WaveformDisplay(*this);
-    addAndMakeVisible(waveformDisplay);
-    waveformDisplay->setOpaque(true);
+    m_pcWaveformDisplay = new WaveformDisplay(*this);
+    addAndMakeVisible(m_pcWaveformDisplay);
+    m_pcWaveformDisplay->setOpaque(true);
 
-    conditionControls = new ConditionControls(*this);
-    addAndMakeVisible(conditionControls);
-    conditionControls->setOpaque(true);
+    m_pcConditionControls = new ConditionControls(*this);
+    addAndMakeVisible(m_pcConditionControls);
+    m_pcConditionControls->setOpaque(true);
 
-    volumeControl = new VolumeControl(*this);
-    addAndMakeVisible(volumeControl);
-    volumeControl->setOpaque(true);
+    m_pcVolumeControl = new VolumeControl(*this);
+    addAndMakeVisible(m_pcVolumeControl);
+    m_pcVolumeControl->setOpaque(true);
 
-    spectrogram1 = new SpectrogramComponent(*this);
-    addAndMakeVisible(spectrogram1);
-    spectrogram1->setOpaque(true);
-    spectrogram1->setVisible(false);
+    m_pcPreProcessingSpectrogram = new SpectrogramComponent(*this);
+    addAndMakeVisible(m_pcPreProcessingSpectrogram);
+    m_pcPreProcessingSpectrogram->setOpaque(true);
+    m_pcPreProcessingSpectrogram->setVisible(false);
 
-    spectrogram2 = new SpectrogramComponent(*this);
-    addAndMakeVisible(spectrogram2);
-    spectrogram2->setOpaque(true);
-    spectrogram2->setVisible(false);
+    m_pcPostProcessingSpectrogram = new SpectrogramComponent(*this);
+    addAndMakeVisible(m_pcPostProcessingSpectrogram);
+    m_pcPostProcessingSpectrogram->setOpaque(true);
+    m_pcPostProcessingSpectrogram->setVisible(false);
 
-    frequencyAnalyser1 = new SpectrumComponent(*this);
-    addAndMakeVisible(frequencyAnalyser1);
-    frequencyAnalyser1->setOpaque(true);
+    m_pcPreProcessingFrequencyAnalyser = new SpectrumComponent(*this);
+    addAndMakeVisible(m_pcPreProcessingFrequencyAnalyser);
+    m_pcPreProcessingFrequencyAnalyser->setOpaque(true);
 
-    frequencyAnalyser2 = new SpectrumComponent(*this);
-    addAndMakeVisible(frequencyAnalyser2);
-    frequencyAnalyser2->setOpaque(true);
+    m_pcPostProcessingFrequencyAnalyser = new SpectrumComponent(*this);
+    addAndMakeVisible(m_pcPostProcessingFrequencyAnalyser);
+    m_pcPostProcessingFrequencyAnalyser->setOpaque(true);
 
-    responseCurve = new ResponseComponent(*this);
-    addAndMakeVisible(responseCurve);
-    responseCurve->setOpaque(true);
+    m_pcResponseCurve = new ResponseComponent(*this);
+    addAndMakeVisible(m_pcResponseCurve);
+    m_pcResponseCurve->setOpaque(true);
 
     // Initialising the transport source state
-    transportSourceState = Stopped;
-    customDeviceManager.initialise(0, 2, nullptr, true);
+    m_cTransportSourceState = Stopped;
+    m_cAudioDeviceManager.initialise(0, 2, nullptr, true);
     setAudioChannels(0, 2); // Stereo audio
 
     // Setting up the main component buttons
-    openFileButton.setButtonText("Open File");
-    openFileButton.onClick = [this] {openTextButtonClicked(); };
-    openFileButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
-    addAndMakeVisible(&openFileButton);
+    m_cOpenFileButton.setButtonText("Open File");
+    m_cOpenFileButton.onClick = [this] {vOpenTextButtonClicked(); };
+    m_cOpenFileButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    addAndMakeVisible(&m_cOpenFileButton);
 
-    playAudioButton.setButtonText("Play");
-    playAudioButton.onClick = [this] {playAudioButtonClicked(); };
-    playAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
-    playAudioButton.setEnabled(false);
-    addAndMakeVisible(&playAudioButton);
+    m_cPlayAudioButton.setButtonText("Play");
+    m_cPlayAudioButton.onClick = [this] {vPlayAudioButtonClicked(); };
+    m_cPlayAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    m_cPlayAudioButton.setEnabled(false);
+    addAndMakeVisible(&m_cPlayAudioButton);
 
-    pauseAudioButton.setButtonText("Pause");
-    pauseAudioButton.onClick = [this] {pauseAudioButtonClicked(); };
-    pauseAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
-    pauseAudioButton.setEnabled(false);
-    addAndMakeVisible(&pauseAudioButton);
+    m_cPauseAudioButton.setButtonText("Pause");
+    m_cPauseAudioButton.onClick = [this] {vPauseAudioButtonClicked(); };
+    m_cPauseAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    m_cPauseAudioButton.setEnabled(false);
+    addAndMakeVisible(&m_cPauseAudioButton);
 
-    stopAudioButton.setButtonText("Stop");
-    stopAudioButton.onClick = [this] {stopAudioButtonClicked(); };
-    stopAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
-    stopAudioButton.setEnabled(false);
-    addAndMakeVisible(&stopAudioButton);
+    m_cStopAudioButton.setButtonText("Stop");
+    m_cStopAudioButton.onClick = [this] {vStopAudioButtonClicked(); };
+    m_cStopAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    m_cStopAudioButton.setEnabled(false);
+    addAndMakeVisible(&m_cStopAudioButton);
 
-    spectrumButton.setButtonText("Spectrum");
-    spectrumButton.onClick = [this] {switchToSpectrum(); };
-    spectrumButton.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
-    spectrumButton.setEnabled(true);
-    spectrumButton.setClickingTogglesState(true);
-    spectrumButton.setRadioGroupId(1);
-    spectrumButton.setToggleState(true, juce::dontSendNotification);
-    addAndMakeVisible(&spectrumButton);
+    m_cShowSpectrumButton.setButtonText("Spectrum");
+    m_cShowSpectrumButton.onClick = [this] {vSwitchToSpectrum(); };
+    m_cShowSpectrumButton.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    m_cShowSpectrumButton.setEnabled(true);
+    m_cShowSpectrumButton.setClickingTogglesState(true);
+    m_cShowSpectrumButton.setRadioGroupId(1);
+    m_cShowSpectrumButton.setToggleState(true, juce::dontSendNotification);
+    addAndMakeVisible(&m_cShowSpectrumButton);
 
-    spectrogramButton.setButtonText("Spectrogram");
-    spectrogramButton.onClick = [this] {switchToSpectrogram(); };
-    spectrogramButton.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
-    spectrogramButton.setEnabled(true);
-    spectrogramButton.setClickingTogglesState(true);
-    spectrogramButton.setRadioGroupId(1);
-    addAndMakeVisible(&spectrogramButton);
+    m_cShowSpectrogramButton.setButtonText("Spectrogram");
+    m_cShowSpectrogramButton.onClick = [this] {vSwitchToSpectrogram(); };
+    m_cShowSpectrogramButton.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    m_cShowSpectrogramButton.setEnabled(true);
+    m_cShowSpectrogramButton.setClickingTogglesState(true);
+    m_cShowSpectrogramButton.setRadioGroupId(1);
+    addAndMakeVisible(&m_cShowSpectrogramButton);
 
-    formatManager.registerBasicFormats();
-    transportSource.addChangeListener(this);
+    m_cFormatManager.registerBasicFormats();
+    m_cTransportSource.addChangeListener(this);
 
-    tooltipWindow.setMillisecondsBeforeTipAppears(500);
+    m_wTooltipWindow.setMillisecondsBeforeTipAppears(500);
     // Set the size of the component after adding child components.
     setSize(960, 860);
 }
@@ -123,42 +122,42 @@ MainComponent::~MainComponent()
     shutdownAudio();
 
     // Delete child components
-    delete distanceGraphic;
-    delete weatherPresets;
-    delete waveformDisplay;
-    delete conditionControls;
-    delete volumeControl;
-    delete responseCurve;
-    delete spectrogram1;
-    delete spectrogram2;
-    delete frequencyAnalyser1;
-    delete frequencyAnalyser2;
+    delete m_pcDistanceGraphic;
+    delete m_pcWeatherPresets;
+    delete m_pcWaveformDisplay;
+    delete m_pcConditionControls;
+    delete m_pcVolumeControl;
+    delete m_pcResponseCurve;
+    delete m_pcPreProcessingSpectrogram;
+    delete m_pcPostProcessingSpectrogram;
+    delete m_pcPreProcessingFrequencyAnalyser;
+    delete m_pcPostProcessingFrequencyAnalyser;
 }
 
 /*======================================================================================*/
-void MainComponent::switchToSpectrogram()
+void MainComponent::vSwitchToSpectrogram()
 /*======================================================================================*/
 {
     // Hide frequency spectrum and show spectrogram
-    frequencyAnalyser1->setVisible(false);
-    frequencyAnalyser2->setVisible(false);
-    spectrogram1->setVisible(true);
-    spectrogram2->setVisible(true);
+    m_pcPreProcessingFrequencyAnalyser->setVisible(false);
+    m_pcPostProcessingFrequencyAnalyser->setVisible(false);
+    m_pcPreProcessingSpectrogram->setVisible(true);
+    m_pcPostProcessingSpectrogram->setVisible(true);
 }
 
 /*======================================================================================*/
-void MainComponent::switchToSpectrum()
+void MainComponent::vSwitchToSpectrum()
 /*======================================================================================*/
 {
     // Hide spectrogram and show frequency spectrum
-    spectrogram1->setVisible(false);
-    spectrogram2->setVisible(false);
-    frequencyAnalyser1->setVisible(true);
-    frequencyAnalyser2->setVisible(true);
+    m_pcPreProcessingSpectrogram->setVisible(false);
+    m_pcPostProcessingSpectrogram->setVisible(false);
+    m_pcPreProcessingFrequencyAnalyser->setVisible(true);
+    m_pcPostProcessingFrequencyAnalyser->setVisible(true);
 }
 
 /*======================================================================================*/
-void MainComponent::vSetParameter(int nParameterType, int nValue, bool bUpdateDisplay)
+void MainComponent::vSetParameter(const int nParameterType, const int nValue, const bool bUpdateDisplay)
 /*======================================================================================*/
 {
     // Centrally setting paramaters from all the controls
@@ -166,67 +165,66 @@ void MainComponent::vSetParameter(int nParameterType, int nValue, bool bUpdateDi
     {
         case PARAMETER_TEMPERATURE:
         {
-            nTemperature = nValue; 
-            updateSystemResponse();
+            m_nTemperature = nValue;
+            vUpdateSystemResponse();
             break;
         }
         case PARAMETER_HUMIDITY:
         {
-            nHumidity = nValue;
-            updateSystemResponse();
+            m_nHumidity = nValue;
+            vUpdateSystemResponse();
             break;
         }
         case PARAMETER_WIND_SPEED:
         {
-            nWindSpeed = nValue;
-            updateSystemResponse();
+            m_nWindSpeed = nValue;
+            vUpdateSystemResponse();
             break;
         }
         case PARAMETER_WIND_DIRECTION:
         {
-            nWindDirection = nValue;
-            updateSystemResponse();
+            m_nWindDirection = nValue;
+            vUpdateSystemResponse();
             break;
         }
         case PARAMETER_PRECIPITATION:
         {
-            bPrecipitation = (bool)nValue;
+            m_bPrecipitation = (bool)nValue;
 
             // Precipitation automatically sets humidity to 90%
-            if (bPrecipitation)
-            { nHumidity = 90; }
+            if (m_bPrecipitation)
+            { m_nHumidity = 90; }
             else
-            { nHumidity = 50; }
-            updateSystemResponse();
+            { m_nHumidity = 50; }
+            vUpdateSystemResponse();
             break;
         }
         case PARAMETER_TEMP_GRADIENT:
         {
-            nTempGradient = nValue;
-            updateSystemResponse();
+            m_nTempGradient = nValue;
+            vUpdateSystemResponse();
             break;
         }
         case PARAMETER_PRESSURE:
         {
-            nPressure = nValue;
-            updateSystemResponse();
+            m_nPressure = nValue;
+            vUpdateSystemResponse();
             break;
         }
         case PARAMETER_CLOUD_COVER:
         {
-            bCloudCover = (bool)nValue;
+            m_bCloudCover = (bool)nValue;
             break;
         }
         case PARAMETER_DISTANCE:
         {
-            nDistance = nValue;
-            updateSystemResponse();
-            //updateFilter(nDistance);
+            m_nDistance = nValue;
+            vUpdateSystemResponse();
             break;
         }
     }
     if(bUpdateDisplay)
-    { distanceGraphic->repaint(); }
+    { m_pcDistanceGraphic->repaint(); }
 }
 
 /*======================================================================================*/
@@ -234,15 +232,15 @@ void MainComponent::vUpdateConditionControls()
 /*======================================================================================*/
 {
     // Complete update and repaint of condition controls
-    conditionControls->vSetParameter(PARAMETER_TEMPERATURE, nTemperature);
-    conditionControls->vSetParameter(PARAMETER_WIND_SPEED, nWindSpeed);
-    conditionControls->vSetParameter(PARAMETER_HUMIDITY, nHumidity);
-    conditionControls->vSetParameter(PARAMETER_TEMP_GRADIENT, nTempGradient);
-    conditionControls->vSetParameter(PARAMETER_PRECIPITATION, bPrecipitation);
-    conditionControls->vSetParameter(PARAMETER_WIND_DIRECTION, nWindDirection);
-    conditionControls->vSetParameter(PARAMETER_PRESSURE, nPressure);
-    conditionControls->vSetParameter(PARAMETER_CLOUD_COVER, bCloudCover);
-    conditionControls->repaint();
+    m_pcConditionControls->vSetParameter(PARAMETER_TEMPERATURE, m_nTemperature);
+    m_pcConditionControls->vSetParameter(PARAMETER_WIND_SPEED, m_nWindSpeed);
+    m_pcConditionControls->vSetParameter(PARAMETER_HUMIDITY, m_nHumidity);
+    m_pcConditionControls->vSetParameter(PARAMETER_TEMP_GRADIENT, m_nTempGradient);
+    m_pcConditionControls->vSetParameter(PARAMETER_PRECIPITATION, m_bPrecipitation);
+    m_pcConditionControls->vSetParameter(PARAMETER_WIND_DIRECTION, m_nWindDirection);
+    m_pcConditionControls->vSetParameter(PARAMETER_PRESSURE, m_nPressure);
+    m_pcConditionControls->vSetParameter(PARAMETER_CLOUD_COVER, m_bCloudCover);
+    m_pcConditionControls->repaint();
 }
 
 /*======================================================================================*/
@@ -253,139 +251,139 @@ int MainComponent::nGetParameter(int nParameterType)
     switch (nParameterType)
     {
         case PARAMETER_TEMPERATURE:
-        { return nTemperature; }
+        { return m_nTemperature; }
         case PARAMETER_HUMIDITY:
-        { return nHumidity; }
+        { return m_nHumidity; }
         case PARAMETER_WIND_SPEED:
-        { return nWindSpeed; }
+        { return m_nWindSpeed; }
         case PARAMETER_WIND_DIRECTION:
-        { return nWindDirection; }
+        { return m_nWindDirection; }
         case PARAMETER_PRECIPITATION:
-        { return (int)bPrecipitation; }
+        { return (int)m_bPrecipitation; }
         case PARAMETER_TEMP_GRADIENT:
-        {  return nTempGradient; }
+        {  return m_nTempGradient; }
         case PARAMETER_PRESSURE:
-        { return nPressure; }
+        { return m_nPressure; }
         case PARAMETER_CLOUD_COVER:
-        { return bCloudCover; }
+        { return m_bCloudCover; }
         case PARAMETER_DISTANCE:
-        { return nDistance; }
+        { return m_nDistance; }
     }
     jassert(false);
     return 0;
 }
 
 /*======================================================================================*/
-void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
+void MainComponent::prepareToPlay(int nSamplesPerBlockExpected, double dSampleRate)
 /*======================================================================================*/
 {
-    transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    m_cTransportSource.prepareToPlay(nSamplesPerBlockExpected, dSampleRate);
 }
 
 /*======================================================================================*/
-void MainComponent::openTextButtonClicked()
+void MainComponent::vOpenTextButtonClicked()
 /*======================================================================================*/
 {
     // Choose file to load and import into the audio player
-    chooser = std::make_unique<juce::FileChooser>(
+    m_pcFileChooser = std::make_unique<FileChooser>(
         "Please select the mp3 you want to load...",
-        juce::File::getSpecialLocation(juce::File::userHomeDirectory),
+        File::getSpecialLocation(File::userHomeDirectory),
         "*.mp3;*.wav");
 
-    auto folderChooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+    int nFolderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles;
 
     // Launch file browser
-    chooser->launchAsync(folderChooserFlags, [this](const juce::FileChooser& chooser)
+    m_pcFileChooser->launchAsync(nFolderChooserFlags, [this](const FileChooser& m_pcFileChooser)
         {
-            juce::File audioFile(chooser.getResult());
-            transportSource.stop();
-            transportSource.setSource(nullptr);  
+            File cAudioFile(m_pcFileChooser.getResult());
+            m_cTransportSource.stop();
+            m_cTransportSource.setSource(nullptr);
 
-            if (auto* reader = formatManager.createReaderFor(audioFile))
+            if (AudioFormatReader* reader = m_cFormatManager.createReaderFor(cAudioFile))
             {
-                DBG("Loaded file: " + audioFile.getFullPathName());
-                playSource.reset(new juce::AudioFormatReaderSource(reader, true));
-                transportSource.setSource(playSource.get(), 0, nullptr, reader->sampleRate);
-                transportSource.setPosition(0.0);
-                playAudioButton.setEnabled(true);
+                DBG("Loaded file: " + cAudioFile.getFullPathName());
+                m_pcPlaySource.reset(new AudioFormatReaderSource(reader, true));
+                m_cTransportSource.setSource(m_pcPlaySource.get(), 0, nullptr, reader->sampleRate);
+                m_cTransportSource.setPosition(0.0);
+                m_cPlayAudioButton.setEnabled(true);
             }
             else
-            { DBG("Failed to load file: " + audioFile.getFullPathName()); }
+            { DBG("Failed to load file: " + cAudioFile.getFullPathName()); }
         });
 }
 
 /*======================================================================================*/
-void MainComponent::playAudioButtonClicked()
+void MainComponent::vPlayAudioButtonClicked()
 /*======================================================================================*/
 {
-    transportSourceStateChanged(Starting);
+    vTransportSourceStateChanged(Starting);
 }
 
 /*======================================================================================*/
-void MainComponent::stopAudioButtonClicked()
+void MainComponent::vStopAudioButtonClicked()
 /*======================================================================================*/
 {
-    transportSourceStateChanged(Stopping);
+    vTransportSourceStateChanged(Stopping);
 }
 
 /*======================================================================================*/
-void MainComponent::pauseAudioButtonClicked()
+void MainComponent::vPauseAudioButtonClicked()
 /*======================================================================================*/
 {
-    transportSourceStateChanged(Pausing);
+    vTransportSourceStateChanged(Pausing);
 }
 
 /*======================================================================================*/
-void MainComponent::transportSourceStateChanged(transportSourceState_t state)
+void MainComponent::vTransportSourceStateChanged(transportSourceState_t state)
 /*======================================================================================*/
 {
-    if (state != transportSourceState)
+    if (state != m_cTransportSourceState)
     {
-        transportSourceState = state;
+        m_cTransportSourceState = state;
 
-        switch (transportSourceState)
+        switch (m_cTransportSourceState)
         {
             case Stopped:
             {
-                double position = transportSource.getCurrentPosition();
-                double length = transportSource.getLengthInSeconds();
-                if (std::abs(position - length) < 0.01)
-                { transportSource.setPosition(0.0); }
+                double dPosition = m_cTransportSource.getCurrentPosition();
+                double dLength = m_cTransportSource.getLengthInSeconds();
+                if (std::abs(dPosition - dLength) < 0.01)
+                { m_cTransportSource.setPosition(0.0); }
                 break;
             }
             case Playing:
             {
-                playAudioButton.setEnabled(false);
-                pauseAudioButton.setEnabled(true);
-                stopAudioButton.setEnabled(true);
-                openFileButton.setEnabled(false);
+                m_cPlayAudioButton.setEnabled(false);
+                m_cPauseAudioButton.setEnabled(true);
+                m_cStopAudioButton.setEnabled(true);
+                m_cOpenFileButton.setEnabled(false);
                 break;
             }
             case Starting:
             {
-                playAudioButton.setEnabled(false);
-                openFileButton.setEnabled(false);
-                pauseAudioButton.setEnabled(true);
-                stopAudioButton.setEnabled(true);
-                transportSource.start();
+                m_cPlayAudioButton.setEnabled(false);
+                m_cOpenFileButton.setEnabled(false);
+                m_cPauseAudioButton.setEnabled(true);
+                m_cStopAudioButton.setEnabled(true);
+                m_cTransportSource.start();
                 break;
             }
             case Pausing:
             {
-                playAudioButton.setEnabled(true);
-                stopAudioButton.setEnabled(true);
-                openFileButton.setEnabled(false);
-                transportSource.stop();
+                m_cPlayAudioButton.setEnabled(true);
+                m_cStopAudioButton.setEnabled(true);
+                m_cOpenFileButton.setEnabled(false);
+                m_cTransportSource.stop();
                 break;
             }
             case Stopping:
             {
-                playAudioButton.setEnabled(true);
-                stopAudioButton.setEnabled(false);
-                pauseAudioButton.setEnabled(false);
-                openFileButton.setEnabled(true);
-                transportSource.stop();
-                transportSource.setPosition(0.0);
+                m_cPlayAudioButton.setEnabled(true);
+                m_cStopAudioButton.setEnabled(false);
+                m_cPauseAudioButton.setEnabled(false);
+                m_cOpenFileButton.setEnabled(true);
+                m_cTransportSource.stop();
+                m_cTransportSource.setPosition(0.0);
                 break;
             }
         }
@@ -393,67 +391,50 @@ void MainComponent::transportSourceStateChanged(transportSourceState_t state)
 }
 
 /*======================================================================================*/
-void MainComponent::thumbnailChanged()
-/*======================================================================================*/
-{
-    //repaint();
-}
-
-/*======================================================================================*/
 void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
 /*======================================================================================*/
 {
-    if (source == &transportSource)
+    if (source == &m_cTransportSource)
     {
-        if (transportSource.isPlaying())
-        { transportSourceStateChanged(Playing); }
+        if (m_cTransportSource.isPlaying())
+        { vTransportSourceStateChanged(Playing); }
         else
-        { transportSourceStateChanged(Stopped); }
+        { vTransportSourceStateChanged(Stopped); }
     }
 }
 
 /*======================================================================================*/
-void MainComponent::DSPEngine(juce::AudioBuffer<float>& buffer)
+void MainComponent::vApplyDSPProcessing(juce::AudioBuffer<float>& buffer)
 /*======================================================================================*/
 {
-    int numSamples = buffer.getNumSamples();
+    int nNumSamples = buffer.getNumSamples();
 
-    float* channelDataL = buffer.getWritePointer(0);
-    float* channelDataR = buffer.getWritePointer(1);
+    //float* pfChannelDataL = buffer.getWritePointer(0);
+    //float* pfChannelDataR = buffer.getWritePointer(1);
 
-    for (int i = 0; i < numSamples; i++)
+    for (int i = 0; i < nNumSamples; i++)
     {
-        channelDataL[i] = lowPassFilter.processSample(channelDataL[i]);
-        channelDataR[i] = lowPassFilter.processSample(channelDataR[i]);
+        //channelDataL[i] = lowPassFilter.processSample(channelDataL[i]);
+        //channelDataR[i] = lowPassFilter.processSample(channelDataR[i]);
     }
 }
 
 /*======================================================================================*/
-void MainComponent::updateSystemResponse()
+void MainComponent::vUpdateSystemResponse()
 /*======================================================================================*/
 {
-    responseCurve->repaint();
+    m_pcResponseCurve->repaint();
 }
 
 /*======================================================================================*/
-void MainComponent::updateFilter(const int nDistanceVal)
-/*======================================================================================*/
-{
-    float cutOff = 5030.0f - (float)(5 * nDistanceVal);
-    lowPassFilter.coefficients = *juce::dsp::IIR::Coefficients<float>::makeLowPass(44100, cutOff, 0.5f);
-    //responseCurve->setCoefficients(lowPassFilter.coefficients); // Update the curve
-}
-
-
-/*======================================================================================*/
-double MainComponent::dCalculateWindLoss(const double dFrequency, const double dDistance, const double dTemperature, const double dWindSpeed, const bool bWindDirection)
+double MainComponent::dCalculateWindLoss(const double dFrequency, const double dDistance, const double dWindSpeed, const bool bWindDirection)
 /*======================================================================================*/
 {
     // Wind attenuation loss
-    double windLoss = 1.0e-5 * dWindSpeed * sqrt(dFrequency) * dDistance;
+    double dWindLoss = 1.0e-5 * dWindSpeed * sqrt(dFrequency) * dDistance;
     if (bWindDirection == WIND_DIRECTION_DOWNWIND)
-    { windLoss *= -0.45; }
-    return windLoss;
+    { dWindLoss *= -0.45; }
+    return dWindLoss;
 
 }
 
@@ -469,9 +450,9 @@ double MainComponent::dCalculateTemperatureGradientLoss(const double dFrequency,
     { dTemperatureGradient = 0.001; }
 
     // Compute attenuation loss based on gradient
-    double tempLoss = -0.03 * dTemperatureGradient * sqrt(dFrequency) * dDistance;
+    double dTempLoss = -0.03 * dTemperatureGradient * sqrt(dFrequency) * dDistance;
 
-    return tempLoss;
+    return dTempLoss;
 }
 
 /*======================================================================================*/
@@ -508,48 +489,48 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
 {
     // Sends audio blocks to various components
     bufferToFill.clearActiveBufferRegion();
-    transportSource.getNextAudioBlock(bufferToFill);
+    m_cTransportSource.getNextAudioBlock(bufferToFill);
 
     // Push processed buffer to controls
     juce::AudioBuffer<float> buffer(bufferToFill.buffer->getArrayOfWritePointers(),
         bufferToFill.buffer->getNumChannels(),
         bufferToFill.startSample,
         bufferToFill.numSamples);
-    waveformDisplay->pushBuffer(buffer); // Push to waveform visualiser
-    spectrogram1->pushBuffer(buffer);   // Push to the unproccessed spectrogram
-    frequencyAnalyser1->pushBuffer(buffer); // Push to the unproccessed frequency spectrum
+    m_pcWaveformDisplay->vPushBuffer(buffer); // Push to waveform visualiser
+    m_pcPreProcessingSpectrogram->vPushBuffer(buffer);   // Push to the unproccessed spectrogram
+    m_pcPreProcessingFrequencyAnalyser->vPushBuffer(buffer); // Push to the unproccessed frequency spectrum
 
-    DSPEngine(buffer);
-    spectrogram2->pushBuffer(buffer);
-    frequencyAnalyser2->pushBuffer(buffer);
+    vApplyDSPProcessing(buffer);
+    m_pcPostProcessingSpectrogram->vPushBuffer(buffer);
+    m_pcPostProcessingFrequencyAnalyser->vPushBuffer(buffer);
 
     // Apply the volume level to the buffer
-    float gain = (float)juce::Decibels::decibelsToGain(volumeControl->getGain());
+    float fGain = (float)juce::Decibels::decibelsToGain(m_pcVolumeControl->dGetGain());
     if (bufferToFill.buffer != nullptr)
     {
-        for (int channel = 0; channel < bufferToFill.buffer->getNumChannels(); ++channel)
+        for (int nChannel = 0; nChannel < bufferToFill.buffer->getNumChannels(); ++nChannel)
         {
-            auto* channelData = bufferToFill.buffer->getWritePointer(channel, bufferToFill.startSample);
-            for (int sample = 0; sample < bufferToFill.numSamples; ++sample)
-            { channelData[sample] *= gain; }
+            float* fChannelData = bufferToFill.buffer->getWritePointer(nChannel, bufferToFill.startSample);
+            for (int nSample = 0; nSample < bufferToFill.numSamples; ++nSample)
+            { fChannelData[nSample] *= fGain; }
         }
     }
 
     // Calculate rms level to the audio meter
-    float rmsLevel = 0.0f;
-    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
+    float fRMSLevel = 0.0f;
+    for (int nChannel = 0; nChannel < buffer.getNumChannels(); ++nChannel)
     {
-        rmsLevel += buffer.getRMSLevel(channel, bufferToFill.startSample, bufferToFill.numSamples);
+        fRMSLevel += buffer.getRMSLevel(nChannel, bufferToFill.startSample, bufferToFill.numSamples);
     }
-    rmsLevel /= buffer.getNumChannels(); // Average across channels
+    fRMSLevel /= buffer.getNumChannels(); // Average across channels
 
     // Convert RMS to a meter-friendly scale
-    rmsLevel = juce::jmap(juce::Decibels::gainToDecibels(rmsLevel), -60.0f, 0.0f, 0.0f, 1.0f);
-    rmsLevel = juce::jlimit(0.0f, 1.0f, rmsLevel); // Ensure it's within 0-1 range
+    fRMSLevel = juce::jmap(juce::Decibels::gainToDecibels(fRMSLevel), -60.0f, 0.0f, 0.0f, 1.0f);
+    fRMSLevel = juce::jlimit(0.0f, 1.0f, fRMSLevel); // Ensure it's within 0-1 range
 
     // Update the level meter asynchronously to avoid UI issues
-    juce::MessageManager::callAsync([this, rmsLevel] {
-        volumeControl->setMeterLevel(rmsLevel);
+    juce::MessageManager::callAsync([this, fRMSLevel] {
+        m_pcVolumeControl->vSetMeterLevel(fRMSLevel);
         });
 }
 
@@ -576,7 +557,7 @@ void MainComponent::paint(juce::Graphics& g)
     g.drawText("ENVIROCOUSTICS", 10, 10, 940, 130, juce::Justification::centred, true);
 
     juce::Rectangle<float> rcTitle(10, 10, 940, 130);
-    { g.drawImage(titleImage, rcTitle, RectanglePlacement::centred, false); }
+    { g.drawImage(m_iTitleImage, rcTitle, RectanglePlacement::centred, false); }
 
     // Reponse curves
     g.setColour(juce::Colours::darkseagreen);
@@ -602,20 +583,20 @@ void MainComponent::paint(juce::Graphics& g)
 void MainComponent::resized()
 /*======================================================================================*/
 {
-    openFileButton.setBounds(670, 150, 120, 25);
-    playAudioButton.setBounds(670, 180, 120, 25);
-    pauseAudioButton.setBounds(670, 210, 120, 25);
-    stopAudioButton.setBounds(670, 240, 120, 25);
-    volumeControl->setBounds(800, 150, 150, 300);
-    waveformDisplay->setBounds(10, 150, 650, 115);
-    conditionControls->setBounds(10, 460, 410, 190);
-    weatherPresets->setBounds(670, 275, 120, 175);
-    distanceGraphic->setBounds(10, 275, 650, 175);
-    spectrogram1->setBounds(430, 490, 520, 160);
-    spectrogram2->setBounds(430, 690, 520, 160);
-    frequencyAnalyser1->setBounds(430, 490, 520, 160);
-    frequencyAnalyser2->setBounds(430, 690, 520, 160);
-    spectrogramButton.setBounds(865, 465, 80, 20);
-    spectrumButton.setBounds(780, 465, 80, 20);
-    responseCurve->setBounds(10, 660, 410, 190);
+    m_cOpenFileButton.setBounds(670, 150, 120, 25);
+    m_cPlayAudioButton.setBounds(670, 180, 120, 25);
+    m_cPauseAudioButton.setBounds(670, 210, 120, 25);
+    m_cStopAudioButton.setBounds(670, 240, 120, 25);
+    m_pcVolumeControl->setBounds(800, 150, 150, 300);
+    m_pcWaveformDisplay->setBounds(10, 150, 650, 115);
+    m_pcConditionControls->setBounds(10, 460, 410, 190);
+    m_pcWeatherPresets->setBounds(670, 275, 120, 175);
+    m_pcDistanceGraphic->setBounds(10, 275, 650, 175);
+    m_pcPreProcessingSpectrogram->setBounds(430, 490, 520, 160);
+    m_pcPostProcessingSpectrogram->setBounds(430, 690, 520, 160);
+    m_pcPreProcessingFrequencyAnalyser->setBounds(430, 490, 520, 160);
+    m_pcPostProcessingFrequencyAnalyser->setBounds(430, 690, 520, 160);
+    m_cShowSpectrogramButton.setBounds(865, 465, 80, 20);
+    m_cShowSpectrumButton.setBounds(780, 465, 80, 20);
+    m_pcResponseCurve->setBounds(10, 660, 410, 190);
 }

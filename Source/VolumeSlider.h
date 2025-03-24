@@ -9,67 +9,67 @@ public:
 
     VolumeSliderLookAndFeel()
     {
-        thumbImage = ImageFileFormat::loadFrom(BinaryData::sliderThumb_png, BinaryData::sliderThumb_pngSize);
-        thumbImage = thumbImage.rescaled(30, 55, Graphics::highResamplingQuality);
+        m_iThumbImage = ImageFileFormat::loadFrom(BinaryData::sliderThumb_png, BinaryData::sliderThumb_pngSize);
+        m_iThumbImage = m_iThumbImage.rescaled(30, 55, Graphics::highResamplingQuality);
     }
 
-    void drawLinearSlider(Graphics& g, int x, int y, int width, int height,
-        float sliderPos,
-        float minSliderPos,
-        float maxSliderPos,
-        const Slider::SliderStyle style, Slider& slider) override
+    void drawLinearSlider(Graphics& g, int x, int y, int nWidth, int nHeight,
+        float fSliderPos,
+        float fMinSliderPos,
+        float fMaxSliderPos,
+        const Slider::SliderStyle cStyle, Slider& cSlider) override
     {
-        (void)style;
-        (void)minSliderPos;
-        (void)maxSliderPos;
+        (void)cStyle;
+        (void)fMinSliderPos;
+        (void)fMaxSliderPos;
         
-        auto isTwoVal = (style == Slider::SliderStyle::TwoValueVertical || style == Slider::SliderStyle::TwoValueHorizontal);
-        auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
+        bool bIsTwoVal = (cStyle == Slider::SliderStyle::TwoValueVertical || cStyle == Slider::SliderStyle::TwoValueHorizontal);
+        bool bIsThreeVal = (cStyle == Slider::SliderStyle::ThreeValueVertical || cStyle == Slider::SliderStyle::ThreeValueHorizontal);
 
-        auto trackWidth = jmin(6.0f, slider.isHorizontal() ? (float)height * 0.25f : (float)width * 0.25f);
+        float fTrackWidth = jmin(6.0f, cSlider.isHorizontal() ? (float)nHeight * 0.25f : (float)nWidth * 0.25f);
 
-        Point<float> startPoint(slider.isHorizontal() ? (float)x : (float)x + (float)width * 0.5f,
-            slider.isHorizontal() ? (float)y + (float)height * 0.5f : (float)(height + y));
+        Point<float> pfStartPoint(cSlider.isHorizontal() ? (float)x : (float)x + (float)nWidth * 0.5f,
+            cSlider.isHorizontal() ? (float)y + (float)nHeight * 0.5f : (float)(nHeight + y));
 
-        Point<float> endPoint(slider.isHorizontal() ? (float)(width + x) : startPoint.x,
-            slider.isHorizontal() ? startPoint.y : (float)y);
+        Point<float> pfEndPoint(cSlider.isHorizontal() ? (float)(nWidth + x) : pfStartPoint.x,
+            cSlider.isHorizontal() ? pfStartPoint.y : (float)y);
 
         Path backgroundTrack;
-        backgroundTrack.startNewSubPath(startPoint);
-        backgroundTrack.lineTo(endPoint);
-        g.setColour(slider.findColour(Slider::backgroundColourId));
-        g.strokePath(backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+        backgroundTrack.startNewSubPath(pfStartPoint);
+        backgroundTrack.lineTo(pfEndPoint);
+        g.setColour(cSlider.findColour(Slider::backgroundColourId));
+        g.strokePath(backgroundTrack, { fTrackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
         Path valueTrack;
-        Point<float> minPoint, maxPoint, thumbPoint;
+        Point<float> pfMinPoint, pfMaxPoint, pfThumbPoint;
         
-        auto kx = slider.isHorizontal() ? sliderPos : ((float)x + (float)width * 0.5f);
-        auto ky = slider.isHorizontal() ? ((float)y + (float)height * 0.5f) : sliderPos;
+        float kx = cSlider.isHorizontal() ? fSliderPos : ((float)x + (float)nWidth * 0.5f);
+        float ky = cSlider.isHorizontal() ? ((float)y + (float)nHeight * 0.5f) : fSliderPos;
 
-        minPoint = startPoint;
-        maxPoint = { kx, ky };
+        pfMinPoint = pfStartPoint;
+        pfMaxPoint = { kx, ky };
 
-        auto thumbWidth = thumbImage.getWidth(); 
-        auto thumbHeight = thumbImage.getHeight();
+        int nThumbWidth = m_iThumbImage.getWidth();
+        int nThumbHeight = m_iThumbImage.getHeight();
 
-        valueTrack.startNewSubPath(minPoint);
-        valueTrack.lineTo(isThreeVal ? thumbPoint : maxPoint);
-        g.setColour(slider.findColour(Slider::trackColourId));
-        g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+        valueTrack.startNewSubPath(pfMinPoint);
+        valueTrack.lineTo(bIsThreeVal ? pfThumbPoint : pfMaxPoint);
+        g.setColour(cSlider.findColour(Slider::trackColourId));
+        g.strokePath(valueTrack, { fTrackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
-        if (!isTwoVal)
+        if (!bIsTwoVal)
         {
-            g.drawImage(thumbImage, (width / 2) - (thumbWidth / 2), (int)sliderPos - (thumbHeight / 2),
-                thumbWidth, thumbHeight, 0, 0, thumbWidth, thumbHeight);
+            g.drawImage(m_iThumbImage, (nWidth / 2) - (nThumbWidth / 2), (int)fSliderPos - (nThumbHeight / 2),
+                nThumbWidth, nThumbHeight, 0, 0, nThumbWidth, nThumbHeight);
         }   
 
-        if (slider.isBar())
+        if (cSlider.isBar())
         {
-            drawLinearSliderOutline(g, x, y, width, height, style, slider);
+            drawLinearSliderOutline(g, x, y, nWidth, nHeight, cStyle, cSlider);
         }
     }
 private:
-    Image thumbImage;
+    Image m_iThumbImage;
 };
 
 class VolumeSlider : public Slider
@@ -78,5 +78,6 @@ public:
     VolumeSlider();
     ~VolumeSlider() override;
 
-    VolumeSliderLookAndFeel volumeSliderLookAndFeel;
+private:
+    VolumeSliderLookAndFeel m_lfVolumeSliderLookAndFeel;
 };

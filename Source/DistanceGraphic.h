@@ -10,50 +10,50 @@ class StickmanSliderLookAndFeel : public LookAndFeel_V4
 public:
     StickmanSliderLookAndFeel()
     {
-        stickManImage = ImageFileFormat::loadFrom(BinaryData::stickman_png, BinaryData::stickman_pngSize);
-        stickManImage = stickManImage.rescaled(54, 57, Graphics::highResamplingQuality);
+        m_iStickManImage = ImageFileFormat::loadFrom(BinaryData::stickman_png, BinaryData::stickman_pngSize);
+        m_iStickManImage = m_iStickManImage.rescaled(54, 57, Graphics::highResamplingQuality);
     }
 
     int getSliderThumbRadius(Slider&) override
     {
-        return stickManImage.getHeight() / 2;
+        return m_iStickManImage.getHeight() / 2;
     }
 
-    void drawLinearSlider(Graphics& g, int x, int y, int width, int height,
-        float sliderPos,
-        float minSliderPos,
-        float maxSliderPos,
-        const Slider::SliderStyle style, Slider& slider) override
+    void drawLinearSlider(Graphics& g, int x, int y, int nWidth, int nHeight,
+        float fSliderPos,
+        float fMinSliderPos,
+        float fMaxSliderPos,
+        const Slider::SliderStyle cStyle, Slider& cSlider) override
     {
-        (void)style;
-        (void)minSliderPos;
-        (void)maxSliderPos;
+        (void)cStyle;
+        (void)fMinSliderPos;
+        (void)fMaxSliderPos;
 
-        bool isHorizontal = slider.isHorizontal();
+        bool bIsHorizontal = cSlider.isHorizontal();
 
-        Point<float> startPoint = isHorizontal
-            ? Point<float>((float)x, (float)y + (float)height * 0.5f)
-            : Point<float>((float)x + (float)width * 0.5f, (float)(height + y));
+        Point<float> startPoint = bIsHorizontal
+            ? Point<float>((float)x, (float)y + (float)nHeight * 0.5f)
+            : Point<float>((float)x + (float)nWidth * 0.5f, (float)(nHeight + y));
 
-        Point<float> endPoint = isHorizontal
-            ? Point<float>((float)(width + x), startPoint.y) 
+        Point<float> endPoint = bIsHorizontal
+            ? Point<float>((float)(nWidth + x), startPoint.y)
             : Point<float>(startPoint.x, (float)y);
 
         // Draw Stickman Image at the correct position
-        if (isHorizontal)
+        if (bIsHorizontal)
         {
-            int thumbWidth = stickManImage.getWidth();
-            int thumbHeight = stickManImage.getHeight();
+            int nThumbWidth = m_iStickManImage.getWidth();
+            int nThumbHeight = m_iStickManImage.getHeight();
 
-            int stickmanX = (int)sliderPos - (thumbWidth / 2);
-            int stickmanY = (int)y + (height / 2) - (thumbHeight / 2);
+            int nStickmanX = (int)fSliderPos - (nThumbWidth / 2);
+            int nStickmanY = (int)y + (nHeight / 2) - (nThumbHeight / 2);
 
-            g.drawImage(stickManImage, stickmanX, stickmanY, thumbWidth, thumbHeight, 0, 0, thumbWidth, thumbHeight);
+            g.drawImage(m_iStickManImage, nStickmanX, nStickmanY, nThumbWidth, nThumbHeight, 0, 0, nThumbWidth, nThumbHeight);
         }
     }
 
 private:
-    Image stickManImage;
+    Image m_iStickManImage;
 };
 
 
@@ -62,50 +62,50 @@ class StickmanSliderRainyLookAndFeel : public LookAndFeel_V4
 public:
     StickmanSliderRainyLookAndFeel()
     {
-        stickManRainyImage = ImageFileFormat::loadFrom(BinaryData::stickmanRainy_png, BinaryData::stickmanRainy_pngSize);
-        stickManRainyImage = stickManRainyImage.rescaled(54, 57, Graphics::highResamplingQuality);
+        m_iStickManm_iRainyImage = ImageFileFormat::loadFrom(BinaryData::stickmanRainy_png, BinaryData::stickmanRainy_pngSize);
+        m_iStickManm_iRainyImage = m_iStickManm_iRainyImage.rescaled(54, 57, Graphics::highResamplingQuality);
     }
 
     int getSliderThumbRadius(Slider&) override
     {
-        return stickManRainyImage.getHeight() / 2;
+        return m_iStickManm_iRainyImage.getHeight() / 2;
     }
 
-    void drawLinearSlider(Graphics& g, int x, int y, int width, int height,
-        float sliderPos,
-        float minSliderPos,
-        float maxSliderPos,
-        const Slider::SliderStyle style, Slider& slider) override
+    void drawLinearSlider(Graphics& g, int x, int y, int nWidth, int nHeight,
+        float fSliderPos,
+        float fMinSliderPos,
+        float fMaxSliderPos,
+        const Slider::SliderStyle cStyle, Slider& cSlider) override
     {
-        (void)style;
-        (void)minSliderPos;
-        (void)maxSliderPos;
+        (void)cStyle;
+        (void)fMinSliderPos;
+        (void)fMaxSliderPos;
 
-        bool isHorizontal = slider.isHorizontal();
+        bool bIsHorizontal = cSlider.isHorizontal();
 
-        Point<float> startPoint = isHorizontal
-            ? Point<float>((float)x, (float)y + (float)height * 0.5f)
-            : Point<float>((float)x + (float)width * 0.5f, (float)(height + y));
+        Point<float> startPoint = bIsHorizontal
+            ? Point<float>((float)x, (float)y + (float)nHeight * 0.5f)
+            : Point<float>((float)x + (float)nWidth * 0.5f, (float)(nHeight + y));
 
-        Point<float> endPoint = isHorizontal
-            ? Point<float>((float)(width + x), startPoint.y)
+        Point<float> endPoint = bIsHorizontal
+            ? Point<float>((float)(nWidth + x), startPoint.y)
             : Point<float>(startPoint.x, (float)y);
 
         // Draw Stickman Image at the correct position
-        if (isHorizontal)
+        if (bIsHorizontal)
         {
-            int thumbWidth = stickManRainyImage.getWidth();
-            int thumbHeight = stickManRainyImage.getHeight();
+            int nThumbWidth = m_iStickManm_iRainyImage.getWidth();
+            int nThumbHeight = m_iStickManm_iRainyImage.getHeight();
 
-            int stickmanX = (int)sliderPos - (thumbWidth / 2);
-            int stickmanY = (int)y + (height / 2) - (thumbHeight / 2);
+            int nStickmanX = (int)fSliderPos - (nThumbWidth / 2);
+            int nStickmanY = (int)y + (nHeight / 2) - (nThumbHeight / 2);
 
-            g.drawImage(stickManRainyImage, stickmanX, stickmanY, thumbWidth, thumbHeight, 0, 0, thumbWidth, thumbHeight);
+            g.drawImage(m_iStickManm_iRainyImage, nStickmanX, nStickmanY, nThumbWidth, nThumbHeight, 0, 0, nThumbWidth, nThumbHeight);
         }
     }
 
 private:
-    Image stickManRainyImage;
+    Image m_iStickManm_iRainyImage;
 };
 
 class StickmanSliderSnowyLookAndFeel : public LookAndFeel_V4
@@ -113,73 +113,73 @@ class StickmanSliderSnowyLookAndFeel : public LookAndFeel_V4
 public:
     StickmanSliderSnowyLookAndFeel()
     {
-        stickManSnowyImage = ImageFileFormat::loadFrom(BinaryData::stickmanSnowy_png, BinaryData::stickmanSnowy_pngSize);
-        stickManSnowyImage = stickManSnowyImage.rescaled(54, 57, Graphics::highResamplingQuality);
+        m_iStickManm_iSnowyImage = ImageFileFormat::loadFrom(BinaryData::stickmanSnowy_png, BinaryData::stickmanSnowy_pngSize);
+        m_iStickManm_iSnowyImage = m_iStickManm_iSnowyImage.rescaled(54, 57, Graphics::highResamplingQuality);
     }
 
     int getSliderThumbRadius(Slider&) override
     {
-        return stickManSnowyImage.getHeight() / 2;
+        return m_iStickManm_iSnowyImage.getHeight() / 2;
     }
 
-    void drawLinearSlider(Graphics& g, int x, int y, int width, int height,
-        float sliderPos,
-        float minSliderPos,
-        float maxSliderPos,
-        const Slider::SliderStyle style, Slider& slider) override
+    void drawLinearSlider(Graphics& g, int x, int y, int nWidth, int nHeight,
+        float fSliderPos,
+        float fMinSliderPos,
+        float fMaxSliderPos,
+        const Slider::SliderStyle cStyle, Slider& cSlider) override
     {
-        (void)style;
-        (void)minSliderPos;
-        (void)maxSliderPos;
+        (void)cStyle;
+        (void)fMinSliderPos;
+        (void)fMaxSliderPos;
 
-        bool isHorizontal = slider.isHorizontal();
+        bool bIsHorizontal = cSlider.isHorizontal();
 
-        Point<float> startPoint = isHorizontal
-            ? Point<float>((float)x, (float)y + (float)height * 0.5f)
-            : Point<float>((float)x + (float)width * 0.5f, (float)(height + y)); 
+        Point<float> startPoint = bIsHorizontal
+            ? Point<float>((float)x, (float)y + (float)nHeight * 0.5f)
+            : Point<float>((float)x + (float)nWidth * 0.5f, (float)(nHeight + y));
 
-        Point<float> endPoint = isHorizontal
-            ? Point<float>((float)(width + x), startPoint.y) 
+        Point<float> endPoint = bIsHorizontal
+            ? Point<float>((float)(nWidth + x), startPoint.y)
             : Point<float>(startPoint.x, (float)y);  
 
         // Draw Stickman Image at the correct position 
-        if (isHorizontal)
+        if (bIsHorizontal)
         {
-            int thumbWidth = stickManSnowyImage.getWidth();
-            int thumbHeight = stickManSnowyImage.getHeight();
+            int nThumbWidth = m_iStickManm_iSnowyImage.getWidth();
+            int nThumbHeight = m_iStickManm_iSnowyImage.getHeight();
 
-            int stickmanX = (int)sliderPos - (thumbWidth / 2); 
-            int stickmanY = (int)y + (height / 2) - (thumbHeight / 2); 
+            int nStickmanX = (int)fSliderPos - (nThumbWidth / 2);
+            int nStickmanY = (int)y + (nHeight / 2) - (nThumbHeight / 2);
 
-            g.drawImage(stickManSnowyImage, stickmanX, stickmanY, thumbWidth, thumbHeight, 0, 0, thumbWidth, thumbHeight);
+            g.drawImage(m_iStickManm_iSnowyImage, nStickmanX, nStickmanY, nThumbWidth, nThumbHeight, 0, 0, nThumbWidth, nThumbHeight);
         }
     }
 
 private:
-    Image stickManSnowyImage;
+    Image m_iStickManm_iSnowyImage;
 };
 
 class DistanceGraphic : public Component
 {
 public:
-    DistanceGraphic(MainComponent& parentComponent);
+    DistanceGraphic(MainComponent& pcParentComponent);
     ~DistanceGraphic();
     void resized() override;
     void paint(Graphics& g) override;
 
 private:
-    Slider distanceSlider;
-    TextEditor distanceText;
-    Image sunnyImage, windyImage, rainyImage, snowyImage, stickFigureImage;
+    Slider m_cDistanceSlider;
+    TextEditor m_cDistanceText;
+    Image m_iSunnyImage, m_iWindyImage, m_iRainyImage, m_iSnowyImage;
 
-    Image windLeft1, windLeft2, windLeft3, windLeft4, windLeft5;
-    Image windRight1, windRight2, windRight3, windRight4, windRight5;
-    Image stageNormal, stageRainy, stageSnowy;
-    Image rainOverlay, snowOverlay, sunOverlay;
-    Image cloudsPartial, cloudsLight, cloudsDark;
+    Image m_iWindLeft1, m_iWindLeft2, m_iWindLeft3, m_iWindLeft4, m_iWindLeft5;
+    Image m_iWindRight1, m_iWindRight2, m_iWindRight3, m_iWindRight4, m_iWindRight5;
+    Image m_iStageNormal, m_iStageRainy, m_iStageSnowy;
+    Image m_iRainOverlay, m_iSnowOverlay, m_iSunOverlay;
+    Image m_iCloudsPartial, m_iCloudsLight, m_iCloudsDark;
 
-    MainComponent& mainComponent;
-    StickmanSliderLookAndFeel stickmanLookAndFeel;
-    StickmanSliderRainyLookAndFeel stickmanRainyLookAndFeel;
-    StickmanSliderSnowyLookAndFeel stickmanSnowyLookAndFeel;
+    MainComponent& m_pcMainComponent;
+    StickmanSliderLookAndFeel m_lfStickmanLookAndFeel;
+    StickmanSliderRainyLookAndFeel m_lfStickmanRainyLookAndFeel;
+    StickmanSliderSnowyLookAndFeel m_lfStickmanSnowyLookAndFeel;
 };

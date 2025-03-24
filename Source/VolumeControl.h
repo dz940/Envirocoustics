@@ -10,119 +10,119 @@ public:
 
     VolumeSliderLookAndFeel()
     {
-        thumbImage = ImageFileFormat::loadFrom(BinaryData::sliderThumb_png, BinaryData::sliderThumb_pngSize);
-        thumbImage = thumbImage.rescaled(30, 55, Graphics::highResamplingQuality);
+        m_iThumbImage = ImageFileFormat::loadFrom(BinaryData::sliderThumb_png, BinaryData::sliderThumb_pngSize);
+        m_iThumbImage = m_iThumbImage.rescaled(30, 55, Graphics::highResamplingQuality);
     }
 
     int getSliderThumbRadius(Slider&) override
-    { return thumbImage.getHeight()/2; }
+    { return m_iThumbImage.getHeight()/2; }
 
-    void drawLinearSlider(Graphics & g, int x, int y, int width, int height,
-        float sliderPos,
-        float minSliderPos,
-        float maxSliderPos,
-        const Slider::SliderStyle style, Slider & slider) override
+    void drawLinearSlider(Graphics & g, int x, int y, int nWidth, int nHeight,
+        float fSliderPos,
+        float fMinSliderPos,
+        float fMaxSliderPos,
+        const Slider::SliderStyle cStyle, Slider & cSlider) override
     {
-        (void)style;
-        (void)minSliderPos;
-        (void)maxSliderPos;
+        (void)cStyle;
+        (void)fMinSliderPos;
+        (void)fMaxSliderPos;
 
-        auto isTwoVal = (style == Slider::SliderStyle::TwoValueVertical || style == Slider::SliderStyle::TwoValueHorizontal);
-        auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
+        bool bIsTwoVal = (cStyle == Slider::SliderStyle::TwoValueVertical || cStyle == Slider::SliderStyle::TwoValueHorizontal);
+        bool bIsThreeVal = (cStyle == Slider::SliderStyle::ThreeValueVertical || cStyle == Slider::SliderStyle::ThreeValueHorizontal);
 
-        auto trackWidth = jmin(6.0f, slider.isHorizontal() ? (float)height * 0.25f : (float)width * 0.25f);
+        float fTrackWidth = jmin(6.0f, cSlider.isHorizontal() ? (float)nHeight * 0.25f : (float)nWidth * 0.25f);
 
-        Point<float> startPoint(slider.isHorizontal() ? (float)x : (float)x + (float)width * 0.5f,
-            slider.isHorizontal() ? (float)y + (float)height * 0.5f : (float)(height + y));
+        Point<float> fpStartPoint(cSlider.isHorizontal() ? (float)x : (float)x + (float)nWidth * 0.5f,
+            cSlider.isHorizontal() ? (float)y + (float)nHeight * 0.5f : (float)(nHeight + y));
 
-        Point<float> endPoint(slider.isHorizontal() ? (float)(width + x) : startPoint.x,
-            slider.isHorizontal() ? startPoint.y : (float)y);
+        Point<float> fpEndPoint(cSlider.isHorizontal() ? (float)(nWidth + x) : fpStartPoint.x,
+            cSlider.isHorizontal() ? fpStartPoint.y : (float)y);
 
         Path backgroundTrack;
-        backgroundTrack.startNewSubPath(startPoint);
-        backgroundTrack.lineTo(endPoint);
-        g.setColour(slider.findColour(Slider::backgroundColourId));
-        g.strokePath(backgroundTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+        backgroundTrack.startNewSubPath(fpStartPoint);
+        backgroundTrack.lineTo(fpEndPoint);
+        g.setColour(cSlider.findColour(Slider::backgroundColourId));
+        g.strokePath(backgroundTrack, { fTrackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
         Path valueTrack;
-        Point<float> minPoint, maxPoint, thumbPoint;
+        Point<float> fpMinPoint, fpMaxPoint, fpThumbPoint;
 
-        auto kx = slider.isHorizontal() ? sliderPos : ((float)x + (float)width * 0.5f);
-        auto ky = slider.isHorizontal() ? ((float)y + (float)height * 0.5f) : sliderPos;
+        auto kx = cSlider.isHorizontal() ? fSliderPos : ((float)x + (float)nWidth * 0.5f);
+        auto ky = cSlider.isHorizontal() ? ((float)y + (float)nHeight * 0.5f) : fSliderPos;
 
-        minPoint = startPoint;
-        maxPoint = { kx, ky };
+        fpMinPoint = fpStartPoint;
+        fpMaxPoint = { kx, ky };
 
-        auto thumbWidth = thumbImage.getWidth();
-        auto thumbHeight = thumbImage.getHeight();
+        int nThumbWidth = m_iThumbImage.getWidth();
+        int nThumbHeight = m_iThumbImage.getHeight();
 
-        valueTrack.startNewSubPath(minPoint);
-        valueTrack.lineTo(isThreeVal ? thumbPoint : maxPoint);
-        g.setColour(slider.findColour(Slider::trackColourId));
-        g.strokePath(valueTrack, { trackWidth, PathStrokeType::curved, PathStrokeType::rounded });
+        valueTrack.startNewSubPath(fpMinPoint);
+        valueTrack.lineTo(bIsThreeVal ? fpThumbPoint : fpMaxPoint);
+        g.setColour(cSlider.findColour(Slider::trackColourId));
+        g.strokePath(valueTrack, { fTrackWidth, PathStrokeType::curved, PathStrokeType::rounded });
 
         // Draw tick marks
         g.setColour(Colours::white); // Set tick marks to white
-        int numTicks = 8;
+        int nNumTicks = 8;
 
-        for (int i = 0; i < numTicks; ++i)
+        for (int i = 0; i < nNumTicks; ++i)
         {
-            float t = static_cast<float>(i) / (numTicks - 1); // Normalized position (0 to 1)
-            Point<float> tickPoint = startPoint + (endPoint - startPoint) * t; // Interpolated position
-            g.drawLine(tickPoint.x - 35, tickPoint.y, tickPoint.x -25, tickPoint.y, 2.0f); // Horizontal tick marks        
+            float t = static_cast<float>(i) / (nNumTicks - 1); // Normalized position (0 to 1)
+            Point<float> fpTickPoint = fpStartPoint + (fpEndPoint - fpStartPoint) * t; // Interpolated position
+            g.drawLine(fpTickPoint.x - 35, fpTickPoint.y, fpTickPoint.x -25, fpTickPoint.y, 2.0f); // Horizontal tick marks        
         }
 
-        if (!isTwoVal)
+        if (!bIsTwoVal)
         {
-            g.drawImage(thumbImage, (width / 2) - (thumbWidth / 2), (int)sliderPos - (thumbHeight / 2),
-                thumbWidth, thumbHeight, 0, 0, thumbWidth, thumbHeight);
+            g.drawImage(m_iThumbImage, (nWidth / 2) - (nThumbWidth / 2), (int)fSliderPos - (nThumbHeight / 2),
+                nThumbWidth, nThumbHeight, 0, 0, nThumbWidth, nThumbHeight);
         }
 
-        if (slider.isBar())
+        if (cSlider.isBar())
         {
-            drawLinearSliderOutline(g, x, y, width, height, style, slider);
+            drawLinearSliderOutline(g, x, y, nWidth, nHeight, cStyle, cSlider);
         }  
     }
 
 private:
-    Image thumbImage;
+    Image m_iThumbImage;
 };
 
 class LevelMeter : public Component
 {
 public:
-    LevelMeter() : level(0.0f)
+    LevelMeter() : m_fLevel(0.0f)
     {}
 
-    void setLevel(float newLevel)
+    void vSetLevel(const float fNewLevel)
     {
         // Use a smoothing algorithm for a better visual effect
-        level = 0.9f * level + 0.1f * jlimit(0.0f, 1.0f, newLevel);
+        m_fLevel = 0.9f * m_fLevel + 0.1f * jlimit(0.0f, 1.0f, fNewLevel);
         repaint();
     }
 
-    float getLevel()
-    { return level; }
+    float fGetLevel()
+    { return m_fLevel; }
 
     void paint(Graphics& g) override
     {
         g.fillAll(Colours::black);
 
-        float meterWidth = (float)getWidth();
-        float meterHeight = (float)getHeight();
-        float levelHeight = (float)(meterHeight * (1.0f - level));
+        float fMeterWidth = (float)getWidth();
+        float fMeterHeight = (float)getHeight();
+        float fLevelHeight = (float)(fMeterHeight * (1.0f - m_fLevel));
 
         ColourGradient gradient(
-            Colours::yellow, 0.0f, (float)meterHeight,  // Yellow at the bottom
+            Colours::yellow, 0.0f, (float)fMeterHeight,  // Yellow at the bottom
             Colours::red, 0.0f, 0.0f,            // Red at the top
             false);
 
         g.setGradientFill(gradient);
-        g.fillRect(0.0f, levelHeight, meterWidth, meterHeight - levelHeight);
+        g.fillRect(0.0f, fLevelHeight, fMeterWidth, fMeterHeight - fLevelHeight);
     }
 
 private:
-    float level;
+    float m_fLevel;
 };
 
 
@@ -131,19 +131,15 @@ class VolumeControl : public Component
 public:
     VolumeControl(MainComponent& parentComponent);
     ~VolumeControl();
-    double getGain();
+    double dGetGain();
     void resized() override;
-    void setMeterLevel(float newLevel);
+    void vSetMeterLevel(float fNewLevel);
     void paint(Graphics& g) override;
 
 private:
-    Slider temperatureKnob, windSpeedKnob, humidityKnob;
-    TextButton temperatureLapseBtn, temperatureInversionBtn;
-    TextButton precipitationOnBtn, precipitationOffBtn;
-    TextButton windLeftBtn, windRightBtn;
 
-    MainComponent& mainComponent;
-    Slider volumeFader;
-    LevelMeter levelMeter;
-    VolumeSliderLookAndFeel volumeSliderLookAndFeel;
+    MainComponent& m_pcMainComponent;
+    Slider m_cVolumeFader;
+    LevelMeter m_cLevelMeter;
+    VolumeSliderLookAndFeel m_lfVolumeSliderLookAndFeel;
 };

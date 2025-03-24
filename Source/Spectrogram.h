@@ -10,7 +10,7 @@ public:
     Spectrogram(int nWidth, int nHeight);
     ~Spectrogram() override;
 
-    void pushBuffer(const AudioBuffer<float>& buffer);
+    void vPushBuffer(const AudioBuffer<float>& buffer);
     void paint(Graphics& g) override;
 
 private:
@@ -19,10 +19,10 @@ private:
     static constexpr int fftOrder = 10;  // log2(fftSize) for FFT calculations
 
     dsp::FFT forwardFFT{ fftOrder };
-    Image spectrogramImage; // Image buffer for visualization
+    Image m_iSpectrogramImage; // Image buffer for visualization
     AudioBuffer<float> fifo; // Circular buffer for incoming audio
-    int fifoIndex = 0;
+    int m_nFifoIndex = 0;
 
-    void drawNextFrameOfSpectrogram();
-    void shiftImageLeft();
+    void vDrawNextFrameOfSpectrogram();
+    void vShiftImageLeft();
 };

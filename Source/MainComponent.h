@@ -48,23 +48,23 @@ public:
     MainComponent();
     ~MainComponent() override;
 
-    void switchToSpectrogram();
-    void switchToSpectrum();
-    void vSetParameter(int nParameterType, int nValue, bool bUpdateDisplay);
+    void vSwitchToSpectrogram();
+    void vSwitchToSpectrum();
+    void vSetParameter(const int nParameterType, const int nValue, const bool bUpdateDisplay);
     void vUpdateConditionControls();
-    int nGetParameter(int nParameterType);
-    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    double dCalculateWindLoss(const double dFrequency, const double dDistance, const double dTemperature, const double dWindSpeed, const bool bWindDirection);
+    int nGetParameter(const int nParameterType);
+    double dCalculateWindLoss(const double dFrequency, const double dDistance, const double dWindSpeed, const bool bWindDirection);
     double dCalculateTemperatureGradientLoss(const double dFrequency, const double dDistance, const int nTemperatureGradient);
     double dCalculateAirAttenuationPerMetre(const double dFreq, const double dTemperature, const double dRelativeHumidity, const double dAtmosphericPressure);
+    
+    // Overriden functions
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void paint(Graphics& g) override;
     void resized() override;
 
 private:
-
-    AudioDeviceManager customDeviceManager;
 
     typedef enum
     {
@@ -75,50 +75,50 @@ private:
         Stopping
     }transportSourceState_t;
 
-    transportSourceState_t transportSourceState;
+    AudioDeviceManager m_cAudioDeviceManager;
+    transportSourceState_t m_cTransportSourceState;
 
-    void openTextButtonClicked();
-    void playAudioButtonClicked();
-    void stopAudioButtonClicked();
-    void pauseAudioButtonClicked();
-    void transportSourceStateChanged(transportSourceState_t state);
-    void thumbnailChanged();
+    void vOpenTextButtonClicked();
+    void vPlayAudioButtonClicked();
+    void vStopAudioButtonClicked();
+    void vPauseAudioButtonClicked();
+    void vTransportSourceStateChanged(transportSourceState_t state);
     void changeListenerCallback(ChangeBroadcaster* source) override;
 
-    void DSPEngine(juce::AudioBuffer<float>& buffer);
-    void updateSystemResponse();
-    void updateFilter(const int nDistanceVal);
+    void vApplyDSPProcessing(juce::AudioBuffer<float>& buffer);
+    void vUpdateSystemResponse();
 
-    TextButton openFileButton, playAudioButton, stopAudioButton, pauseAudioButton, spectrogramButton, spectrumButton;
+    TextButton m_cOpenFileButton, m_cPlayAudioButton, m_cStopAudioButton, m_cPauseAudioButton, m_cShowSpectrogramButton, m_cShowSpectrumButton;
 
-    AudioFormatManager formatManager;
-    std::unique_ptr<AudioFormatReaderSource> playSource;
-    AudioTransportSource transportSource;
-    std::unique_ptr<FileChooser> chooser;
+    AudioFormatManager m_cFormatManager;
+    std::unique_ptr<AudioFormatReaderSource> m_pcPlaySource;
+    AudioTransportSource m_cTransportSource;
+    std::unique_ptr<FileChooser> m_pcFileChooser;
 
-    WaveformDisplay* waveformDisplay;
-    ConditionControls* conditionControls;
-    WeatherPresets* weatherPresets;
-    DistanceGraphic* distanceGraphic;
-    VolumeControl* volumeControl;
-    SpectrogramComponent* spectrogram1, *spectrogram2;
-    SpectrumComponent* frequencyAnalyser1, *frequencyAnalyser2;
-    ResponseComponent* responseCurve;
+    WaveformDisplay* m_pcWaveformDisplay;
+    ConditionControls* m_pcConditionControls;
+    WeatherPresets* m_pcWeatherPresets;
+    DistanceGraphic* m_pcDistanceGraphic;
+    VolumeControl* m_pcVolumeControl;
+    SpectrogramComponent* m_pcPreProcessingSpectrogram, *m_pcPostProcessingSpectrogram;
+    SpectrumComponent* m_pcPreProcessingFrequencyAnalyser, *m_pcPostProcessingFrequencyAnalyser;
+    ResponseComponent* m_pcResponseCurve;
 
-    Image titleImage;
+    Image m_iTitleImage;
 
-    int nDistance = 100;
-    int nTemperature = 20;
-    int nHumidity = 50;
-    int nWindSpeed = 10;
-    int nPressure = 950;
-    int nWindDirection = WIND_DIRECTION_UPWIND;
-    bool bPrecipitation = OFF;
-    int nTempGradient = TEMPERATURE_LAPSE;
-    bool bCloudCover = OFF;
+    int m_nDistance = 100;
+    int m_nTemperature = 20;
+    int m_nHumidity = 50;
+    int m_nWindSpeed = 10;
+    int m_nPressure = 950;
+    int m_nWindDirection = WIND_DIRECTION_UPWIND;
+    bool m_bPrecipitation = OFF;
+    int m_nTempGradient = TEMPERATURE_LAPSE;
+    bool m_bCloudCover = OFF;
 
-    juce::dsp::IIR::Filter<float> lowPassFilter;
-    juce::TooltipWindow tooltipWindow{ this }; // Enables tooltips in this component
+    std::vector<double> m_dTargetMagnitudeResponse;
+
+    juce::TooltipWindow m_wTooltipWindow{ this }; // Enables tooltips in this component
 
     //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

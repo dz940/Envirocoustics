@@ -3,32 +3,32 @@
 
 /*======================================================================================*/
 VolumeControl::VolumeControl(MainComponent& parentComponent)
-    : mainComponent(parentComponent)
+    : m_pcMainComponent(parentComponent)
 /*======================================================================================*/
 {
-    volumeFader.setSliderStyle(Slider::LinearVertical);
-    volumeFader.setTextValueSuffix("dB");
-    volumeFader.setTextBoxStyle(Slider::TextBoxBelow, false, 60, 20);
-    volumeFader.setRange(-60.0, 10.0, 0.1); // dB scale (-60 dB to +10 dB)
-    volumeFader.setValue(0.0);
-    volumeFader.setLookAndFeel(&volumeSliderLookAndFeel);
-    addAndMakeVisible(volumeFader);
-    addAndMakeVisible(levelMeter);
-    levelMeter.setOpaque(true);
+    m_cVolumeFader.setSliderStyle(Slider::LinearVertical);
+    m_cVolumeFader.setTextValueSuffix("dB");
+    m_cVolumeFader.setTextBoxStyle(Slider::TextBoxBelow, false, 60, 20);
+    m_cVolumeFader.setRange(-60.0, 10.0, 0.1); // dB scale (-60 dB to +10 dB)
+    m_cVolumeFader.setValue(0.0);
+    m_cVolumeFader.setLookAndFeel(&m_lfVolumeSliderLookAndFeel);
+    addAndMakeVisible(m_cVolumeFader);
+    addAndMakeVisible(m_cLevelMeter);
+    m_cLevelMeter.setOpaque(true);
 }
 
 /*======================================================================================*/
 VolumeControl::~VolumeControl()
 /*======================================================================================*/
 {
-    volumeFader.setLookAndFeel(nullptr);
+    m_cVolumeFader.setLookAndFeel(nullptr);
 }
 
 /*======================================================================================*/
-double VolumeControl::getGain()
+double VolumeControl::dGetGain()
 /*======================================================================================*/
 {
-    return volumeFader.getValue();
+    return m_cVolumeFader.getValue();
 }
 
 /*======================================================================================*/
@@ -39,26 +39,24 @@ void VolumeControl::resized()
     Rectangle rect = getLocalBounds();
     Rectangle<int> rcVolumeControl = rect;
 
-    volumeFader.setBounds(rcVolumeControl.getX() + 45, rcVolumeControl.getY() + 30, 60, rcVolumeControl.getHeight() - 40); 
-    levelMeter.setBounds(rcVolumeControl.getX() + rcVolumeControl.getWidth() - 40, volumeFader.getY() + 25, 6, 190);
+    m_cVolumeFader.setBounds(rcVolumeControl.getX() + 45, rcVolumeControl.getY() + 30, 60, rcVolumeControl.getHeight() - 40);
+    m_cLevelMeter.setBounds(rcVolumeControl.getX() + rcVolumeControl.getWidth() - 40, m_cVolumeFader.getY() + 25, 6, 190);
 }
 
 /*======================================================================================*/
-void VolumeControl::setMeterLevel(float newLevel)
+void VolumeControl::vSetMeterLevel(float fNewLevel)
 /*======================================================================================*/
 {
-    levelMeter.setLevel(0.7f * levelMeter.getLevel() + 0.3f * jlimit(0.0f, 1.0f, newLevel));
-    levelMeter.repaint();
+    m_cLevelMeter.vSetLevel(0.7f * m_cLevelMeter.fGetLevel() + 0.3f * jlimit(0.0f, 1.0f, fNewLevel));
+    m_cLevelMeter.repaint();
 }
 
 /*======================================================================================*/
 void VolumeControl::paint(Graphics& g)
 /*======================================================================================*/
 {
-    Rectangle rect = getLocalBounds();
-    //g.fillAll(Colours::darkseagreen);
     g.setColour(Colours::darkseagreen);
-    Rectangle<int> rcConditionControls = rect; // x, y, width, height
+    Rectangle<int> rcConditionControls = getLocalBounds();; // x, y, width, height
     g.fillRect(rcConditionControls); // Fill the rectangle
     g.setFont(20.0f);
     g.setColour(Colours::black);

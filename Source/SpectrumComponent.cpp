@@ -3,42 +3,41 @@
 #include "FrequencySpectrum.h"
 
 /*======================================================================================*/
-SpectrumComponent::SpectrumComponent(MainComponent& parentComponent)
-    : mainComponent(parentComponent)
+SpectrumComponent::SpectrumComponent(MainComponent& pcParentComponent)
+    : m_pcMainComponent(pcParentComponent)
 /*======================================================================================*/
 {
-    freqSpectrum = new FrequencySpectrum(480, 150);
-    addAndMakeVisible(freqSpectrum);
-    freqSpectrum->setOpaque(true);
+    m_pcFreqSpectrum = new FrequencySpectrum(480, 150);
+    addAndMakeVisible(m_pcFreqSpectrum);
+    m_pcFreqSpectrum->setOpaque(true);
 }
 
 /*======================================================================================*/
 SpectrumComponent::~SpectrumComponent()
 /*======================================================================================*/
 {
-    delete freqSpectrum;
+    delete m_pcFreqSpectrum;
 }
 
 /*======================================================================================*/
-void SpectrumComponent::pushBuffer(const AudioBuffer<float>& buffer)
+void SpectrumComponent::vPushBuffer(const AudioBuffer<float>& buffer)
 /*======================================================================================*/
 {
-    freqSpectrum->pushBuffer(buffer);
+    m_pcFreqSpectrum->vPushBuffer(buffer);
 }
 
 /*======================================================================================*/
 void SpectrumComponent::resized()
 /*======================================================================================*/
 {
-    Rectangle rect = getLocalBounds();
-    Rectangle<int> rcSpectrumComponent = rect;
-    freqSpectrum->setBounds(rect.getX() + 40, rect.getY(), 480, 150);
+    Rectangle<int> rcSpectrumComponent = getLocalBounds();
+    m_pcFreqSpectrum->setBounds(rcSpectrumComponent.getX() + 40, rcSpectrumComponent.getY(), 480, 150);
 }
 /*======================================================================================*/
 void SpectrumComponent::paint(Graphics& g)
 /*======================================================================================*/
 {
-    Rectangle rect(getLocalBounds().getX(), getLocalBounds().getY(), 40, getLocalBounds().getHeight());
+    Rectangle rcRect(getLocalBounds().getX(), getLocalBounds().getY(), 40, getLocalBounds().getHeight());
 
     Colour clBackground = Colours::black;
     g.setColour(clBackground);
@@ -48,48 +47,48 @@ void SpectrumComponent::paint(Graphics& g)
     g.setFont(10.0f);
     g.setColour(Colours::white);
 
-    int dBValue = 10;
+    int ndBValue = 10;
 
-    int labelX = rect.getX() + 10; // Position for labels (just before the gradient)
-    for (int y = rect.getY(); y <= rect.getY() + (rect.getHeight() - 20); y += ((rect.getHeight() - 20) / 5)) // 6 label positions (spread out)
+    int nLabelX = rcRect.getX() + 10; // Position for labels (just before the gradient)
+    for (int y = rcRect.getY(); y <= rcRect.getY() + (rcRect.getHeight() - 20); y += ((rcRect.getHeight() - 20) / 5)) // 6 label positions (spread out)
     {
         // Draw label with dB value
-        g.drawText(String(dBValue) + "dB", labelX, y, 30, 10, Justification::centredLeft);
-        dBValue -= 10;
+        g.drawText(String(ndBValue) + "dB", nLabelX, y, 30, 10, Justification::centredLeft);
+        ndBValue -= 10;
     }
 
-    int labelY = rect.getY() + rect.getHeight() - 10; // Position for labels (just before the gradient)
+    int nLabelY = rcRect.getY() + rcRect.getHeight() - 10; // Position for labels (just before the gradient)
 
-    int start = rect.getX() + 30;
-    int finish = rect.getX() + getLocalBounds().getWidth() - 30;
+    int nStart = rcRect.getX() + 30;
+    int nFinish = rcRect.getX() + getLocalBounds().getWidth() - 30;
 
     // Define logarithmic scaling
-    float minFreq = 20;  // Minimum frequency (e.g., 20 Hz)
-    float maxFreq = 20000;  // Maximum frequency (e.g., 20 kHz)
+    float fMinFreq = 20;  // Minimum frequency (e.g., 20 Hz)
+    float fMaxFreq = 20000;  // Maximum frequency (e.g., 20 kHz)
 
     // Define the major frequencies that will be labeled
-    std::vector<int> majorFrequencies = { 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000 }; // Example major frequencies
+    std::vector<int> nMajorFrequencies = { 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000 }; // Example major frequencies
 
-    for (int i = 0; i < majorFrequencies.size(); ++i)
+    for (int i = 0; i < nMajorFrequencies.size(); ++i)
     {
         // Get the current major frequency
-        int freq = majorFrequencies[i];
+        int nFreq = nMajorFrequencies[i];
 
         // Calculate the position on the x-axis for this frequency
         
-        float normalizedFreq = std::log10((float)freq / minFreq) / std::log10(maxFreq / minFreq);
-        int x = start + (int)(normalizedFreq * (finish - start));
+        float fNormalizedFreq = std::log10((float)nFreq / fMinFreq) / std::log10(fMaxFreq / fMinFreq);
+        int x = nStart + (int)(fNormalizedFreq * (nFinish - nStart));
 
         // Format the label and display it
-        if (freq >= 1000) 
+        if (nFreq >= 1000)
         {
             // Use kHz for frequencies >= 1000 Hz
-            g.drawText(String(freq / 1000.0f, 0) + "kHz", x, labelY, 30, 10, Justification::horizontallyCentred);
+            g.drawText(String(nFreq / 1000.0f, 0) + "kHz", x, nLabelY, 30, 10, Justification::horizontallyCentred);
         }
         else 
         {
             // Use Hz for frequencies < 1000 Hz
-            g.drawText(String(freq) + "Hz", x, labelY, 30, 10, Justification::horizontallyCentred);
+            g.drawText(String(nFreq) + "Hz", x, nLabelY, 30, 10, Justification::horizontallyCentred);
         }
     }
 }
