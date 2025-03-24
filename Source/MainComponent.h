@@ -88,7 +88,7 @@ private:
     void vApplyDSPProcessing(juce::AudioBuffer<float>& buffer);
     void vUpdateSystemResponse();
 
-    TextButton m_cOpenFileButton, m_cPlayAudioButton, m_cStopAudioButton, m_cPauseAudioButton, m_cShowSpectrogramButton, m_cShowSpectrumButton;
+    TextButton* m_pcOpenFileButton, *m_pcPlayAudioButton, *m_pcStopAudioButton, *m_pcPauseAudioButton, *m_pcShowSpectrogramButton, *m_pcShowSpectrumButton;
 
     AudioFormatManager m_cFormatManager;
     std::unique_ptr<AudioFormatReaderSource> m_pcPlaySource;

@@ -66,45 +66,51 @@ MainComponent::MainComponent() : juce::AudioAppComponent(m_cAudioDeviceManager)
     setAudioChannels(0, 2); // Stereo audio
 
     // Setting up the main component buttons
-    m_cOpenFileButton.setButtonText("Open File");
-    m_cOpenFileButton.onClick = [this] {vOpenTextButtonClicked(); };
-    m_cOpenFileButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
-    addAndMakeVisible(&m_cOpenFileButton);
+    m_pcOpenFileButton = new TextButton();
+    m_pcOpenFileButton->setButtonText("Open File");
+    m_pcOpenFileButton->onClick = [this] {vOpenTextButtonClicked(); };
+    m_pcOpenFileButton->setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    addAndMakeVisible(m_pcOpenFileButton);
 
-    m_cPlayAudioButton.setButtonText("Play");
-    m_cPlayAudioButton.onClick = [this] {vPlayAudioButtonClicked(); };
-    m_cPlayAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
-    m_cPlayAudioButton.setEnabled(false);
-    addAndMakeVisible(&m_cPlayAudioButton);
+    m_pcPlayAudioButton = new TextButton();
+    m_pcPlayAudioButton->setButtonText("Play");
+    m_pcPlayAudioButton->onClick = [this] {vPlayAudioButtonClicked(); };
+    m_pcPlayAudioButton->setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    m_pcPlayAudioButton->setEnabled(false);
+    addAndMakeVisible(m_pcPlayAudioButton);
 
-    m_cPauseAudioButton.setButtonText("Pause");
-    m_cPauseAudioButton.onClick = [this] {vPauseAudioButtonClicked(); };
-    m_cPauseAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
-    m_cPauseAudioButton.setEnabled(false);
-    addAndMakeVisible(&m_cPauseAudioButton);
+    m_pcPauseAudioButton = new TextButton();
+    m_pcPauseAudioButton->setButtonText("Pause");
+    m_pcPauseAudioButton->onClick = [this] {vPauseAudioButtonClicked(); };
+    m_pcPauseAudioButton->setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    m_pcPauseAudioButton->setEnabled(false);
+    addAndMakeVisible(m_pcPauseAudioButton);
 
-    m_cStopAudioButton.setButtonText("Stop");
-    m_cStopAudioButton.onClick = [this] {vStopAudioButtonClicked(); };
-    m_cStopAudioButton.setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
-    m_cStopAudioButton.setEnabled(false);
-    addAndMakeVisible(&m_cStopAudioButton);
+    m_pcStopAudioButton = new TextButton();
+    m_pcStopAudioButton->setButtonText("Stop");
+    m_pcStopAudioButton->onClick = [this] {vStopAudioButtonClicked(); };
+    m_pcStopAudioButton->setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    m_pcStopAudioButton->setEnabled(false);
+    addAndMakeVisible(m_pcStopAudioButton);
 
-    m_cShowSpectrumButton.setButtonText("Spectrum");
-    m_cShowSpectrumButton.onClick = [this] {vSwitchToSpectrum(); };
-    m_cShowSpectrumButton.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
-    m_cShowSpectrumButton.setEnabled(true);
-    m_cShowSpectrumButton.setClickingTogglesState(true);
-    m_cShowSpectrumButton.setRadioGroupId(1);
-    m_cShowSpectrumButton.setToggleState(true, juce::dontSendNotification);
-    addAndMakeVisible(&m_cShowSpectrumButton);
+    m_pcShowSpectrumButton = new TextButton();
+    m_pcShowSpectrumButton->setButtonText("Spectrum");
+    m_pcShowSpectrumButton->onClick = [this] {vSwitchToSpectrum(); };
+    m_pcShowSpectrumButton->setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    m_pcShowSpectrumButton->setEnabled(true);
+    m_pcShowSpectrumButton->setClickingTogglesState(true);
+    m_pcShowSpectrumButton->setRadioGroupId(1);
+    m_pcShowSpectrumButton->setToggleState(true, juce::dontSendNotification);
+    addAndMakeVisible(m_pcShowSpectrumButton);
 
-    m_cShowSpectrogramButton.setButtonText("Spectrogram");
-    m_cShowSpectrogramButton.onClick = [this] {vSwitchToSpectrogram(); };
-    m_cShowSpectrogramButton.setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
-    m_cShowSpectrogramButton.setEnabled(true);
-    m_cShowSpectrogramButton.setClickingTogglesState(true);
-    m_cShowSpectrogramButton.setRadioGroupId(1);
-    addAndMakeVisible(&m_cShowSpectrogramButton);
+    m_pcShowSpectrogramButton = new TextButton();
+    m_pcShowSpectrogramButton->setButtonText("Spectrogram");
+    m_pcShowSpectrogramButton->onClick = [this] {vSwitchToSpectrogram(); };
+    m_pcShowSpectrogramButton->setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    m_pcShowSpectrogramButton->setEnabled(true);
+    m_pcShowSpectrogramButton->setClickingTogglesState(true);
+    m_pcShowSpectrogramButton->setRadioGroupId(1);
+    addAndMakeVisible(m_pcShowSpectrogramButton);
 
     m_cFormatManager.registerBasicFormats();
     m_cTransportSource.addChangeListener(this);
@@ -305,7 +311,7 @@ void MainComponent::vOpenTextButtonClicked()
                 m_pcPlaySource.reset(new AudioFormatReaderSource(reader, true));
                 m_cTransportSource.setSource(m_pcPlaySource.get(), 0, nullptr, reader->sampleRate);
                 m_cTransportSource.setPosition(0.0);
-                m_cPlayAudioButton.setEnabled(true);
+                m_pcPlayAudioButton->setEnabled(true);
             }
             else
             { DBG("Failed to load file: " + cAudioFile.getFullPathName()); }
@@ -353,35 +359,35 @@ void MainComponent::vTransportSourceStateChanged(transportSourceState_t state)
             }
             case Playing:
             {
-                m_cPlayAudioButton.setEnabled(false);
-                m_cPauseAudioButton.setEnabled(true);
-                m_cStopAudioButton.setEnabled(true);
-                m_cOpenFileButton.setEnabled(false);
+                m_pcPlayAudioButton->setEnabled(false);
+                m_pcPauseAudioButton->setEnabled(true);
+                m_pcStopAudioButton->setEnabled(true);
+                m_pcOpenFileButton->setEnabled(false);
                 break;
             }
             case Starting:
             {
-                m_cPlayAudioButton.setEnabled(false);
-                m_cOpenFileButton.setEnabled(false);
-                m_cPauseAudioButton.setEnabled(true);
-                m_cStopAudioButton.setEnabled(true);
+                m_pcPlayAudioButton->setEnabled(false);
+                m_pcOpenFileButton->setEnabled(false);
+                m_pcPauseAudioButton->setEnabled(true);
+                m_pcStopAudioButton->setEnabled(true);
                 m_cTransportSource.start();
                 break;
             }
             case Pausing:
             {
-                m_cPlayAudioButton.setEnabled(true);
-                m_cStopAudioButton.setEnabled(true);
-                m_cOpenFileButton.setEnabled(false);
+                m_pcPlayAudioButton->setEnabled(true);
+                m_pcStopAudioButton->setEnabled(true);
+                m_pcOpenFileButton->setEnabled(false);
                 m_cTransportSource.stop();
                 break;
             }
             case Stopping:
             {
-                m_cPlayAudioButton.setEnabled(true);
-                m_cStopAudioButton.setEnabled(false);
-                m_cPauseAudioButton.setEnabled(false);
-                m_cOpenFileButton.setEnabled(true);
+                m_pcPlayAudioButton->setEnabled(true);
+                m_pcStopAudioButton->setEnabled(false);
+                m_pcPauseAudioButton->setEnabled(false);
+                m_pcOpenFileButton->setEnabled(true);
                 m_cTransportSource.stop();
                 m_cTransportSource.setPosition(0.0);
                 break;
@@ -583,10 +589,10 @@ void MainComponent::paint(juce::Graphics& g)
 void MainComponent::resized()
 /*======================================================================================*/
 {
-    m_cOpenFileButton.setBounds(670, 150, 120, 25);
-    m_cPlayAudioButton.setBounds(670, 180, 120, 25);
-    m_cPauseAudioButton.setBounds(670, 210, 120, 25);
-    m_cStopAudioButton.setBounds(670, 240, 120, 25);
+    m_pcOpenFileButton->setBounds(670, 150, 120, 25);
+    m_pcPlayAudioButton->setBounds(670, 180, 120, 25);
+    m_pcPauseAudioButton->setBounds(670, 210, 120, 25);
+    m_pcStopAudioButton->setBounds(670, 240, 120, 25);
     m_pcVolumeControl->setBounds(800, 150, 150, 300);
     m_pcWaveformDisplay->setBounds(10, 150, 650, 115);
     m_pcConditionControls->setBounds(10, 460, 410, 190);
@@ -596,7 +602,7 @@ void MainComponent::resized()
     m_pcPostProcessingSpectrogram->setBounds(430, 690, 520, 160);
     m_pcPreProcessingFrequencyAnalyser->setBounds(430, 490, 520, 160);
     m_pcPostProcessingFrequencyAnalyser->setBounds(430, 690, 520, 160);
-    m_cShowSpectrogramButton.setBounds(865, 465, 80, 20);
-    m_cShowSpectrumButton.setBounds(780, 465, 80, 20);
+    m_pcShowSpectrogramButton->setBounds(865, 465, 80, 20);
+    m_pcShowSpectrumButton->setBounds(780, 465, 80, 20);
     m_pcResponseCurve->setBounds(10, 660, 410, 190);
 }
