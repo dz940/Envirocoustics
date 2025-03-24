@@ -138,6 +138,12 @@ MainComponent::~MainComponent()
     delete m_pcPostProcessingSpectrogram;
     delete m_pcPreProcessingFrequencyAnalyser;
     delete m_pcPostProcessingFrequencyAnalyser;
+    delete m_pcOpenFileButton;
+    delete m_pcPlayAudioButton;
+    delete m_pcStopAudioButton;
+    delete m_pcPauseAudioButton;
+    delete m_pcShowSpectrogramButton;
+    delete m_pcShowSpectrumButton;
 }
 
 /*======================================================================================*/
