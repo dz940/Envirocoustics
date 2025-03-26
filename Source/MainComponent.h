@@ -117,6 +117,10 @@ private:
     bool m_bCloudCover = OFF;
 
     std::vector<double> m_dTargetMagnitudeResponse;
+    juce::CriticalSection filterLock;
+
+    juce::IIRFilter mainFilterL;
+    juce::IIRFilter mainFilterR;
 
     juce::TooltipWindow m_wTooltipWindow{ this }; // Enables tooltips in this component
 

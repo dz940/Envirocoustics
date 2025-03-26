@@ -7,6 +7,7 @@
 #include "VolumeControl.h"
 #include "SpectrogramComponent.h"
 #include "ResponseComponent.h"
+#include "AtmosphericAbsorption.h"
 #include <atlstr.h>
 
 /*======================================================================================*/
@@ -16,6 +17,8 @@ MainComponent::MainComponent() : juce::AudioAppComponent(m_cAudioDeviceManager)
     // Load logo
     m_iTitleImage = ImageFileFormat::loadFrom(BinaryData::title_png, BinaryData::title_pngSize);
     setOpaque(true);
+    mainFilterL.reset();
+    mainFilterR.reset();
 
     // Creating all components
     m_pcDistanceGraphic = new DistanceGraphic(*this);
@@ -419,16 +422,27 @@ void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
 void MainComponent::vApplyDSPProcessing(juce::AudioBuffer<float>& buffer)
 /*======================================================================================*/
 {
+    // Initialise the cutoff solver with atmospheric conditions
+    double dTempFarenheit = (m_nTemperature * 1.8) + 32; // Atmospheric absorption calculation uses farenheit
+    double dPressurePascals = m_nPressure * 100; // Atmoshperic absoption calculation uses pascals
+    FilterCutoffSolver cCutoffSolver(m_nHumidity, dTempFarenheit, dPressurePascals);
+
+    double dDistance = (m_nDistance == 0) ? 1 : m_nDistance; // Set minimum distance to 1 so that it doesnt break the calculation
+    double dCutoffFrequency = cCutoffSolver.Solve(dDistance); // Calculate the LPF cutoff frequency
+    dCutoffFrequency = (dCutoffFrequency > 22000.0) ? 20000.0 : dCutoffFrequency; // Ensure cut off frequency is not greater than 20kHz
+
+    // Set the low-pass filter with the calculated cutoff frequency
+    mainFilterL.setCoefficients(juce::IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
+    mainFilterR.setCoefficients(juce::IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
+
     int nNumSamples = buffer.getNumSamples();
+    float* pfChannelDataL = buffer.getWritePointer(0);
+    float* pfChannelDataR = buffer.getWritePointer(1);
 
-    //float* pfChannelDataL = buffer.getWritePointer(0);
-    //float* pfChannelDataR = buffer.getWritePointer(1);
-
-    for (int i = 0; i < nNumSamples; i++)
-    {
-        //channelDataL[i] = lowPassFilter.processSample(channelDataL[i]);
-        //channelDataR[i] = lowPassFilter.processSample(channelDataR[i]);
-    }
+    // Apply the filter to the left and right channels of the audio buffer
+    mainFilterL.processSamples(pfChannelDataL, nNumSamples);
+    mainFilterR.processSamples(pfChannelDataR, nNumSamples);
+    
 }
 
 /*======================================================================================*/

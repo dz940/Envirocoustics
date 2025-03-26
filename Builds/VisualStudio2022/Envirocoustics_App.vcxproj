@@ -138,6 +138,7 @@
     <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\AtmosphericAbsorption.cpp" />
     <ClCompile Include="..\..\Source\ConditionControls.cpp" />
     <ClCompile Include="..\..\Source\DistanceGraphic.cpp" />
     <ClCompile Include="..\..\Source\FrequencySpectrum.cpp" />
@@ -2934,6 +2935,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_gui_extra.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\AtmosphericAbsorption.h" />
     <ClInclude Include="..\..\Source\ConditionControls.h" />
     <ClInclude Include="..\..\Source\DistanceGraphic.h" />
     <ClInclude Include="..\..\Source\FrequencySpectrum.h" />
