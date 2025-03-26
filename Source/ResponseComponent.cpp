@@ -23,20 +23,20 @@ ResponseComponent::~ResponseComponent()
 void ResponseComponent::resized()
 /*======================================================================================*/
 {
-    juce::Rectangle rcRect = getLocalBounds();
+    Rectangle rcRect = getLocalBounds();
     m_pcResponseCurve->setBounds(rcRect.getX() + 35, rcRect.getY() + 30, rcRect.getWidth() - 50, rcRect.getHeight() - 45);
 
 }
 /*======================================================================================*/
-void ResponseComponent::paint(juce::Graphics& g)
+void ResponseComponent::paint(Graphics& g)
 /*======================================================================================*/
 {
-    g.fillAll(juce::Colours::darkseagreen);
-    g.setColour(juce::Colours::black);
+    g.fillAll(Colours::darkseagreen);
+    g.setColour(Colours::black);
     g.setFont(20.0f);
 
     // Title
-    g.drawText("System Response Curve", 0, 0, getWidth(), 30, juce::Justification::centred, true);
+    g.drawText("System Response Curve", 0, 0, getWidth(), 30, Justification::centred, true);
 
     // Define drawing bounds
     float fWidth = (float)getWidth();
@@ -49,16 +49,16 @@ void ResponseComponent::paint(juce::Graphics& g)
     float fGraphWidth = fWidth - fLeftMargin - fRightMargin;
     float fGraphHeight = fHeight - fTopOffset - fBottomOffset;
 
-    juce::Path responseCurve;
+    Path responseCurve;
     g.setFont(10.0f); // Smaller font for labels
 
     // Draw Magnitude Labels (+10 dB at top, -50 dB at bottom)
     for (int ndB = 10; ndB >= -50; ndB -= 10)
     {
-        float y = fTopOffset + juce::jmap((float)ndB, 10.0f, -50.0f, 0.0f, fGraphHeight);
+        float y = fTopOffset + jmap((float)ndB, 10.0f, -50.0f, 0.0f, fGraphHeight);
 
-        g.setColour(juce::Colours::black);
-        g.drawText(juce::String(ndB) + " dB", 0, (int)(y - 5), 30, 10, juce::Justification::right, false);
+        g.setColour(Colours::black);
+        g.drawText(String(ndB) + " dB", 0, (int)(y - 5), 30, 10, Justification::right, false);
     }
 
     // Frequency labels & grid lines (logarithmic spacing)
@@ -66,17 +66,17 @@ void ResponseComponent::paint(juce::Graphics& g)
 
     for (double dFreq : dMajorFreqs)
     {
-        float x = fLeftMargin + juce::jmap((float)std::log10(dFreq), 1.3f, 4.3f, 0.0f, fGraphWidth);
+        float x = fLeftMargin + jmap((float)std::log10(dFreq), 1.3f, 4.3f, 0.0f, fGraphWidth);
 
-        g.setColour(juce::Colours::black);
+        g.setColour(Colours::black);
         if (dFreq < 1000)
         {
-            g.drawText(juce::String((int)dFreq) + "Hz", (int)(x - 15), (int)(fHeight - 15), 30, 15, juce::Justification::centred, false);
+            g.drawText(String((int)dFreq) + "Hz", (int)(x - 15), (int)(fHeight - 15), 30, 15, Justification::centred, false);
         }
         else
         {
             int nTempFreq = (int)(dFreq / 1000);
-            g.drawText(juce::String((int)nTempFreq) + "kHz", (int)(x - 15), (int)(fHeight - 15), 30, 15, juce::Justification::centred, false);
+            g.drawText(String((int)nTempFreq) + "kHz", (int)(x - 15), (int)(fHeight - 15), 30, 15, Justification::centred, false);
         }
     }
 }

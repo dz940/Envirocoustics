@@ -85,7 +85,7 @@ private:
     void vTransportSourceStateChanged(transportSourceState_t state);
     void changeListenerCallback(ChangeBroadcaster* source) override;
 
-    void vApplyDSPProcessing(juce::AudioBuffer<float>& buffer);
+    void vApplyDSPProcessing(AudioBuffer<float>& buffer);
     void vUpdateSystemResponse();
 
     TextButton* m_pcOpenFileButton, *m_pcPlayAudioButton, *m_pcStopAudioButton, *m_pcPauseAudioButton, *m_pcShowSpectrogramButton, *m_pcShowSpectrumButton;
@@ -117,12 +117,12 @@ private:
     bool m_bCloudCover = OFF;
 
     std::vector<double> m_dTargetMagnitudeResponse;
-    juce::CriticalSection filterLock;
+    CriticalSection filterLock;
 
-    juce::IIRFilter mainFilterL;
-    juce::IIRFilter mainFilterR;
+    IIRFilter mainFilterL;
+    IIRFilter mainFilterR;
 
-    juce::TooltipWindow m_wTooltipWindow{ this }; // Enables tooltips in this component
+    TooltipWindow m_wTooltipWindow{ this }; // Enables tooltips in this component
 
     //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

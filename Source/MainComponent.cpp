@@ -11,14 +11,12 @@
 #include <atlstr.h>
 
 /*======================================================================================*/
-MainComponent::MainComponent() : juce::AudioAppComponent(m_cAudioDeviceManager)
+MainComponent::MainComponent() : AudioAppComponent(m_cAudioDeviceManager)
 /*======================================================================================*/
 {
     // Load logo
     m_iTitleImage = ImageFileFormat::loadFrom(BinaryData::title_png, BinaryData::title_pngSize);
     setOpaque(true);
-    mainFilterL.reset();
-    mainFilterR.reset();
 
     // Creating all components
     m_pcDistanceGraphic = new DistanceGraphic(*this);
@@ -72,44 +70,44 @@ MainComponent::MainComponent() : juce::AudioAppComponent(m_cAudioDeviceManager)
     m_pcOpenFileButton = new TextButton();
     m_pcOpenFileButton->setButtonText("Open File");
     m_pcOpenFileButton->onClick = [this] {vOpenTextButtonClicked(); };
-    m_pcOpenFileButton->setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    m_pcOpenFileButton->setColour(TextButton::buttonColourId, Colours::darkseagreen);
     addAndMakeVisible(m_pcOpenFileButton);
 
     m_pcPlayAudioButton = new TextButton();
     m_pcPlayAudioButton->setButtonText("Play");
     m_pcPlayAudioButton->onClick = [this] {vPlayAudioButtonClicked(); };
-    m_pcPlayAudioButton->setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    m_pcPlayAudioButton->setColour(TextButton::buttonColourId, Colours::darkseagreen);
     m_pcPlayAudioButton->setEnabled(false);
     addAndMakeVisible(m_pcPlayAudioButton);
 
     m_pcPauseAudioButton = new TextButton();
     m_pcPauseAudioButton->setButtonText("Pause");
     m_pcPauseAudioButton->onClick = [this] {vPauseAudioButtonClicked(); };
-    m_pcPauseAudioButton->setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    m_pcPauseAudioButton->setColour(TextButton::buttonColourId, Colours::darkseagreen);
     m_pcPauseAudioButton->setEnabled(false);
     addAndMakeVisible(m_pcPauseAudioButton);
 
     m_pcStopAudioButton = new TextButton();
     m_pcStopAudioButton->setButtonText("Stop");
     m_pcStopAudioButton->onClick = [this] {vStopAudioButtonClicked(); };
-    m_pcStopAudioButton->setColour(juce::TextButton::buttonColourId, juce::Colours::darkseagreen);
+    m_pcStopAudioButton->setColour(TextButton::buttonColourId, Colours::darkseagreen);
     m_pcStopAudioButton->setEnabled(false);
     addAndMakeVisible(m_pcStopAudioButton);
 
     m_pcShowSpectrumButton = new TextButton();
     m_pcShowSpectrumButton->setButtonText("Spectrum");
     m_pcShowSpectrumButton->onClick = [this] {vSwitchToSpectrum(); };
-    m_pcShowSpectrumButton->setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    m_pcShowSpectrumButton->setColour(TextButton::buttonOnColourId, Colours::green);
     m_pcShowSpectrumButton->setEnabled(true);
     m_pcShowSpectrumButton->setClickingTogglesState(true);
     m_pcShowSpectrumButton->setRadioGroupId(1);
-    m_pcShowSpectrumButton->setToggleState(true, juce::dontSendNotification);
+    m_pcShowSpectrumButton->setToggleState(true, dontSendNotification);
     addAndMakeVisible(m_pcShowSpectrumButton);
 
     m_pcShowSpectrogramButton = new TextButton();
     m_pcShowSpectrogramButton->setButtonText("Spectrogram");
     m_pcShowSpectrogramButton->onClick = [this] {vSwitchToSpectrogram(); };
-    m_pcShowSpectrogramButton->setColour(juce::TextButton::buttonOnColourId, juce::Colours::green);
+    m_pcShowSpectrogramButton->setColour(TextButton::buttonOnColourId, Colours::green);
     m_pcShowSpectrogramButton->setEnabled(true);
     m_pcShowSpectrogramButton->setClickingTogglesState(true);
     m_pcShowSpectrogramButton->setRadioGroupId(1);
@@ -117,6 +115,9 @@ MainComponent::MainComponent() : juce::AudioAppComponent(m_cAudioDeviceManager)
 
     m_cFormatManager.registerBasicFormats();
     m_cTransportSource.addChangeListener(this);
+
+    mainFilterL.reset();
+    mainFilterR.reset();
 
     m_wTooltipWindow.setMillisecondsBeforeTipAppears(500);
     // Set the size of the component after adding child components.
@@ -406,7 +407,7 @@ void MainComponent::vTransportSourceStateChanged(transportSourceState_t state)
 }
 
 /*======================================================================================*/
-void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
+void MainComponent::changeListenerCallback(ChangeBroadcaster* source)
 /*======================================================================================*/
 {
     if (source == &m_cTransportSource)
@@ -419,7 +420,7 @@ void MainComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
 }
 
 /*======================================================================================*/
-void MainComponent::vApplyDSPProcessing(juce::AudioBuffer<float>& buffer)
+void MainComponent::vApplyDSPProcessing(AudioBuffer<float>& buffer)
 /*======================================================================================*/
 {
     // Initialise the cutoff solver with atmospheric conditions
@@ -432,8 +433,8 @@ void MainComponent::vApplyDSPProcessing(juce::AudioBuffer<float>& buffer)
     dCutoffFrequency = (dCutoffFrequency > 22000.0) ? 20000.0 : dCutoffFrequency; // Ensure cut off frequency is not greater than 20kHz
 
     // Set the low-pass filter with the calculated cutoff frequency
-    mainFilterL.setCoefficients(juce::IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
-    mainFilterR.setCoefficients(juce::IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
+    mainFilterL.setCoefficients(IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
+    mainFilterR.setCoefficients(IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
 
     int nNumSamples = buffer.getNumSamples();
     float* pfChannelDataL = buffer.getWritePointer(0);
@@ -477,7 +478,6 @@ double MainComponent::dCalculateTemperatureGradientLoss(const double dFrequency,
 
     // Compute attenuation loss based on gradient
     double dTempLoss = -0.03 * dTemperatureGradient * sqrt(dFrequency) * dDistance;
-
     return dTempLoss;
 }
 
@@ -510,7 +510,7 @@ double MainComponent::dCalculateAirAttenuationPerMetre(const double dFreq, const
 }
 
 /*======================================================================================*/
-void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
+void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill)
 /*======================================================================================*/
 {
     // Sends audio blocks to various components
@@ -518,7 +518,7 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
     m_cTransportSource.getNextAudioBlock(bufferToFill);
 
     // Push processed buffer to controls
-    juce::AudioBuffer<float> buffer(bufferToFill.buffer->getArrayOfWritePointers(),
+    AudioBuffer<float> buffer(bufferToFill.buffer->getArrayOfWritePointers(),
         bufferToFill.buffer->getNumChannels(),
         bufferToFill.startSample,
         bufferToFill.numSamples);
@@ -531,7 +531,7 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
     m_pcPostProcessingFrequencyAnalyser->vPushBuffer(buffer);
 
     // Apply the volume level to the buffer
-    float fGain = (float)juce::Decibels::decibelsToGain(m_pcVolumeControl->dGetGain());
+    float fGain = (float)Decibels::decibelsToGain(m_pcVolumeControl->dGetGain());
     if (bufferToFill.buffer != nullptr)
     {
         for (int nChannel = 0; nChannel < bufferToFill.buffer->getNumChannels(); ++nChannel)
@@ -551,11 +551,11 @@ void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& buffer
     fRMSLevel /= buffer.getNumChannels(); // Average across channels
 
     // Convert RMS to a meter-friendly scale
-    fRMSLevel = juce::jmap(juce::Decibels::gainToDecibels(fRMSLevel), -60.0f, 0.0f, 0.0f, 1.0f);
-    fRMSLevel = juce::jlimit(0.0f, 1.0f, fRMSLevel); // Ensure it's within 0-1 range
+    fRMSLevel = jmap(Decibels::gainToDecibels(fRMSLevel), -60.0f, 0.0f, 0.0f, 1.0f);
+    fRMSLevel = jlimit(0.0f, 1.0f, fRMSLevel); // Ensure it's within 0-1 range
 
     // Update the level meter asynchronously to avoid UI issues
-    juce::MessageManager::callAsync([this, fRMSLevel] {
+    MessageManager::callAsync([this, fRMSLevel] {
         m_pcVolumeControl->vSetMeterLevel(fRMSLevel);
         });
 }
@@ -569,40 +569,27 @@ void MainComponent::releaseResources()
 }
 
 /*======================================================================================*/
-void MainComponent::paint(juce::Graphics& g)
+void MainComponent::paint(Graphics& g)
 /*======================================================================================*/
 {
     // Main window background
-    g.fillAll(juce::Colours::white);
+    g.fillAll(Colours::white);
 
     // App title
-    g.setColour(juce::Colours::darkolivegreen);
-    g.fillRect(10, 10, 940, 130);
-    g.setFont(100.0f);
-    g.setColour(juce::Colours::white);
-    g.drawText("ENVIROCOUSTICS", 10, 10, 940, 130, juce::Justification::centred, true);
-
     juce::Rectangle<float> rcTitle(10, 10, 940, 130);
     { g.drawImage(m_iTitleImage, rcTitle, RectanglePlacement::centred, false); }
 
-    // Reponse curves
-    g.setColour(juce::Colours::darkseagreen);
-    g.fillRect(10, 660, 410, 190);
-    g.setFont(20.0f);
-    g.setColour(juce::Colours::black);
-    g.drawText("System response curves", 10, 660, 410, 30, juce::Justification::centred, true);
-
-    g.setColour(juce::Colours::darkseagreen);
+    g.setColour(Colours::darkseagreen);
     g.fillRect(430, 460, 520, 30);
     g.setFont(20.0f);
-    g.setColour(juce::Colours::black);
-    g.drawText("Original audio", 430, 460, 520, 30, juce::Justification::centred, true);
+    g.setColour(Colours::black);
+    g.drawText("Original audio", 430, 460, 520, 30, Justification::centred, true);
 
-    g.setColour(juce::Colours::darkseagreen);
+    g.setColour(Colours::darkseagreen);
     g.fillRect(430, 660, 520, 30);
     g.setFont(20.0f);
-    g.setColour(juce::Colours::black);
-    g.drawText("Processed audio", 430, 660, 520, 30, juce::Justification::centred, true);
+    g.setColour(Colours::black);
+    g.drawText("Processed audio", 430, 660, 520, 30, Justification::centred, true);
 }
 
 /*======================================================================================*/

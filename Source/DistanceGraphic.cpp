@@ -11,7 +11,7 @@ DistanceGraphic::DistanceGraphic(MainComponent& parentComponent)
     m_cDistanceSlider.setValue(100);
     m_cDistanceSlider.setTextBoxStyle(Slider::NoTextBox, false, 20 , 40);
     m_cDistanceSlider.setLookAndFeel(&m_lfStickmanLookAndFeel);
-    m_cDistanceSlider.setMouseCursor(juce::MouseCursor::NormalCursor);
+    m_cDistanceSlider.setMouseCursor(MouseCursor::NormalCursor);
     addAndMakeVisible(&m_cDistanceSlider);
 
     m_cDistanceText.setMultiLine(false);

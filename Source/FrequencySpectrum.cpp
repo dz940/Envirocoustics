@@ -122,7 +122,7 @@ void FrequencySpectrum::vDrawNextFrameOfFrequencySpectrum()
         float x = jmap((float)std::log10(freq), fLogMinFreq, fLogMaxFreq, 0.0f, (float)nWidth);
 
         // Draw vertical grid line
-        g.setColour(juce::Colours::grey.withAlpha(0.3f));
+        g.setColour(Colours::grey.withAlpha(0.3f));
         g.drawLine(x, 0, x, (float)nHeight);
     }
     repaint();

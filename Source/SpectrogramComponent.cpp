@@ -20,7 +20,7 @@ SpectrogramComponent::~SpectrogramComponent()
 }
 
 /*======================================================================================*/
-void SpectrogramComponent::vPushBuffer(const juce::AudioBuffer<float>& buffer)
+void SpectrogramComponent::vPushBuffer(const AudioBuffer<float>& buffer)
 /*======================================================================================*/
 {
     m_pcSpectrogram->vPushBuffer(buffer);
@@ -30,17 +30,17 @@ void SpectrogramComponent::vPushBuffer(const juce::AudioBuffer<float>& buffer)
 void SpectrogramComponent::resized()
 /*======================================================================================*/
 {
-    juce::Rectangle rcRect = getLocalBounds();
+    Rectangle rcRect = getLocalBounds();
     m_pcSpectrogram->setBounds(rcRect.getX() + 40, rcRect.getY(), 430, 160);
 }
 
 /*======================================================================================*/
-void SpectrogramComponent::paint(juce::Graphics& g)
+void SpectrogramComponent::paint(Graphics& g)
 /*======================================================================================*/
 {
-    juce::Rectangle rcRect(getLocalBounds().getX() + getLocalBounds().getWidth() - 50, getLocalBounds().getY(), 50, getLocalBounds().getHeight());
+    Rectangle rcRect(getLocalBounds().getX() + getLocalBounds().getWidth() - 50, getLocalBounds().getY(), 50, getLocalBounds().getHeight());
 
-    juce::Colour clBackground = juce::Colour::fromHSV(0.67f, 1.0f, 1.0f, 1.0f);
+    Colour clBackground = Colour::fromHSV(0.67f, 1.0f, 1.0f, 1.0f);
     g.setColour(clBackground);
     g.fillRect(getLocalBounds()); // Fill the rectangle
 
@@ -50,8 +50,8 @@ void SpectrogramComponent::paint(juce::Graphics& g)
     for (int y = 0; y < rcRect.getHeight(); ++y)
     {
         float fMagnitude = 1.0f - (float)y / (rcRect.getHeight()); // Normalize magnitude
-        float fHue = juce::jlimit(0.0f, 0.67f, 0.67f - (fMagnitude * 0.67f)); // Mapping to color range
-        juce::Colour color = juce::Colour::fromHSV(fHue, 1.0f, 1.0f, 1.0f);
+        float fHue = jlimit(0.0f, 0.67f, 0.67f - (fMagnitude * 0.67f)); // Mapping to color range
+        Colour color = Colour::fromHSV(fHue, 1.0f, 1.0f, 1.0f);
 
         for (int x = nKeyStartX; x < nKeyEndX; ++x)
         {
@@ -62,7 +62,7 @@ void SpectrogramComponent::paint(juce::Graphics& g)
 
     // Draw dB labels for the gradient
     g.setFont(10.0f);
-    g.setColour(juce::Colours::white);
+    g.setColour(Colours::white);
 
     int ndBValue = 10;
 
@@ -70,7 +70,7 @@ void SpectrogramComponent::paint(juce::Graphics& g)
     for (int y = rcRect.getY(); y <= rcRect.getY() + (rcRect.getHeight() - 10); y += ((rcRect.getHeight() - 10) / 5)) // 6 label positions (spread out)
     {
         // Draw label with dB value
-        g.drawText(juce::String(ndBValue) + "dB", nLabelX, y, 30, 10, juce::Justification::centred);
+        g.drawText(String(ndBValue) + "dB", nLabelX, y, 30, 10, Justification::centred);
         ndBValue -= 10;
     }
  
@@ -111,12 +111,12 @@ void SpectrogramComponent::paint(juce::Graphics& g)
         if (nFreq != 20)
         {
             // Use kHz for frequencies >= 1000 Hz
-            g.drawText(juce::String(nFreq / 1000.0f, 0) + "kHz", nLabelX, y, 30, 10, juce::Justification::centredRight);
+            g.drawText(String(nFreq / 1000.0f, 0) + "kHz", nLabelX, y, 30, 10, Justification::centredRight);
         }
         else 
         {
             // Use Hz for frequencies < 1000 Hz
-            g.drawText(juce::String(nFreq) + "Hz", nLabelX, y, 30, 10, juce::Justification::centredRight);
+            g.drawText(String(nFreq) + "Hz", nLabelX, y, 30, 10, Justification::centredRight);
         }
     }
 }

@@ -44,7 +44,7 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
     addAndMakeVisible(&m_cPressureKnob);
 
     m_cTemperatureLapseBtn.onClick = [this] { m_cMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, m_cTemperatureInversionBtn.getToggleState(), false); };
-    m_cTemperatureLapseBtn.setButtonText("Lapse");
+    m_cTemperatureLapseBtn.setButtonText("Day"); // Temperature lapse is represented in the app as 'Day'
     m_cTemperatureLapseBtn.setClickingTogglesState(true);
     m_cTemperatureLapseBtn.setColour(TextButton::buttonOnColourId, Colours::green);
     m_cTemperatureLapseBtn.setEnabled(true);
@@ -53,7 +53,7 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
     addAndMakeVisible(&m_cTemperatureLapseBtn);
 
     m_cTemperatureInversionBtn.onClick = [this] {m_cMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, m_cTemperatureInversionBtn.getToggleState(), false); };
-    m_cTemperatureInversionBtn.setButtonText("Inversion");
+    m_cTemperatureInversionBtn.setButtonText("Night"); // Temperature lapse is represented in the app as 'Night'
     m_cTemperatureInversionBtn.setClickingTogglesState(true);
     m_cTemperatureInversionBtn.setColour(TextButton::buttonOnColourId, Colours::green);
     m_cTemperatureInversionBtn.setEnabled(true);
@@ -286,7 +286,7 @@ void ConditionControls::paint(Graphics& g)
                             rcConditionControls.getY() + 110,
                             nPanelWidths,
                             20);
-    g.drawText("Gradient", rcGradientText, Justification::centred, true);
+    g.drawText("Day/Night", rcGradientText, Justification::centred, true);
 
     Rectangle<int> rcWindControlsTitle(rcConditionControls.getX() + 3 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
                             rcConditionControls.getY() + 35,
