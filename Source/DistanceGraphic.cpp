@@ -32,7 +32,7 @@ DistanceGraphic::DistanceGraphic(MainComponent& parentComponent)
     m_cDistanceSlider.onValueChange = [this] 
     { 
         m_cDistanceText.setText("Distance: " + String((std::round(m_cDistanceSlider.getValue() * 10)/10)) + "m");
-        m_pcMainComponent.vSetParameter(PARAMETER_DISTANCE, (int)m_cDistanceSlider.getValue(), true);
+        m_pcMainComponent.vSetParameter(PARAMETER_DISTANCE, m_cDistanceSlider.getValue(), true);
     };
 
     // Load in image assets

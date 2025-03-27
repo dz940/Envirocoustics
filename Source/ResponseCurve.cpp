@@ -1,5 +1,6 @@
 #include "ResponseCurve.h"
 #include "MainComponent.h"
+#include <math.h>
 
 /*======================================================================================*/
 ResponseCurve::ResponseCurve(MainComponent& parentComponent)
@@ -59,6 +60,7 @@ void ResponseCurve::paint(Graphics& g)
     double dWindSpeed = m_pcMainComponent.nGetParameter(PARAMETER_WIND_SPEED);
     bool bWindDirection = m_pcMainComponent.nGetParameter(PARAMETER_WIND_DIRECTION);
     int nTemperatureGradient = m_pcMainComponent.nGetParameter(PARAMETER_TEMP_GRADIENT);
+    bool bMakeupGainEnabled = m_pcMainComponent.nGetParameter(PARAMETER_MAKEUP_GAIN);
 
     // Draw response curve
     for (int i = 0; i < 200; ++i)
@@ -70,6 +72,12 @@ void ResponseCurve::paint(Graphics& g)
         double dWindLoss = m_pcMainComponent.dCalculateWindLoss(dFreq, dDistance, dWindSpeed, bWindDirection);
         double dGradientLoss = m_pcMainComponent.dCalculateTemperatureGradientLoss(dFreq, dDistance, nTemperatureGradient);
         double dTotalAttenuationDb = dAttenuationPerMeter * dDistance + dWindLoss + dGradientLoss;
+
+        if (!bMakeupGainEnabled)
+        {
+            double dAttentuationDueToDistance = 20 * log10(dDistance);
+            dTotalAttenuationDb += dAttentuationDueToDistance;
+        }
 
         // Map dB value to screen space (ensuring +10 dB is at top, -50 dB at bottom)
         float x = (float)i / 199.0f * fWidth;

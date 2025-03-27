@@ -113,6 +113,16 @@ MainComponent::MainComponent() : AudioAppComponent(m_cAudioDeviceManager)
     m_pcShowSpectrogramButton->setRadioGroupId(1);
     addAndMakeVisible(m_pcShowSpectrogramButton);
 
+    m_pcDisablePowerLossCheck = new ToggleButton();
+    m_pcDisablePowerLossCheck->setButtonText("Enable Make-up Gain");
+    m_pcDisablePowerLossCheck->onClick = [this] { if (m_pcDisablePowerLossCheck->getToggleState() == ON) { vShowVolumeWarningBox(); }
+                                                  else { vSetParameter(PARAMETER_MAKEUP_GAIN, 0, false); }; };
+    m_pcDisablePowerLossCheck->setColour(ToggleButton::tickColourId, Colours::black);
+    m_pcDisablePowerLossCheck->setColour(ToggleButton::textColourId, Colours::black);
+    m_pcDisablePowerLossCheck->setColour(ToggleButton::tickDisabledColourId, Colours::black);
+    m_pcDisablePowerLossCheck->setEnabled(true);
+    addAndMakeVisible(m_pcDisablePowerLossCheck);
+
     m_cFormatManager.registerBasicFormats();
     m_cTransportSource.addChangeListener(this);
 
@@ -148,6 +158,7 @@ MainComponent::~MainComponent()
     delete m_pcPauseAudioButton;
     delete m_pcShowSpectrogramButton;
     delete m_pcShowSpectrumButton;
+    delete m_pcDisablePowerLossCheck;
 }
 
 /*======================================================================================*/
@@ -173,7 +184,7 @@ void MainComponent::vSwitchToSpectrum()
 }
 
 /*======================================================================================*/
-void MainComponent::vSetParameter(const int nParameterType, const int nValue, const bool bUpdateDisplay)
+void MainComponent::vSetParameter(const int nParameterType, const double nValue, const bool bUpdateDisplay)
 /*======================================================================================*/
 {
     // Centrally setting paramaters from all the controls
@@ -238,6 +249,11 @@ void MainComponent::vSetParameter(const int nParameterType, const int nValue, co
             vUpdateSystemResponse();
             break;
         }
+        case PARAMETER_MAKEUP_GAIN:
+        {
+            m_bEnableMakeupGain = nValue;
+            vUpdateSystemResponse();
+        }
     }
     if(bUpdateDisplay)
     { m_pcDistanceGraphic->repaint(); }
@@ -260,7 +276,7 @@ void MainComponent::vUpdateConditionControls()
 }
 
 /*======================================================================================*/
-int MainComponent::nGetParameter(int nParameterType)
+double MainComponent::nGetParameter(int nParameterType)
 /*======================================================================================*/
 {
     // Retrieving parameters from central location
@@ -284,6 +300,8 @@ int MainComponent::nGetParameter(int nParameterType)
         { return m_bCloudCover; }
         case PARAMETER_DISTANCE:
         { return m_nDistance; }
+        case PARAMETER_MAKEUP_GAIN:
+        { return (int)m_bEnableMakeupGain; }
     }
     jassert(false);
     return 0;
@@ -444,12 +462,13 @@ void MainComponent::vApplyDSPProcessing(AudioBuffer<float>& buffer)
     // Apply the filter to the left and right channels of the audio buffer
     mainFilterL.processSamples(pfChannelDataL, nNumSamples);
     mainFilterR.processSamples(pfChannelDataR, nNumSamples);
-    
-    // Apply Inverse Square Law attenuation (linear gain)
-    float fGain = 1.0f / static_cast<float>(dDistance); // Linear gain (1/distance)
 
-    // Apply gain to the buffer
-    buffer.applyGain(fGain);
+    // Apply Inverse Square Law attenuation (linear gain)
+    if (!m_bEnableMakeupGain)
+    {
+        float fGain = 1.0f / static_cast<float>(dDistance); // Linear gain (1/distance)
+        buffer.applyGain(fGain);
+    }
 }
 
 /*======================================================================================*/
@@ -467,8 +486,14 @@ double MainComponent::dCalculateWindLoss(const double dFrequency, const double d
     double dWindLoss = 1.0e-5 * dWindSpeed * sqrt(dFrequency) * dDistance;
     if (bWindDirection == WIND_DIRECTION_DOWNWIND)
     { dWindLoss *= -0.45; }
-    return dWindLoss;
+    
+    double dSpeed = dWindSpeed / 3.6;
+    double dTemp1 = (1 + dSpeed / 340) * (1 + dSpeed / 340);
+    double dTemp2 = (1 - dSpeed / 340) * (1 - dSpeed / 340);
+    double dAmpFactor = dTemp1 / dTemp2;
 
+    double cMet = 5 * log10(1 + (dSpeed / 10)* (dSpeed / 10));
+    return dWindLoss;
 }
 
 /*======================================================================================*/
@@ -567,6 +592,34 @@ void MainComponent::getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill
 }
 
 /*======================================================================================*/
+void MainComponent::vShowVolumeWarningBox()
+/*======================================================================================*/
+{
+    // Use callAsync to show the dialog asynchronously on the message thread
+    juce::MessageManager::callAsync([this]() {
+        // Ensure that the callback captures 'this' to access member variables/functions
+        const auto callback = juce::ModalCallbackFunction::create([this](int result) {
+            if (result == 1) {
+                vSetParameter(PARAMETER_MAKEUP_GAIN, 1, false);
+            }
+            else {
+                m_pcDisablePowerLossCheck->setToggleState(false, juce::dontSendNotification);
+            }
+            });
+
+        // Display the modal AlertWindow with "OK" and "Cancel"
+        juce::AlertWindow::showOkCancelBox(
+            juce::MessageBoxIconType::WarningIcon,  // Icon
+            "Warning",  // Window Title
+            "Please lower your volume before proceeding to avoid potential damage to your speakers/headphones.",  // Message
+            "Proceed",  // Button text for OK
+            "Go back",  // Button text for Cancel
+            nullptr,  // Component to attach (optional)
+            callback);  // The callback function for OK/Cancel actions
+    });
+}
+
+/*======================================================================================*/
 void MainComponent::releaseResources()
 /*======================================================================================*/
 {
@@ -618,4 +671,5 @@ void MainComponent::resized()
     m_pcShowSpectrogramButton->setBounds(865, 465, 80, 20);
     m_pcShowSpectrumButton->setBounds(780, 465, 80, 20);
     m_pcResponseCurve->setBounds(10, 660, 410, 190);
+    m_pcDisablePowerLossCheck->setBounds(430, 465, 100, 20);
 }

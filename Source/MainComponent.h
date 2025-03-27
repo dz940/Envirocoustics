@@ -17,6 +17,7 @@ using namespace juce;
 #define PARAMETER_TEMP_GRADIENT     7
 #define PARAMETER_CLOUD_COVER       8
 #define PARAMETER_DISTANCE          9
+#define PARAMETER_MAKEUP_GAIN       10
 
 #define WIND_DIRECTION_UPWIND       0
 #define WIND_DIRECTION_DOWNWIND     1
@@ -50,15 +51,16 @@ public:
 
     void vSwitchToSpectrogram();
     void vSwitchToSpectrum();
-    void vSetParameter(const int nParameterType, const int nValue, const bool bUpdateDisplay);
+    void vSetParameter(const int nParameterType, const double nValue, const bool bUpdateDisplay);
     void vUpdateConditionControls();
-    int nGetParameter(const int nParameterType);
+    double nGetParameter(const int nParameterType);
     double dCalculateWindLoss(const double dFrequency, const double dDistance, const double dWindSpeed, const bool bWindDirection);
     double dCalculateTemperatureGradientLoss(const double dFrequency, const double dDistance, const int nTemperatureGradient);
     double dCalculateAirAttenuationPerMetre(const double dFreq, const double dTemperature, const double dRelativeHumidity, const double dAtmosphericPressure);
     
     // Overriden functions
     void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override;
+    void vShowVolumeWarningBox();
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
     void paint(Graphics& g) override;
@@ -89,6 +91,7 @@ private:
     void vUpdateSystemResponse();
 
     TextButton* m_pcOpenFileButton, *m_pcPlayAudioButton, *m_pcStopAudioButton, *m_pcPauseAudioButton, *m_pcShowSpectrogramButton, *m_pcShowSpectrumButton;
+    ToggleButton* m_pcDisablePowerLossCheck;
 
     AudioFormatManager m_cFormatManager;
     std::unique_ptr<AudioFormatReaderSource> m_pcPlaySource;
@@ -106,7 +109,7 @@ private:
 
     Image m_iTitleImage;
 
-    int m_nDistance = 100;
+    double m_nDistance = 100.0;
     int m_nTemperature = 20;
     int m_nHumidity = 50;
     int m_nWindSpeed = 10;
@@ -116,11 +119,15 @@ private:
     int m_nTempGradient = TEMPERATURE_LAPSE;
     bool m_bCloudCover = OFF;
 
+    bool m_bEnableMakeupGain = false;
+
     std::vector<double> m_dTargetMagnitudeResponse;
     CriticalSection filterLock;
 
     IIRFilter mainFilterL;
     IIRFilter mainFilterR;
+
+    std::unique_ptr<AlertWindow> m_pAlertWindow;
 
     TooltipWindow m_wTooltipWindow{ this }; // Enables tooltips in this component
 
