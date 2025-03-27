@@ -5,6 +5,35 @@ class MainComponent;
 
 using namespace juce;
 
+class DistanceSlider : public juce::Slider
+{
+public:
+    DistanceSlider()
+    {
+        //setVelocityModeParameters(1.0, 1, 0.1, false); // Adjust velocity settings if needed
+    }
+
+    void mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails& wheel) override
+    {
+        return;
+    }
+
+    void mouseDown(const juce::MouseEvent& event) override
+    {
+        int nMouseDownX = event.position.getX();
+        int nCurrentPosition = (int)getPositionOfValue(getValue());
+        int nThumbRadius = getLookAndFeel().getSliderThumbRadius(*this);
+        // Get the slider's thumb bounds
+        if (event.position.toInt().getX() < (nCurrentPosition - nThumbRadius) ||
+            event.position.toInt().getX() > (nCurrentPosition + nThumbRadius))
+        { return; }
+
+        // Ignore clicks outside the thumb
+        beginDragAutoRepeat(300);  // Ensures dragging is initiated
+        Slider::mouseDown(event);
+    }
+};
+
 class StickmanSliderLookAndFeel : public LookAndFeel_V4
 {
 public:
@@ -168,15 +197,17 @@ public:
     void paint(Graphics& g) override;
 
 private:
-    Slider m_cDistanceSlider;
+    DistanceSlider m_cDistanceSlider;
     TextEditor m_cDistanceText;
     Image m_iSunnyImage, m_iWindyImage, m_iRainyImage, m_iSnowyImage;
 
     Image m_iWindLeft1, m_iWindLeft2, m_iWindLeft3, m_iWindLeft4, m_iWindLeft5;
     Image m_iWindRight1, m_iWindRight2, m_iWindRight3, m_iWindRight4, m_iWindRight5;
     Image m_iStageNormal, m_iStageRainy, m_iStageSnowy;
-    Image m_iRainOverlay, m_iSnowOverlay, m_iSunOverlay;
+    Image m_iStageNormalNight, m_iStageRainyNight;
+    Image m_iRainOverlay, m_iSnowOverlay, m_iSunOverlay, m_iNightOverlay;
     Image m_iCloudsPartial, m_iCloudsLight, m_iCloudsDark;
+    Image m_iCloudsNight, m_iCloudsPartialNight;
 
     MainComponent& m_pcMainComponent;
     StickmanSliderLookAndFeel m_lfStickmanLookAndFeel;

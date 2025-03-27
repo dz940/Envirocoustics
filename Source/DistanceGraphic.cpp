@@ -1,13 +1,17 @@
 #include "DistanceGraphic.h"
 #include "MainComponent.h"
 
+#define TIME_DAY    0
+#define TIME_NIGHT  1
+
 /*======================================================================================*/
 DistanceGraphic::DistanceGraphic(MainComponent& parentComponent)
     : m_pcMainComponent(parentComponent)
 /*======================================================================================*/
 {
     m_cDistanceSlider.setSliderStyle(Slider::LinearHorizontal);
-    m_cDistanceSlider.setRange(0, 1000, 10);
+    m_cDistanceSlider.setRange(1, 300);
+    m_cDistanceSlider.setSkewFactorFromMidPoint(50.0);
     m_cDistanceSlider.setValue(100);
     m_cDistanceSlider.setTextBoxStyle(Slider::NoTextBox, false, 20 , 40);
     m_cDistanceSlider.setLookAndFeel(&m_lfStickmanLookAndFeel);
@@ -15,7 +19,7 @@ DistanceGraphic::DistanceGraphic(MainComponent& parentComponent)
     addAndMakeVisible(&m_cDistanceSlider);
 
     m_cDistanceText.setMultiLine(false);
-    m_cDistanceText.setReadOnly(false);   
+    m_cDistanceText.setReadOnly(false);  
     m_cDistanceText.setScrollbarsShown(false);
     m_cDistanceText.setCaretVisible(false);
     m_cDistanceText.setColour(TextEditor::textColourId, Colours::black);
@@ -27,7 +31,7 @@ DistanceGraphic::DistanceGraphic(MainComponent& parentComponent)
 
     m_cDistanceSlider.onValueChange = [this] 
     { 
-        m_cDistanceText.setText("Distance: " + String(m_cDistanceSlider.getValue()) + "m"); 
+        m_cDistanceText.setText("Distance: " + String((std::round(m_cDistanceSlider.getValue() * 10)/10)) + "m");
         m_pcMainComponent.vSetParameter(PARAMETER_DISTANCE, (int)m_cDistanceSlider.getValue(), true);
     };
 
@@ -41,6 +45,8 @@ DistanceGraphic::DistanceGraphic(MainComponent& parentComponent)
     m_iStageNormal = ImageFileFormat::loadFrom(BinaryData::overlay_stage_standard_png, BinaryData::overlay_stage_standard_pngSize);
     m_iStageRainy = ImageFileFormat::loadFrom(BinaryData::overlay_stage_rainy_png, BinaryData::overlay_stage_rainy_pngSize);
     m_iStageSnowy = ImageFileFormat::loadFrom(BinaryData::overlay_stage_snowy_png, BinaryData::overlay_stage_snowy_pngSize);
+    m_iStageNormalNight = ImageFileFormat::loadFrom(BinaryData::overlay_stage_night_png, BinaryData::overlay_stage_night_pngSize);
+    m_iStageRainyNight = ImageFileFormat::loadFrom(BinaryData::overlay_stage_rainy_night_png, BinaryData::overlay_stage_rainy_night_pngSize);
 
     // Wind overlays
     m_iWindLeft1 = ImageFileFormat::loadFrom(BinaryData::overlay_wind_left_1_png, BinaryData::overlay_wind_left_1_pngSize);
@@ -58,12 +64,14 @@ DistanceGraphic::DistanceGraphic(MainComponent& parentComponent)
     m_iCloudsPartial = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_partial_png, BinaryData::overlay_clouds_partial_pngSize);
     m_iCloudsLight = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_light_png, BinaryData::overlay_clouds_light_pngSize);
     m_iCloudsDark = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_dark_png, BinaryData::overlay_clouds_dark_pngSize);
+    m_iCloudsNight = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_night_png, BinaryData::overlay_clouds_night_pngSize);
+    m_iCloudsPartialNight = ImageFileFormat::loadFrom(BinaryData::overlay_clouds_partial_night_png, BinaryData::overlay_clouds_partial_night_pngSize);
 
     // Other
     m_iRainOverlay = ImageFileFormat::loadFrom(BinaryData::overlay_precipitation_rain_png, BinaryData::overlay_precipitation_rain_pngSize);
     m_iSnowOverlay = ImageFileFormat::loadFrom(BinaryData::overlay_precipitation_snow_png, BinaryData::overlay_precipitation_snow_pngSize);
     m_iSunOverlay = ImageFileFormat::loadFrom(BinaryData::overlay_sun_png, BinaryData::overlay_sun_pngSize);
-
+    m_iNightOverlay = ImageFileFormat::loadFrom(BinaryData::overlay_night_png, BinaryData::overlay_night_pngSize);
 }
 
 /*======================================================================================*/
@@ -95,6 +103,7 @@ void DistanceGraphic::paint(Graphics& g)
     bool bPrecipitation = m_pcMainComponent.nGetParameter(PARAMETER_PRECIPITATION);
     int nWindDirection = m_pcMainComponent.nGetParameter(PARAMETER_WIND_DIRECTION);
     bool bCloudCover = m_pcMainComponent.nGetParameter(PARAMETER_CLOUD_COVER);
+    int nTime = m_pcMainComponent.nGetParameter(PARAMETER_TEMP_GRADIENT); // Treating temperature gradient as time of day
 
     // Set stickman
     if (nTemp <= 0)
@@ -106,28 +115,40 @@ void DistanceGraphic::paint(Graphics& g)
 
     // Set the background fill
     Rectangle rcRect = getLocalBounds();
-    if(bPrecipitation == ON && nTemp > 0)
-    { g.setColour(Colours::grey); }
-    else if (bPrecipitation && nTemp <= 0)
+    if(bPrecipitation && nTemp > 0 && nTime == TIME_DAY) // Rainy day
+    { g.setColour(Colours::slategrey); }
+    else if (bPrecipitation == ON && nTemp > 0 && nTime == TIME_NIGHT) // Rainy night
+    { g.setColour(Colours::darkgrey); }
+    else if (bPrecipitation && nTemp <= 0 && nTime == TIME_DAY) // Snowy day
     { g.setColour(Colours::lightgrey); }
-    else
+    else if (bPrecipitation && nTemp <= 0 && nTime == TIME_NIGHT) // Snowy night
+    { g.setColour(Colours::dimgrey); }
+    else if (!bPrecipitation && nTime == TIME_DAY) // Clear day
     { g.setColour(Colours::deepskyblue); }
+    else if (!bPrecipitation && nTime == TIME_NIGHT) // Clear night
+    { g.setColour(Colours::darkblue); }
 
-    Rectangle<int> rcDistanceGraph = rcRect; // x, y, width, height
+    Rectangle<int> rcDistanceGraph = rcRect; 
     Rectangle<float> rcGraphicsBounds((float)rcDistanceGraph.getX(), (float)rcDistanceGraph.getY(), (float)rcDistanceGraph.getWidth(), (float)rcDistanceGraph.getHeight());
-    g.fillRect(rcDistanceGraph); // Fill the rectangle
+    g.fillRect(rcDistanceGraph);
 
     // Drawing stage
-    if (nTemp <= 0)
+    if (nTemp <= 0) // Snowy
     { g.drawImage(m_iStageSnowy, rcGraphicsBounds, RectanglePlacement::centred, false); }
-    else if (nTemp > 0 && bPrecipitation == ON)
+    else if (nTemp > 0 && bPrecipitation && nTime == TIME_DAY) // Rainy day
     { g.drawImage(m_iStageRainy, rcGraphicsBounds, RectanglePlacement::centred, false); }
-    else
+    else if (nTemp > 0 && bPrecipitation && nTime == TIME_NIGHT) // Rainy night
+    { g.drawImage(m_iStageRainyNight, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    else if (nTemp > 0 && !bPrecipitation && nTime == TIME_DAY) // Normal day
     { g.drawImage(m_iStageNormal, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    else if (nTemp > 0 && !bPrecipitation && nTime == TIME_NIGHT) // Normal night
+    { g.drawImage(m_iStageNormalNight, rcGraphicsBounds, RectanglePlacement::centred, false); }
 
     // Drawing sun
-    if (bPrecipitation == OFF)
+    if (!bPrecipitation && nTime == TIME_DAY)
     { g.drawImage(m_iSunOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    else if (!bPrecipitation && nTime == TIME_NIGHT)
+    { g.drawImage(m_iNightOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
 
     // Drawing wind
     if (nWindDirection == WIND_DIRECTION_UPWIND)
@@ -162,16 +183,20 @@ void DistanceGraphic::paint(Graphics& g)
     }
 
     // Drawing clouds
-    if (nTemp <= 0 && bPrecipitation == ON)
+    if (nTemp <= 0 && bPrecipitation && nTime == TIME_DAY) // Snowy day
     { g.drawImage(m_iCloudsLight, rcGraphicsBounds, RectanglePlacement::centred, false); }
-    else if (nTemp > 0 && bPrecipitation == ON)
+    else if (nTemp > 0 && bPrecipitation && nTime == TIME_DAY) // Rainy day
     { g.drawImage(m_iCloudsDark, rcGraphicsBounds, RectanglePlacement::centred, false); }
-    else if (bCloudCover == ON)
+    else if (bPrecipitation && nTime == TIME_NIGHT) // Rainy/snowy night
+    { g.drawImage(m_iCloudsNight, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    else if (bCloudCover && nTime == TIME_DAY) // Partial clouds day
     { g.drawImage(m_iCloudsPartial, rcGraphicsBounds, RectanglePlacement::centred, false); }
+    else if (bCloudCover && nTime == TIME_NIGHT) // Partial clouds night
+    { g.drawImage(m_iCloudsPartialNight, rcGraphicsBounds, RectanglePlacement::centred, false); }
 
     // Drawing precipitation
-    if (nTemp <= 0 && bPrecipitation == ON)
+    if (nTemp <= 0 && bPrecipitation)
     { g.drawImage(m_iSnowOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
-    else if (nTemp > 0 && bPrecipitation == ON)
+    else if (nTemp > 0 && bPrecipitation)
     { g.drawImage(m_iRainOverlay, rcGraphicsBounds, RectanglePlacement::centred, false); }
 }

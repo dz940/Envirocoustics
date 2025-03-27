@@ -173,8 +173,23 @@ namespace BinaryData
     extern const char*   windyScene_png;
     const int            windyScene_pngSize = 60937;
 
+    extern const char*   overlay_night_png;
+    const int            overlay_night_pngSize = 12204;
+
+    extern const char*   overlay_clouds_night_png;
+    const int            overlay_clouds_night_pngSize = 13020;
+
+    extern const char*   overlay_clouds_partial_night_png;
+    const int            overlay_clouds_partial_night_pngSize = 12864;
+
+    extern const char*   overlay_stage_night_png;
+    const int            overlay_stage_night_pngSize = 9605;
+
+    extern const char*   overlay_stage_rainy_night_png;
+    const int            overlay_stage_rainy_night_pngSize = 13531;
+
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 55;
+    const int namedResourceListSize = 60;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

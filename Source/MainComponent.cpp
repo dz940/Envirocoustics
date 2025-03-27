@@ -400,6 +400,7 @@ void MainComponent::vTransportSourceStateChanged(transportSourceState_t state)
                 m_pcOpenFileButton->setEnabled(true);
                 m_cTransportSource.stop();
                 m_cTransportSource.setPosition(0.0);
+                vTransportSourceStateChanged(Stopped);
                 break;
             }
         }
@@ -415,7 +416,7 @@ void MainComponent::changeListenerCallback(ChangeBroadcaster* source)
         if (m_cTransportSource.isPlaying())
         { vTransportSourceStateChanged(Playing); }
         else
-        { vTransportSourceStateChanged(Stopped); }
+        { vTransportSourceStateChanged(Stopping); }
     }
 }
 
@@ -444,6 +445,11 @@ void MainComponent::vApplyDSPProcessing(AudioBuffer<float>& buffer)
     mainFilterL.processSamples(pfChannelDataL, nNumSamples);
     mainFilterR.processSamples(pfChannelDataR, nNumSamples);
     
+    // Apply Inverse Square Law attenuation (linear gain)
+    float fGain = 1.0f / static_cast<float>(dDistance); // Linear gain (1/distance)
+
+    // Apply gain to the buffer
+    buffer.applyGain(fGain);
 }
 
 /*======================================================================================*/

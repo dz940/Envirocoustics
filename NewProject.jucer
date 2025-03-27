@@ -81,9 +81,21 @@
         <FILE id="DRr0Hi" name="windOff.png" compile="0" resource="1" file="Source/Assets/windOff.png"/>
         <FILE id="V0XTvl" name="windOn.png" compile="0" resource="1" file="Source/Assets/windOn.png"/>
         <FILE id="PuYHcj" name="windyScene.png" compile="0" resource="1" file="Source/Assets/windyScene.png"/>
+        <FILE id="D9I7EZ" name="overlay_night.png" compile="0" resource="1"
+              file="Source/Assets/overlay_night.png"/>
+        <FILE id="H8XoSf" name="overlay_clouds_night.png" compile="0" resource="1"
+              file="Source/Assets/overlay_clouds_night.png"/>
+        <FILE id="QX4CK7" name="overlay_clouds_partial_night.png" compile="0"
+              resource="1" file="Source/Assets/overlay_clouds_partial_night.png"/>
+        <FILE id="ZobS5F" name="overlay_stage_night.png" compile="0" resource="1"
+              file="Source/Assets/overlay_stage_night.png"/>
+        <FILE id="cRhAwq" name="overlay_stage_rainy_night.png" compile="0"
+              resource="1" file="Source/Assets/overlay_stage_rainy_night.png"/>
       </GROUP>
-      <FILE id="rrCS2I" name="AudioReader.cpp" compile="1" resource="0" file="Source/AudioReader.cpp"/>
-      <FILE id="ui6cCM" name="AudioReader.h" compile="0" resource="0" file="Source/AudioReader.h"/>
+      <FILE id="AkbKKz" name="AtmosphericAbsorption.cpp" compile="1" resource="0"
+            file="Source/AtmosphericAbsorption.cpp"/>
+      <FILE id="h8V9C4" name="AtmosphericAbsorption.h" compile="0" resource="0"
+            file="Source/AtmosphericAbsorption.h"/>
       <FILE id="Y9rsTU" name="ConditionControls.cpp" compile="1" resource="0"
             file="Source/ConditionControls.cpp"/>
       <FILE id="LGuYuX" name="ConditionControls.h" compile="0" resource="0"
@@ -92,14 +104,17 @@
             file="Source/DistanceGraphic.cpp"/>
       <FILE id="NDg30E" name="DistanceGraphic.h" compile="0" resource="0"
             file="Source/DistanceGraphic.h"/>
-      <FILE id="lydyAR" name="FrequencyAnalyzerComponent.cpp" compile="1"
-            resource="0" file="Source/FrequencyAnalyzerComponent.cpp"/>
-      <FILE id="Hwcgbr" name="FrequencyAnalyzerComponent.h" compile="0" resource="0"
-            file="Source/FrequencyAnalyzerComponent.h"/>
       <FILE id="sfiQHv" name="FrequencySpectrum.cpp" compile="1" resource="0"
             file="Source/FrequencySpectrum.cpp"/>
       <FILE id="ejR1YY" name="FrequencySpectrum.h" compile="0" resource="0"
             file="Source/FrequencySpectrum.h"/>
+      <FILE id="SGmrmr" name="ResponseComponent.cpp" compile="1" resource="0"
+            file="Source/ResponseComponent.cpp"/>
+      <FILE id="yBC89e" name="ResponseComponent.h" compile="0" resource="0"
+            file="Source/ResponseComponent.h"/>
+      <FILE id="NOcFsL" name="ResponseCurve.cpp" compile="1" resource="0"
+            file="Source/ResponseCurve.cpp"/>
+      <FILE id="dPu2q0" name="ResponseCurve.h" compile="0" resource="0" file="Source/ResponseCurve.h"/>
       <FILE id="AFxk4c" name="Spectrogram.cpp" compile="1" resource="0" file="Source/Spectrogram.cpp"/>
       <FILE id="G8Bkf6" name="Spectrogram.h" compile="0" resource="0" file="Source/Spectrogram.h"/>
       <FILE id="fhqTBh" name="SpectrogramComponent.cpp" compile="1" resource="0"
