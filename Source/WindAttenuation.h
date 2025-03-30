@@ -13,7 +13,7 @@ double dGetLowPassFilterCutoff(double dWindSpeed, double dDistance)
 }
 
 // For downwind
-double dGetHighShelfBoost(double dWindSpeed, double dDistance)
+double dGetParametricBoost(double dWindSpeed, double dDistance)
 {
     double dBoostdB = 6.0 * (dWindSpeed / 30.0) * log10(1 + (dDistance) / 300.0);
     dBoostdB = 1 + juce::jlimit(0.001, 12.0, dBoostdB);  // allows up to 12 dB for hurricane winds
@@ -39,7 +39,7 @@ public:
     double SolveDownwind(const double dDistance)
     {
         jassert(m_bIsDownwind);
-        return dGetHighShelfBoost(m_dWindSpeed, dDistance);
+        return dGetParametricBoost(m_dWindSpeed, dDistance);
     }
 
 private:

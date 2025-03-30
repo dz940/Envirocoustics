@@ -35,6 +35,7 @@ WeatherPresets::WeatherPresets(MainComponent& pcParentComponent)
     // Create buttons
     m_pcSnowBtn.onClick = [this] {m_pcMainComponent.vSetParameter(PARAMETER_TEMPERATURE, -10, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_WIND_SPEED, 0, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, TEMPERATURE_LAPSE, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_PRECIPITATION, ON, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_PRESSURE, 925, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_CLOUD_COVER, ON, false);
@@ -49,6 +50,7 @@ WeatherPresets::WeatherPresets(MainComponent& pcParentComponent)
     m_pcRainBtn.setEnabled(true);
     m_pcRainBtn.setClickingTogglesState(true);
     m_pcRainBtn.onClick = [this] {m_pcMainComponent.vSetParameter(PARAMETER_TEMPERATURE, 15, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, TEMPERATURE_LAPSE, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_WIND_SPEED, 0, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_PRECIPITATION, ON, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_HUMIDITY, 80, false);
@@ -61,6 +63,7 @@ WeatherPresets::WeatherPresets(MainComponent& pcParentComponent)
 
     m_pcWindBtn.onClick = [this] {m_pcMainComponent.vSetParameter(PARAMETER_TEMPERATURE, 15, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_WIND_SPEED, 100, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, TEMPERATURE_LAPSE, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_PRECIPITATION, OFF, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_WIND_DIRECTION, WIND_DIRECTION_UPWIND, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_CLOUD_COVER, OFF, false);
@@ -75,6 +78,7 @@ WeatherPresets::WeatherPresets(MainComponent& pcParentComponent)
 
     m_pcSunBtn.onClick = [this] {m_pcMainComponent.vSetParameter(PARAMETER_TEMPERATURE, 30, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_WIND_SPEED, 0, false);
+                                m_pcMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, TEMPERATURE_LAPSE, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_PRECIPITATION, OFF, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_CLOUD_COVER, OFF, false);
                                 m_pcMainComponent.vSetParameter(PARAMETER_HUMIDITY, 50, false);
