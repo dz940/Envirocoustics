@@ -13,7 +13,7 @@ double dGetLowPassFilterCutoff(double dDistance)
 }
 
 // For inversion
-double dGetHighShelfBoost(double dDistance)
+double dGetParametricBoost(double dDistance)
 {
     double dBoostdB = 6.0 * (14.0 / 30.0) * log10(1 + (dDistance) / 300.0);
     dBoostdB = 1 + juce::jlimit(0.0, 12.0, dBoostdB); 
@@ -36,7 +36,7 @@ public:
     double SolveInversion(const double dDistance)
     {
         jassert(m_bIsTempInversion);
-        return dGetHighShelfBoost(dDistance);
+        return dGetParametricBoost(dDistance);
     }
 
 private:
