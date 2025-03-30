@@ -55,9 +55,7 @@ public:
     void vUpdateWindFilterCoeffs();
     void vUpdateTempFilterCoeffs();
     void vUpdateConditionControls();
-    double nGetParameter(const int nParameterType);
-    double dCalculateWindLoss(const double dFrequency, const double dDistance, const double dWindSpeed, const bool bWindDirection);
-    double dCalculateTemperatureGradientLoss(const double dFrequency, const double dDistance, const int nTemperatureGradient);
+    double dGetParameter(const int nParameterType);
     double dCalculateAirAttenuationPerMetre(const double dFreq, const double dTemperature, const double dRelativeHumidity, const double dAtmosphericPressure);
     
     // Overriden functions
@@ -111,14 +109,14 @@ private:
 
     Image m_iTitleImage;
 
-    double m_nDistance = 100.0;
-    int m_nTemperature = 20;
-    int m_nHumidity = 50;
-    int m_nWindSpeed = 10;
-    int m_nPressure = 950;
-    int m_nWindDirection = WIND_DIRECTION_UPWIND;
+    double m_dDistance = 100.0;
+    double m_dTemperature = 20;
+    double m_dHumidity = 50;
+    double m_dWindSpeed = 10;
+    double m_dPressure = 950;
+    bool m_bWindDirection = WIND_DIRECTION_UPWIND;
     bool m_bPrecipitation = OFF;
-    int m_nTempGradient = TEMPERATURE_LAPSE;
+    bool m_bTempGradient = TEMPERATURE_LAPSE;
     bool m_bCloudCover = OFF;
 
     bool m_bEnableMakeupGain = true;
@@ -126,9 +124,9 @@ private:
     std::vector<double> m_dTargetMagnitudeResponse;
     CriticalSection filterLock;
 
-    IIRFilter mainFilterL, mainFilterR;
-    IIRFilter windFilterL, windFilterR;
-    IIRFilter tempFilterL, tempFilterR;
+    IIRFilter m_cMainFilterL, m_cMainFilterR;
+    IIRFilter m_cWindFilterL, m_cWindFilterR;
+    IIRFilter m_cTempFilterL, m_cTempFilterR;
 
     IIRCoefficients m_cWindIIRCoeffs;
     IIRCoefficients m_cTempIIRCoeffs;

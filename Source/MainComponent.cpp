@@ -129,12 +129,12 @@ MainComponent::MainComponent() : AudioAppComponent(m_cAudioDeviceManager)
     m_cFormatManager.registerBasicFormats();
     m_cTransportSource.addChangeListener(this);
 
-    mainFilterL.reset();
-    mainFilterR.reset();
-    windFilterL.reset();
-    windFilterR.reset();
-    tempFilterL.reset();
-    tempFilterR.reset();
+    m_cMainFilterL.reset();
+    m_cMainFilterR.reset();
+    m_cWindFilterL.reset();
+    m_cWindFilterR.reset();
+    m_cTempFilterL.reset();
+    m_cTempFilterR.reset();
 
     m_wTooltipWindow.setMillisecondsBeforeTipAppears(500);
     // Set the size of the component after adding child components.
@@ -191,7 +191,7 @@ void MainComponent::vSwitchToSpectrum()
 }
 
 /*======================================================================================*/
-void MainComponent::vSetParameter(const int nParameterType, const double nValue, const bool bUpdateDisplay)
+void MainComponent::vSetParameter(const int nParameterType, const double dValue, const bool bUpdateDisplay)
 /*======================================================================================*/
 {
     // Centrally setting paramaters from all the controls
@@ -199,63 +199,63 @@ void MainComponent::vSetParameter(const int nParameterType, const double nValue,
     {
         case PARAMETER_TEMPERATURE:
         {
-            m_nTemperature = nValue;
+            m_dTemperature = dValue;
             vUpdateSystemResponse();
             break;
         }
         case PARAMETER_HUMIDITY:
         {
-            m_nHumidity = nValue;
+            m_dHumidity = dValue;
             vUpdateSystemResponse();
             break;
         }
         case PARAMETER_WIND_SPEED:
         {
-            m_nWindSpeed = nValue;
+            m_dWindSpeed = dValue;
             vUpdateWindFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
         case PARAMETER_WIND_DIRECTION:
         {
-            m_nWindDirection = nValue;
+            m_bWindDirection = (bool)dValue;
             vUpdateWindFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
         case PARAMETER_PRECIPITATION:
         {
-            m_bPrecipitation = (bool)nValue;
+            m_bPrecipitation = (bool)dValue;
 
             // Precipitation automatically sets humidity to 90%
             if (m_bPrecipitation)
-            { m_nHumidity = 90; }
+            { m_dHumidity = 90; }
             else
-            { m_nHumidity = 50; }
+            { m_dHumidity = 50; }
             vUpdateSystemResponse();
             break;
         }
         case PARAMETER_TEMP_GRADIENT:
         {
-            m_nTempGradient = nValue;
+            m_bTempGradient = (bool)dValue;
             vUpdateTempFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
         case PARAMETER_PRESSURE:
         {
-            m_nPressure = nValue;
+            m_dPressure = dValue;
             vUpdateSystemResponse();
             break;
         }
         case PARAMETER_CLOUD_COVER:
         {
-            m_bCloudCover = (bool)nValue;
+            m_bCloudCover = (bool)dValue;
             break;
         }
         case PARAMETER_DISTANCE:
         {
-            m_nDistance = nValue;
+            m_dDistance = dValue;
             vUpdateWindFilterCoeffs();
             vUpdateTempFilterCoeffs();
             vUpdateSystemResponse();
@@ -263,7 +263,7 @@ void MainComponent::vSetParameter(const int nParameterType, const double nValue,
         }
         case PARAMETER_MAKEUP_GAIN:
         {
-            m_bEnableMakeupGain = nValue;
+            m_bEnableMakeupGain = dValue;
             vUpdateSystemResponse();
         }
     }
@@ -275,25 +275,25 @@ void MainComponent::vSetParameter(const int nParameterType, const double nValue,
 void MainComponent::vUpdateWindFilterCoeffs()
 /*======================================================================================*/
 {
-    WindFilterCutoffSolver cWindSolver(m_nWindSpeed, (bool)m_nWindDirection);
-    if (m_nWindDirection == WIND_DIRECTION_UPWIND)
+    WindFilterCutoffSolver cWindSolver(m_dWindSpeed, m_bWindDirection);
+    if (m_bWindDirection == WIND_DIRECTION_UPWIND)
     {
-        double dWindCutoffFreq = cWindSolver.SolveUpwind(m_nDistance);
+        double dWindCutoffFreq = cWindSolver.SolveUpwind(m_dDistance);
         m_cWindIIRCoeffs = IIRCoefficients::makeLowPass(44100, dWindCutoffFreq);
-        windFilterL.setCoefficients(m_cWindIIRCoeffs);
-        windFilterR.setCoefficients(m_cWindIIRCoeffs);
+        m_cWindFilterL.setCoefficients(m_cWindIIRCoeffs);
+        m_cWindFilterR.setCoefficients(m_cWindIIRCoeffs);
 
-        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makeLowPass(44100, dWindCutoffFreq);
+        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makeLowPass(44100, (float)dWindCutoffFreq);
         m_pcResponseCurve->vSetWindCoefficients(fpNewCoeffs);
     }
     else
     {
-        double dWindHighShelfBoost = cWindSolver.SolveDownwind(m_nDistance);
-        m_cWindIIRCoeffs = IIRCoefficients::makePeakFilter(44100, 5000.0, 0.2, dWindHighShelfBoost);
-        windFilterL.setCoefficients(m_cWindIIRCoeffs);
-        windFilterL.setCoefficients(m_cWindIIRCoeffs);
+        double dWindHighShelfBoost = cWindSolver.SolveDownwind(m_dDistance);
+        m_cWindIIRCoeffs = IIRCoefficients::makePeakFilter(44100, 5000.0, 0.2, (float)dWindHighShelfBoost);
+        m_cWindFilterL.setCoefficients(m_cWindIIRCoeffs);
+        m_cWindFilterR.setCoefficients(m_cWindIIRCoeffs);
 
-        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makePeakFilter(44100.0, 5000.0, 0.2, dWindHighShelfBoost);
+        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makePeakFilter(44100, 5000.0f, 0.2f, (float)dWindHighShelfBoost);
         m_pcResponseCurve->vSetWindCoefficients(fpNewCoeffs);
     }
 }
@@ -302,25 +302,25 @@ void MainComponent::vUpdateWindFilterCoeffs()
 void MainComponent::vUpdateTempFilterCoeffs()
 /*======================================================================================*/
 {
-    TempGradientFilterCutoffSolver cTempGradientSolver((bool)m_nTempGradient);
-    if (m_nTempGradient == TEMPERATURE_LAPSE)
+    TempGradientFilterCutoffSolver cTempGradientSolver(m_bTempGradient);
+    if (m_bTempGradient == TEMPERATURE_LAPSE)
     {
-        double dTempCutoffFreq = cTempGradientSolver.SolveLapse(m_nDistance);
+        double dTempCutoffFreq = cTempGradientSolver.SolveLapse(m_dDistance);
         m_cTempIIRCoeffs = IIRCoefficients::makeLowPass(44100, dTempCutoffFreq);
-        tempFilterL.setCoefficients(m_cTempIIRCoeffs);
-        tempFilterL.setCoefficients(m_cTempIIRCoeffs);
+        m_cTempFilterL.setCoefficients(m_cTempIIRCoeffs);
+        m_cTempFilterR.setCoefficients(m_cTempIIRCoeffs);
 
-        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makeLowPass(44100, dTempCutoffFreq);
+        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makeLowPass(44100, (float)dTempCutoffFreq);
         m_pcResponseCurve->vSetTempGradientCoefficients(fpNewCoeffs);
     }
     else
     {
-        double dTempBoost = cTempGradientSolver.SolveInversion(m_nDistance);
-        m_cTempIIRCoeffs = IIRCoefficients::makePeakFilter(44100, 5000.0, 0.2, dTempBoost);
-        tempFilterL.setCoefficients(m_cTempIIRCoeffs);
-        tempFilterL.setCoefficients(m_cTempIIRCoeffs);
+        double dTempBoost = cTempGradientSolver.SolveInversion(m_dDistance);
+        m_cTempIIRCoeffs = IIRCoefficients::makePeakFilter(44100, 5000.0, 0.2, (float)dTempBoost);
+        m_cTempFilterL.setCoefficients(m_cTempIIRCoeffs);
+        m_cTempFilterR.setCoefficients(m_cTempIIRCoeffs);
 
-        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makePeakFilter(44100, 5000.0, 0.2, dTempBoost);
+        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makePeakFilter(44100, 5000.0f, 0.2f, (float)dTempBoost);
         m_pcResponseCurve->vSetTempGradientCoefficients(fpNewCoeffs);
     }
 }
@@ -330,42 +330,42 @@ void MainComponent::vUpdateConditionControls()
 /*======================================================================================*/
 {
     // Complete update and repaint of condition controls
-    m_pcConditionControls->vSetParameter(PARAMETER_TEMPERATURE, m_nTemperature);
-    m_pcConditionControls->vSetParameter(PARAMETER_WIND_SPEED, m_nWindSpeed);
-    m_pcConditionControls->vSetParameter(PARAMETER_HUMIDITY, m_nHumidity);
-    m_pcConditionControls->vSetParameter(PARAMETER_TEMP_GRADIENT, m_nTempGradient);
+    m_pcConditionControls->vSetParameter(PARAMETER_TEMPERATURE, m_dTemperature);
+    m_pcConditionControls->vSetParameter(PARAMETER_WIND_SPEED, m_dWindSpeed);
+    m_pcConditionControls->vSetParameter(PARAMETER_HUMIDITY, m_dHumidity);
+    m_pcConditionControls->vSetParameter(PARAMETER_TEMP_GRADIENT, m_bTempGradient);
     m_pcConditionControls->vSetParameter(PARAMETER_PRECIPITATION, m_bPrecipitation);
-    m_pcConditionControls->vSetParameter(PARAMETER_WIND_DIRECTION, m_nWindDirection);
-    m_pcConditionControls->vSetParameter(PARAMETER_PRESSURE, m_nPressure);
+    m_pcConditionControls->vSetParameter(PARAMETER_WIND_DIRECTION, m_bWindDirection);
+    m_pcConditionControls->vSetParameter(PARAMETER_PRESSURE, m_dPressure);
     m_pcConditionControls->vSetParameter(PARAMETER_CLOUD_COVER, m_bCloudCover);
     m_pcConditionControls->repaint();
 }
 
 /*======================================================================================*/
-double MainComponent::nGetParameter(int nParameterType)
+double MainComponent::dGetParameter(const int nParameterType)
 /*======================================================================================*/
 {
     // Retrieving parameters from central location
     switch (nParameterType)
     {
         case PARAMETER_TEMPERATURE:
-        { return m_nTemperature; }
+        { return m_dTemperature; }
         case PARAMETER_HUMIDITY:
-        { return m_nHumidity; }
+        { return m_dHumidity; }
         case PARAMETER_WIND_SPEED:
-        { return m_nWindSpeed; }
+        { return m_dWindSpeed; }
         case PARAMETER_WIND_DIRECTION:
-        { return m_nWindDirection; }
+        { return (int)m_bWindDirection; }
         case PARAMETER_PRECIPITATION:
         { return (int)m_bPrecipitation; }
         case PARAMETER_TEMP_GRADIENT:
-        {  return m_nTempGradient; }
+        {  return (int)m_bTempGradient; }
         case PARAMETER_PRESSURE:
-        { return m_nPressure; }
+        { return m_dPressure; }
         case PARAMETER_CLOUD_COVER:
-        { return m_bCloudCover; }
+        { return (int)m_bCloudCover; }
         case PARAMETER_DISTANCE:
-        { return m_nDistance; }
+        { return m_dDistance; }
         case PARAMETER_MAKEUP_GAIN:
         { return (int)m_bEnableMakeupGain; }
     }
@@ -510,33 +510,33 @@ void MainComponent::vApplyDSPProcessing(AudioBuffer<float>& buffer)
 {
     //**************Atmospheric absorption**************//
     // Initialise the cutoff solver with atmospheric conditions
-    double dTempFarenheit = (m_nTemperature * 1.8) + 32; // Atmospheric absorption calculation uses farenheit
-    double dPressurePascals = m_nPressure * 100; // Atmoshperic absoption calculation uses pascals
-    FilterCutoffSolver cCutoffSolver(m_nHumidity, dTempFarenheit, dPressurePascals);
+    double dTempFarenheit = (m_dTemperature * 1.8) + 32; // Atmospheric absorption calculation uses farenheit
+    double dPressurePascals = m_dPressure * 100; // Atmoshperic absoption calculation uses pascals
+    FilterCutoffSolver cCutoffSolver(m_dHumidity, dTempFarenheit, dPressurePascals);
 
-    double dDistance = (m_nDistance == 0) ? 1 : m_nDistance; // Set minimum distance to 1 so that it doesnt break the calculation
+    double dDistance = (m_dDistance == 0) ? 1 : m_dDistance; // Set minimum distance to 1 so that it doesnt break the calculation
     double dCutoffFrequency = cCutoffSolver.Solve(dDistance); // Calculate the LPF cutoff frequency
     dCutoffFrequency = (dCutoffFrequency > 22000.0) ? 20000.0 : dCutoffFrequency; // Ensure cut off frequency is not greater than 20kHz
 
     // Set the low-pass filter with the calculated cutoff frequency
-    mainFilterL.setCoefficients(IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
-    mainFilterR.setCoefficients(IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
+    m_cMainFilterL.setCoefficients(IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
+    m_cMainFilterR.setCoefficients(IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
 
     int nNumSamples = buffer.getNumSamples();
     float* pfChannelDataL = buffer.getWritePointer(0);
     float* pfChannelDataR = buffer.getWritePointer(1);
 
     // Apply the filter to the left and right channels of the audio buffer
-    mainFilterL.processSamples(pfChannelDataL, nNumSamples);
-    mainFilterR.processSamples(pfChannelDataR, nNumSamples);
+    m_cMainFilterL.processSamples(pfChannelDataL, nNumSamples);
+    m_cMainFilterR.processSamples(pfChannelDataR, nNumSamples);
 
     //**************Wind scattering and refraction**************//
-    windFilterL.processSamples(pfChannelDataL, nNumSamples);
-    windFilterL.processSamples(pfChannelDataR, nNumSamples);
+    m_cWindFilterL.processSamples(pfChannelDataL, nNumSamples);
+    m_cWindFilterR.processSamples(pfChannelDataR, nNumSamples);
 
     //**************Temperature gradients**************//
-    tempFilterL.processSamples(pfChannelDataL, nNumSamples);
-    tempFilterR.processSamples(pfChannelDataR, nNumSamples);
+    m_cTempFilterL.processSamples(pfChannelDataL, nNumSamples);
+    m_cTempFilterR.processSamples(pfChannelDataR, nNumSamples);
 
     //**************Geometric spreading**************//
     // Apply Inverse Square Law attenuation (linear gain)
@@ -552,40 +552,6 @@ void MainComponent::vUpdateSystemResponse()
 /*======================================================================================*/
 {
     m_pcResponseCurve->repaint();
-}
-
-/*======================================================================================*/
-double MainComponent::dCalculateWindLoss(const double dFrequency, const double dDistance, const double dWindSpeed, const bool bWindDirection)
-/*======================================================================================*/
-{
-    // Wind attenuation loss
-    double dWindLoss = 1.0e-5 * dWindSpeed * sqrt(dFrequency) * dDistance;
-    if (bWindDirection == WIND_DIRECTION_DOWNWIND)
-    { dWindLoss *= -0.45; }
-    
-    double dSpeed = dWindSpeed / 3.6;
-    double dTemp1 = (1 + dSpeed / 340) * (1 + dSpeed / 340);
-    double dTemp2 = (1 - dSpeed / 340) * (1 - dSpeed / 340);
-    double dAmpFactor = dTemp1 / dTemp2;
-
-    double cMet = 5 * log10(1 + (dSpeed / 10)* (dSpeed / 10));
-    return dWindLoss;
-}
-
-/*======================================================================================*/
-double MainComponent::dCalculateTemperatureGradientLoss(const double dFrequency, const double dDistance,
-    const int nTemperatureGradient)
-    /*======================================================================================*/
-{
-    double dTemperatureGradient = 0;
-    if(nTemperatureGradient == TEMPERATURE_LAPSE)
-    { dTemperatureGradient = -0.0065; }
-    else
-    { dTemperatureGradient = 0.001; }
-
-    // Compute attenuation loss based on gradient
-    double dTempLoss = -0.03 * dTemperatureGradient * sqrt(dFrequency) * dDistance;
-    return dTempLoss;
 }
 
 /*======================================================================================*/
@@ -674,8 +640,8 @@ void MainComponent::vShowVolumeWarningBox()
     // Use callAsync to show the dialog asynchronously on the message thread
     juce::MessageManager::callAsync([this]() {
         // Ensure that the callback captures 'this' to access member variables/functions
-        const auto callback = juce::ModalCallbackFunction::create([this](int result) {
-            if (result == 1) {
+        const auto callback = juce::ModalCallbackFunction::create([this](int nResult) {
+            if (nResult == 1) {
                 vSetParameter(PARAMETER_MAKEUP_GAIN, 1, false);
             }
             else {

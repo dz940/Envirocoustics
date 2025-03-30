@@ -7,7 +7,7 @@ double dGetLowPassFilterCutoff(double dDistance)
     // Compute attenuation for lapse
     double A = 0.1 * (14.0 / 30.0);
     double dAttenuationdB = A * dDistance;
-    double dCutoffFreq = 20000.0 * expf(-dAttenuationdB / 10.0);
+    double dCutoffFreq = 20000.0 * exp(-dAttenuationdB / 10.0);
     dCutoffFreq = juce::jmax(50.0, dCutoffFreq);
     return dCutoffFreq;
 }

@@ -98,12 +98,12 @@ void DistanceGraphic::paint(Graphics& g)
 /*======================================================================================*/
 {
     // Get current parameters
-    int nTemp = m_pcMainComponent.nGetParameter(PARAMETER_TEMPERATURE);
-    int nWindSpeed = m_pcMainComponent.nGetParameter(PARAMETER_WIND_SPEED);
-    bool bPrecipitation = m_pcMainComponent.nGetParameter(PARAMETER_PRECIPITATION);
-    int nWindDirection = m_pcMainComponent.nGetParameter(PARAMETER_WIND_DIRECTION);
-    bool bCloudCover = m_pcMainComponent.nGetParameter(PARAMETER_CLOUD_COVER);
-    int nTime = m_pcMainComponent.nGetParameter(PARAMETER_TEMP_GRADIENT); // Treating temperature gradient as time of day
+    int nTemp = (int)m_pcMainComponent.dGetParameter(PARAMETER_TEMPERATURE);
+    int nWindSpeed = (int)m_pcMainComponent.dGetParameter(PARAMETER_WIND_SPEED);
+    bool bPrecipitation = (bool)m_pcMainComponent.dGetParameter(PARAMETER_PRECIPITATION);
+    int nWindDirection = (int)m_pcMainComponent.dGetParameter(PARAMETER_WIND_DIRECTION);
+    bool bCloudCover = (bool)m_pcMainComponent.dGetParameter(PARAMETER_CLOUD_COVER);
+    int nTime = (int)m_pcMainComponent.dGetParameter(PARAMETER_TEMP_GRADIENT); // Treating temperature gradient as time of day
 
     // Set stickman
     if (nTemp <= 0)

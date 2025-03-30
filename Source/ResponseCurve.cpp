@@ -53,14 +53,11 @@ void ResponseCurve::paint(Graphics& g)
     }
 
     // Retrieve parameters
-    double dTemperature = m_pcMainComponent.nGetParameter(PARAMETER_TEMPERATURE);
-    double dHumidity = m_pcMainComponent.nGetParameter(PARAMETER_HUMIDITY);
-    double dPressure = m_pcMainComponent.nGetParameter(PARAMETER_PRESSURE);
-    double dDistance = m_pcMainComponent.nGetParameter(PARAMETER_DISTANCE);
-    double dWindSpeed = m_pcMainComponent.nGetParameter(PARAMETER_WIND_SPEED);
-    bool bWindDirection = m_pcMainComponent.nGetParameter(PARAMETER_WIND_DIRECTION);
-    int nTemperatureGradient = m_pcMainComponent.nGetParameter(PARAMETER_TEMP_GRADIENT);
-    bool bMakeupGainEnabled = m_pcMainComponent.nGetParameter(PARAMETER_MAKEUP_GAIN);  
+    double dTemperature = m_pcMainComponent.dGetParameter(PARAMETER_TEMPERATURE);
+    double dHumidity = m_pcMainComponent.dGetParameter(PARAMETER_HUMIDITY);
+    double dPressure = m_pcMainComponent.dGetParameter(PARAMETER_PRESSURE);
+    double dDistance = m_pcMainComponent.dGetParameter(PARAMETER_DISTANCE);
+    bool bMakeupGainEnabled = (bool)m_pcMainComponent.dGetParameter(PARAMETER_MAKEUP_GAIN);
 
     // Draw response curve
     for (int i = 0; i < 200; ++i)
@@ -69,8 +66,6 @@ void ResponseCurve::paint(Graphics& g)
 
         // Calculate total attenuation
         double dAttenuationPerMeter = m_pcMainComponent.dCalculateAirAttenuationPerMetre(dFreq, dTemperature, dHumidity, dPressure);
-        //double dWindLoss = m_pcMainComponent.dCalculateWindLoss(dFreq, dDistance, dWindSpeed, bWindDirection);
-
         double dWindLoss =  -(float)Decibels::gainToDecibels(m_fpWindCoefficients->getMagnitudeForFrequency(dFreq, 44100.0));
         double dGradientLoss = -(float)Decibels::gainToDecibels(m_fpTempGradientCoefficients->getMagnitudeForFrequency(dFreq, 44100.0));
         double dTotalAttenuationDb = dAttenuationPerMeter * dDistance + (dWindLoss + dGradientLoss);

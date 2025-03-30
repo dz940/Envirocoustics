@@ -15,17 +15,18 @@ public:
 
     void mouseWheelMove(const juce::MouseEvent&, const juce::MouseWheelDetails& wheel) override
     {
+        (void)wheel;
         return;
     }
 
     void mouseDown(const juce::MouseEvent& event) override
     {
-        int nMouseDownX = event.position.getX();
+        int nMouseDownX = (int)event.position.toInt().getX();
         int nCurrentPosition = (int)getPositionOfValue(getValue());
         int nThumbRadius = getLookAndFeel().getSliderThumbRadius(*this);
         // Get the slider's thumb bounds
-        if (event.position.toInt().getX() < (nCurrentPosition - nThumbRadius) ||
-            event.position.toInt().getX() > (nCurrentPosition + nThumbRadius))
+        if (nMouseDownX < (nCurrentPosition - nThumbRadius) ||
+            nMouseDownX > (nCurrentPosition + nThumbRadius))
         { return; }
 
         // Ignore clicks outside the thumb

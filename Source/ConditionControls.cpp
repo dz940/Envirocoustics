@@ -148,7 +148,7 @@ ConditionControls::~ConditionControls()
 }
 
 /*======================================================================================*/
-void ConditionControls::vSetParameter(int nParameter, int nValue)
+void ConditionControls::vSetParameter(const int nParameter, const double dValue)
 /*======================================================================================*/
 {
     // Set parameters of the controls
@@ -156,27 +156,27 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
     {
         case PARAMETER_TEMPERATURE:
         {
-            m_cTemperatureKnob.setValue(nValue);
+            m_cTemperatureKnob.setValue(dValue);
             break;
         }
         case PARAMETER_HUMIDITY:
         {
-            m_cHumidityKnob.setValue(nValue);
+            m_cHumidityKnob.setValue(dValue);
             break;
         }
         case PARAMETER_WIND_SPEED:
         {
-            m_cWindSpeedKnob.setValue(nValue);
+            m_cWindSpeedKnob.setValue(dValue);
             break;
         }
         case PARAMETER_PRECIPITATION:
         {
-            if (nValue == OFF)
+            if ((bool)dValue == OFF)
             {
                 m_cPrecipitationOnBtn.setToggleState(false, dontSendNotification);
                 m_cPrecipitationOffBtn.setToggleState(true, dontSendNotification);
             }
-            else if (nValue == ON)
+            else if ((bool)dValue == ON)
             {
                 m_cPrecipitationOnBtn.setToggleState(true, dontSendNotification);
                 m_cPrecipitationOffBtn.setToggleState(false, dontSendNotification);
@@ -185,12 +185,12 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
         }
         case PARAMETER_WIND_DIRECTION:
         {
-            if (nValue == WIND_DIRECTION_UPWIND)
+            if ((bool)dValue == WIND_DIRECTION_UPWIND)
             {
                 m_cWindLeftBtn.setToggleState(true, dontSendNotification);
                 m_cWindRightBtn.setToggleState(false, dontSendNotification);
             }
-            else if (nValue == WIND_DIRECTION_DOWNWIND)
+            else if ((bool)dValue == WIND_DIRECTION_DOWNWIND)
             {
                 m_cWindLeftBtn.setToggleState(false, dontSendNotification);
                 m_cWindRightBtn.setToggleState(true, dontSendNotification);
@@ -199,12 +199,12 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
         }
         case PARAMETER_TEMP_GRADIENT:
         {
-            if (nValue == TEMPERATURE_LAPSE)
+            if ((bool)dValue == TEMPERATURE_LAPSE)
             {
                 m_cTemperatureLapseBtn.setToggleState(true, dontSendNotification);
                 m_cTemperatureInversionBtn.setToggleState(false, dontSendNotification);
             }
-            else if (nValue == TEMPERATURE_INVERSION)
+            else if ((bool)dValue == TEMPERATURE_INVERSION)
             {
                 m_cTemperatureLapseBtn.setToggleState(false, dontSendNotification);
                 m_cTemperatureInversionBtn.setToggleState(true, dontSendNotification);
@@ -213,17 +213,17 @@ void ConditionControls::vSetParameter(int nParameter, int nValue)
         }
         case PARAMETER_PRESSURE:
         {
-            m_cPressureKnob.setValue(nValue);
+            m_cPressureKnob.setValue(dValue);
             break;
         }
         case PARAMETER_CLOUD_COVER:
         {
-            if (nValue == OFF)
+            if ((bool)dValue == OFF)
             {
                 m_cCloudOnBtn.setToggleState(false, dontSendNotification);
                 m_cCloudOffBtn.setToggleState(true, dontSendNotification);
             }
-            else if (nValue == ON)
+            else if ((bool)dValue == ON)
             {
                 m_cCloudOnBtn.setToggleState(true, dontSendNotification);
                 m_cCloudOffBtn.setToggleState(false, dontSendNotification);
