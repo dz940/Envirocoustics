@@ -2944,6 +2944,7 @@
     <ClInclude Include="..\..\Source\Spectrogram.h" />
     <ClInclude Include="..\..\Source\SpectrogramComponent.h" />
     <ClInclude Include="..\..\Source\SpectrumComponent.h" />
+    <ClInclude Include="..\..\Source\TempGradientAttenuation.h" />
     <ClInclude Include="..\..\Source\VolumeControl.h" />
     <ClInclude Include="..\..\Source\VolumeSlider.h" />
     <ClInclude Include="..\..\Source\WaveformDisplay.h" />

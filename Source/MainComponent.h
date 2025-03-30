@@ -52,6 +52,8 @@ public:
     void vSwitchToSpectrogram();
     void vSwitchToSpectrum();
     void vSetParameter(const int nParameterType, const double nValue, const bool bUpdateDisplay);
+    void vUpdateWindFilterCoeffs();
+    void vUpdateTempFilterCoeffs();
     void vUpdateConditionControls();
     double nGetParameter(const int nParameterType);
     double dCalculateWindLoss(const double dFrequency, const double dDistance, const double dWindSpeed, const bool bWindDirection);
@@ -119,13 +121,17 @@ private:
     int m_nTempGradient = TEMPERATURE_LAPSE;
     bool m_bCloudCover = OFF;
 
-    bool m_bEnableMakeupGain = false;
+    bool m_bEnableMakeupGain = true;
 
     std::vector<double> m_dTargetMagnitudeResponse;
     CriticalSection filterLock;
 
-    IIRFilter mainFilterL;
-    IIRFilter mainFilterR;
+    IIRFilter mainFilterL, mainFilterR;
+    IIRFilter windFilterL, windFilterR;
+    IIRFilter tempFilterL, tempFilterR;
+
+    IIRCoefficients m_cWindIIRCoeffs;
+    IIRCoefficients m_cTempIIRCoeffs;
 
     std::unique_ptr<AlertWindow> m_pAlertWindow;
 

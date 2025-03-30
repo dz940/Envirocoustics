@@ -8,6 +8,8 @@
 #include "SpectrogramComponent.h"
 #include "ResponseComponent.h"
 #include "AtmosphericAbsorption.h"
+#include "WindAttenuation.h"
+#include "TempGradientAttenuation.h"
 #include <atlstr.h>
 
 /*======================================================================================*/
@@ -120,6 +122,7 @@ MainComponent::MainComponent() : AudioAppComponent(m_cAudioDeviceManager)
     m_pcDisablePowerLossCheck->setColour(ToggleButton::tickColourId, Colours::black);
     m_pcDisablePowerLossCheck->setColour(ToggleButton::textColourId, Colours::black);
     m_pcDisablePowerLossCheck->setColour(ToggleButton::tickDisabledColourId, Colours::black);
+    m_pcDisablePowerLossCheck->setToggleState(true, dontSendNotification);
     m_pcDisablePowerLossCheck->setEnabled(true);
     addAndMakeVisible(m_pcDisablePowerLossCheck);
 
@@ -128,6 +131,10 @@ MainComponent::MainComponent() : AudioAppComponent(m_cAudioDeviceManager)
 
     mainFilterL.reset();
     mainFilterR.reset();
+    windFilterL.reset();
+    windFilterR.reset();
+    tempFilterL.reset();
+    tempFilterR.reset();
 
     m_wTooltipWindow.setMillisecondsBeforeTipAppears(500);
     // Set the size of the component after adding child components.
@@ -205,12 +212,14 @@ void MainComponent::vSetParameter(const int nParameterType, const double nValue,
         case PARAMETER_WIND_SPEED:
         {
             m_nWindSpeed = nValue;
+            vUpdateWindFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
         case PARAMETER_WIND_DIRECTION:
         {
             m_nWindDirection = nValue;
+            vUpdateWindFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
@@ -229,6 +238,7 @@ void MainComponent::vSetParameter(const int nParameterType, const double nValue,
         case PARAMETER_TEMP_GRADIENT:
         {
             m_nTempGradient = nValue;
+            vUpdateTempFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
@@ -246,6 +256,8 @@ void MainComponent::vSetParameter(const int nParameterType, const double nValue,
         case PARAMETER_DISTANCE:
         {
             m_nDistance = nValue;
+            vUpdateWindFilterCoeffs();
+            vUpdateTempFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
@@ -257,6 +269,60 @@ void MainComponent::vSetParameter(const int nParameterType, const double nValue,
     }
     if(bUpdateDisplay)
     { m_pcDistanceGraphic->repaint(); }
+}
+
+/*======================================================================================*/
+void MainComponent::vUpdateWindFilterCoeffs()
+/*======================================================================================*/
+{
+    WindFilterCutoffSolver cWindSolver(m_nWindSpeed, (bool)m_nWindDirection);
+    if (m_nWindDirection == WIND_DIRECTION_UPWIND)
+    {
+        double dWindCutoffFreq = cWindSolver.SolveUpwind(m_nDistance);
+        m_cWindIIRCoeffs = IIRCoefficients::makeLowPass(44100, dWindCutoffFreq);
+        windFilterL.setCoefficients(m_cWindIIRCoeffs);
+        windFilterR.setCoefficients(m_cWindIIRCoeffs);
+
+        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makeLowPass(44100, dWindCutoffFreq);
+        m_pcResponseCurve->vSetWindCoefficients(fpNewCoeffs);
+    }
+    else
+    {
+        double dWindHighShelfBoost = cWindSolver.SolveDownwind(m_nDistance);
+        m_cWindIIRCoeffs = IIRCoefficients::makePeakFilter(44100, 5000.0, 0.2, dWindHighShelfBoost);
+        windFilterL.setCoefficients(m_cWindIIRCoeffs);
+        windFilterL.setCoefficients(m_cWindIIRCoeffs);
+
+        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makePeakFilter(44100.0, 5000.0, 0.2, dWindHighShelfBoost);
+        m_pcResponseCurve->vSetWindCoefficients(fpNewCoeffs);
+    }
+}
+
+/*======================================================================================*/
+void MainComponent::vUpdateTempFilterCoeffs()
+/*======================================================================================*/
+{
+    TempGradientFilterCutoffSolver cTempGradientSolver((bool)m_nTempGradient);
+    if (m_nTempGradient == TEMPERATURE_LAPSE)
+    {
+        double dTempCutoffFreq = cTempGradientSolver.SolveLapse(m_nDistance);
+        m_cTempIIRCoeffs = IIRCoefficients::makeLowPass(44100, dTempCutoffFreq);
+        tempFilterL.setCoefficients(m_cTempIIRCoeffs);
+        tempFilterL.setCoefficients(m_cTempIIRCoeffs);
+
+        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makeLowPass(44100, dTempCutoffFreq);
+        m_pcResponseCurve->vSetTempGradientCoefficients(fpNewCoeffs);
+    }
+    else
+    {
+        double dTempBoost = cTempGradientSolver.SolveInversion(m_nDistance);
+        m_cTempIIRCoeffs = IIRCoefficients::makePeakFilter(44100, 5000.0, 0.2, dTempBoost);
+        tempFilterL.setCoefficients(m_cTempIIRCoeffs);
+        tempFilterL.setCoefficients(m_cTempIIRCoeffs);
+
+        dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makePeakFilter(44100, 5000.0, 0.2, dTempBoost);
+        m_pcResponseCurve->vSetTempGradientCoefficients(fpNewCoeffs);
+    }
 }
 
 /*======================================================================================*/
@@ -442,6 +508,7 @@ void MainComponent::changeListenerCallback(ChangeBroadcaster* source)
 void MainComponent::vApplyDSPProcessing(AudioBuffer<float>& buffer)
 /*======================================================================================*/
 {
+    //**************Atmospheric absorption**************//
     // Initialise the cutoff solver with atmospheric conditions
     double dTempFarenheit = (m_nTemperature * 1.8) + 32; // Atmospheric absorption calculation uses farenheit
     double dPressurePascals = m_nPressure * 100; // Atmoshperic absoption calculation uses pascals
@@ -463,6 +530,15 @@ void MainComponent::vApplyDSPProcessing(AudioBuffer<float>& buffer)
     mainFilterL.processSamples(pfChannelDataL, nNumSamples);
     mainFilterR.processSamples(pfChannelDataR, nNumSamples);
 
+    //**************Wind scattering and refraction**************//
+    windFilterL.processSamples(pfChannelDataL, nNumSamples);
+    windFilterL.processSamples(pfChannelDataR, nNumSamples);
+
+    //**************Temperature gradients**************//
+    tempFilterL.processSamples(pfChannelDataL, nNumSamples);
+    tempFilterR.processSamples(pfChannelDataR, nNumSamples);
+
+    //**************Geometric spreading**************//
     // Apply Inverse Square Law attenuation (linear gain)
     if (!m_bEnableMakeupGain)
     {

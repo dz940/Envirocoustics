@@ -43,7 +43,9 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
     m_cPressureKnob.setLookAndFeel(&m_lfRotaryLookAndFeel);
     addAndMakeVisible(&m_cPressureKnob);
 
-    m_cTemperatureLapseBtn.onClick = [this] { m_cMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, m_cTemperatureInversionBtn.getToggleState(), true); };
+    m_cTemperatureLapseBtn.onClick = [this] {
+        if (m_cTemperatureLapseBtn.getToggleState() == ON)
+        { m_cMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, TEMPERATURE_LAPSE, true); }};
     m_cTemperatureLapseBtn.setButtonText("Day"); // Temperature lapse is represented in the app as 'Day'
     m_cTemperatureLapseBtn.setClickingTogglesState(true);
     m_cTemperatureLapseBtn.setColour(TextButton::buttonOnColourId, Colours::green);
@@ -52,7 +54,9 @@ ConditionControls::ConditionControls(MainComponent& parentComponent)
     m_cTemperatureLapseBtn.setToggleState(true, dontSendNotification);
     addAndMakeVisible(&m_cTemperatureLapseBtn);
 
-    m_cTemperatureInversionBtn.onClick = [this] {m_cMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, m_cTemperatureInversionBtn.getToggleState(), true); };
+    m_cTemperatureInversionBtn.onClick = [this] {
+        if (m_cTemperatureInversionBtn.getToggleState() == ON)
+        { m_cMainComponent.vSetParameter(PARAMETER_TEMP_GRADIENT, TEMPERATURE_INVERSION, true); }};
     m_cTemperatureInversionBtn.setButtonText("Night"); // Temperature lapse is represented in the app as 'Night'
     m_cTemperatureInversionBtn.setClickingTogglesState(true);
     m_cTemperatureInversionBtn.setColour(TextButton::buttonOnColourId, Colours::green);

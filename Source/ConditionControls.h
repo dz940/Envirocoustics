@@ -49,6 +49,7 @@ class ConditionControls : public Component
 {
 public:
     ConditionControls(MainComponent& parentComponent);
+    void vTempGradientChanged();
     ~ConditionControls();
     void vSetParameter(int nParameter, int nValue);
     void resized() override;

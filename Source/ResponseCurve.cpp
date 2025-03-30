@@ -60,7 +60,7 @@ void ResponseCurve::paint(Graphics& g)
     double dWindSpeed = m_pcMainComponent.nGetParameter(PARAMETER_WIND_SPEED);
     bool bWindDirection = m_pcMainComponent.nGetParameter(PARAMETER_WIND_DIRECTION);
     int nTemperatureGradient = m_pcMainComponent.nGetParameter(PARAMETER_TEMP_GRADIENT);
-    bool bMakeupGainEnabled = m_pcMainComponent.nGetParameter(PARAMETER_MAKEUP_GAIN);
+    bool bMakeupGainEnabled = m_pcMainComponent.nGetParameter(PARAMETER_MAKEUP_GAIN);  
 
     // Draw response curve
     for (int i = 0; i < 200; ++i)
@@ -69,15 +69,19 @@ void ResponseCurve::paint(Graphics& g)
 
         // Calculate total attenuation
         double dAttenuationPerMeter = m_pcMainComponent.dCalculateAirAttenuationPerMetre(dFreq, dTemperature, dHumidity, dPressure);
-        double dWindLoss = m_pcMainComponent.dCalculateWindLoss(dFreq, dDistance, dWindSpeed, bWindDirection);
-        double dGradientLoss = m_pcMainComponent.dCalculateTemperatureGradientLoss(dFreq, dDistance, nTemperatureGradient);
-        double dTotalAttenuationDb = dAttenuationPerMeter * dDistance + dWindLoss + dGradientLoss;
+        //double dWindLoss = m_pcMainComponent.dCalculateWindLoss(dFreq, dDistance, dWindSpeed, bWindDirection);
+
+        double dWindLoss =  -(float)Decibels::gainToDecibels(m_fpWindCoefficients->getMagnitudeForFrequency(dFreq, 44100.0));
+        double dGradientLoss = -(float)Decibels::gainToDecibels(m_fpTempGradientCoefficients->getMagnitudeForFrequency(dFreq, 44100.0));
+        double dTotalAttenuationDb = dAttenuationPerMeter * dDistance + (dWindLoss + dGradientLoss);
 
         if (!bMakeupGainEnabled)
         {
             double dAttentuationDueToDistance = 20 * log10(dDistance);
             dTotalAttenuationDb += dAttentuationDueToDistance;
         }
+
+        //dTotalAttenuationDb = dWindLoss;
 
         // Map dB value to screen space (ensuring +10 dB is at top, -50 dB at bottom)
         float x = (float)i / 199.0f * fWidth;

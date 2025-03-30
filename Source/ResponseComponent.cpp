@@ -28,6 +28,20 @@ void ResponseComponent::resized()
 
 }
 /*======================================================================================*/
+void ResponseComponent::vSetWindCoefficients(dsp::IIR::Coefficients<float>::Ptr newCoeffs)
+/*======================================================================================*/
+{
+    m_pcResponseCurve->vSetWindCoefficients(newCoeffs);
+}
+
+/*======================================================================================*/
+void ResponseComponent::vSetTempGradientCoefficients(dsp::IIR::Coefficients<float>::Ptr newCoeffs)
+/*======================================================================================*/
+{
+    m_pcResponseCurve->vSetTempGradientCoefficients(newCoeffs);
+}
+
+/*======================================================================================*/
 void ResponseComponent::paint(Graphics& g)
 /*======================================================================================*/
 {
