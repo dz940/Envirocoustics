@@ -125,6 +125,8 @@
             file="Source/SpectrumComponent.cpp"/>
       <FILE id="qVrryO" name="SpectrumComponent.h" compile="0" resource="0"
             file="Source/SpectrumComponent.h"/>
+      <FILE id="FzO1Ho" name="TempGradientAttenuation.h" compile="0" resource="0"
+            file="Source/TempGradientAttenuation.h"/>
       <FILE id="sW2jHr" name="VolumeControl.cpp" compile="1" resource="0"
             file="Source/VolumeControl.cpp"/>
       <FILE id="o4NDsT" name="VolumeControl.h" compile="0" resource="0" file="Source/VolumeControl.h"/>
@@ -139,6 +141,8 @@
             file="Source/WeatherPresets.cpp"/>
       <FILE id="Iv3UBj" name="WeatherPresets.h" compile="0" resource="0"
             file="Source/WeatherPresets.h"/>
+      <FILE id="Od1krm" name="WindAttenuation.h" compile="0" resource="0"
+            file="Source/WindAttenuation.h"/>
       <FILE id="IgaIAm" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="KztIgx" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="jV9mMm" name="MainComponent.cpp" compile="1" resource="0"
@@ -181,5 +185,25 @@
         <MODULEPATH id="juce_dsp" path="../../../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2022>
+    <XCODE_MAC targetFolder="Builds/MacOSX">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
   </EXPORTFORMATS>
 </JUCERPROJECT>
