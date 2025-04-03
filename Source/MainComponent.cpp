@@ -497,9 +497,7 @@ void MainComponent::changeListenerCallback(ChangeBroadcaster* source)
 {
     if (source == &m_cTransportSource)
     {
-        if (m_cTransportSource.isPlaying())
-        { vTransportSourceStateChanged(Playing); }
-        else
+        if (!m_cTransportSource.isPlaying() && m_cTransportSourceState != Stopped)
         { vTransportSourceStateChanged(Stopping); }
     }
 }
