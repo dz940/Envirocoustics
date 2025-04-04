@@ -54,6 +54,7 @@ public:
     void vSetParameter(const int nParameterType, const double nValue, const bool bUpdateDisplay);
     void vUpdateWindFilterCoeffs();
     void vUpdateTempFilterCoeffs();
+    void vUpdateMainFilterCoeffs();
     void vUpdateConditionControls();
     double dGetParameter(const int nParameterType);
     double dCalculateAirAttenuationPerMetre(const double dFreq, const double dTemperature, const double dRelativeHumidity, const double dAtmosphericPressure);
@@ -128,6 +129,7 @@ private:
     IIRFilter m_cWindFilterL, m_cWindFilterR;
     IIRFilter m_cTempFilterL, m_cTempFilterR;
 
+    IIRCoefficients m_cMainIIRCoeffs;
     IIRCoefficients m_cWindIIRCoeffs;
     IIRCoefficients m_cTempIIRCoeffs;
 

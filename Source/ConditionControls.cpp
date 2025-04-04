@@ -269,7 +269,7 @@ void ConditionControls::paint(Graphics& g)
     // Condition controls
     g.setColour(Colours::darkseagreen);
     Rectangle<int> rcConditionControls = rect; // x, y, width, height
-    g.fillRect(rcConditionControls); // Fill the rectangle
+    g.fillRect(rcConditionControls); 
     g.setFont(20.0f);
     g.setColour(Colours::black);
     Rectangle<int> rcConditionControlsTitle(rcConditionControls.getX(),

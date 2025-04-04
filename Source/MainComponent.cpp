@@ -200,12 +200,14 @@ void MainComponent::vSetParameter(const int nParameterType, const double dValue,
         case PARAMETER_TEMPERATURE:
         {
             m_dTemperature = dValue;
+            vUpdateMainFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
         case PARAMETER_HUMIDITY:
         {
             m_dHumidity = dValue;
+            vUpdateMainFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
@@ -232,6 +234,7 @@ void MainComponent::vSetParameter(const int nParameterType, const double dValue,
             { m_dHumidity = 90; }
             else
             { m_dHumidity = 50; }
+            vUpdateMainFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
@@ -245,6 +248,7 @@ void MainComponent::vSetParameter(const int nParameterType, const double dValue,
         case PARAMETER_PRESSURE:
         {
             m_dPressure = dValue;
+            vUpdateMainFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
@@ -258,6 +262,7 @@ void MainComponent::vSetParameter(const int nParameterType, const double dValue,
             m_dDistance = dValue;
             vUpdateWindFilterCoeffs();
             vUpdateTempFilterCoeffs();
+            vUpdateMainFilterCoeffs();
             vUpdateSystemResponse();
             break;
         }
@@ -323,6 +328,25 @@ void MainComponent::vUpdateTempFilterCoeffs()
         dsp::IIR::Coefficients<float>::Ptr fpNewCoeffs = dsp::IIR::Coefficients<float>::makePeakFilter(44100, 5000.0f, 0.2f, (float)dTempBoost);
         m_pcResponseCurve->vSetTempGradientCoefficients(fpNewCoeffs);
     }
+}
+
+/*======================================================================================*/
+void MainComponent::vUpdateMainFilterCoeffs()
+/*======================================================================================*/
+{
+    // Initialise the cutoff solver with atmospheric conditions
+    double dTempFarenheit = (m_dTemperature * 1.8) + 32; // Atmospheric absorption calculation uses farenheit
+    double dPressurePascals = m_dPressure * 100; // Atmoshperic absoption calculation uses pascals
+    FilterCutoffSolver cCutoffSolver(m_dHumidity, dTempFarenheit, dPressurePascals);
+
+    double dDistance = (m_dDistance == 0) ? 1 : m_dDistance; // Set minimum distance to 1 so that it doesnt break the calculation
+    double dCutoffFrequency = cCutoffSolver.Solve(dDistance); // Calculate the LPF cutoff frequency
+    dCutoffFrequency = (dCutoffFrequency > 22000.0) ? 20000.0 : dCutoffFrequency; // Ensure cut off frequency is not greater than 20kHz
+
+    // Set the low-pass filter with the calculated cutoff frequency
+    m_cMainIIRCoeffs = IIRCoefficients::makeLowPass(44100, dCutoffFrequency);
+    m_cMainFilterL.setCoefficients(m_cMainIIRCoeffs);
+    m_cMainFilterR.setCoefficients(m_cMainIIRCoeffs);
 }
 
 /*======================================================================================*/
@@ -506,25 +530,12 @@ void MainComponent::changeListenerCallback(ChangeBroadcaster* source)
 void MainComponent::vApplyDSPProcessing(AudioBuffer<float>& buffer)
 /*======================================================================================*/
 {
-    //**************Atmospheric absorption**************//
-    // Initialise the cutoff solver with atmospheric conditions
-    double dTempFarenheit = (m_dTemperature * 1.8) + 32; // Atmospheric absorption calculation uses farenheit
-    double dPressurePascals = m_dPressure * 100; // Atmoshperic absoption calculation uses pascals
-    FilterCutoffSolver cCutoffSolver(m_dHumidity, dTempFarenheit, dPressurePascals);
-
-    double dDistance = (m_dDistance == 0) ? 1 : m_dDistance; // Set minimum distance to 1 so that it doesnt break the calculation
-    double dCutoffFrequency = cCutoffSolver.Solve(dDistance); // Calculate the LPF cutoff frequency
-    dCutoffFrequency = (dCutoffFrequency > 22000.0) ? 20000.0 : dCutoffFrequency; // Ensure cut off frequency is not greater than 20kHz
-
-    // Set the low-pass filter with the calculated cutoff frequency
-    m_cMainFilterL.setCoefficients(IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
-    m_cMainFilterR.setCoefficients(IIRCoefficients::makeLowPass(44100, dCutoffFrequency));
-
     int nNumSamples = buffer.getNumSamples();
     float* pfChannelDataL = buffer.getWritePointer(0);
     float* pfChannelDataR = buffer.getWritePointer(1);
+    double dDistance = (m_dDistance == 0) ? 1 : m_dDistance;
 
-    // Apply the filter to the left and right channels of the audio buffer
+    //**************Atmospheric absorption**************//
     m_cMainFilterL.processSamples(pfChannelDataL, nNumSamples);
     m_cMainFilterR.processSamples(pfChannelDataR, nNumSamples);
 
