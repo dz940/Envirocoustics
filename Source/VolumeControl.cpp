@@ -55,14 +55,22 @@ void VolumeControl::vSetMeterLevel(float fNewLevel)
 void VolumeControl::paint(Graphics& g)
 /*======================================================================================*/
 {
-    g.setColour(Colours::darkseagreen);
-    Rectangle<int> rcConditionControls = getLocalBounds();; // x, y, width, height
-    g.fillRect(rcConditionControls); // Fill the rectangle
+    Rectangle rect = getLocalBounds();
+    Rectangle<float> rcVolumeComponent = rect.toFloat();
+
+    juce::Colour clBackGroundColour = juce::Colour(COLOUR_COMPONENT_BACKGROUND);
+    juce::Colour clOutlineColour = juce::Colour(COLOUR_COMPONENT_OUTLINE);
+
+    g.setColour(clBackGroundColour);
+    g.fillRect(rcVolumeComponent);
+    g.setColour(clOutlineColour);
+    g.drawRect(rcVolumeComponent, 2);
+
     g.setFont(20.0f);
     g.setColour(Colours::black);
-    Rectangle<int> rcConditionControlsTitle(rcConditionControls.getX(),
-        rcConditionControls.getY(),
-        rcConditionControls.getWidth(),
+    Rectangle<int> rcConditionControlsTitle((int)rcVolumeComponent.getX(),
+        (int)rcVolumeComponent.getY(),
+        (int)rcVolumeComponent.getWidth(),
         30);
     g.drawText("Volume", rcConditionControlsTitle, Justification::centred, true);
 }

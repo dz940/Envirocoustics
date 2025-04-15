@@ -45,7 +45,17 @@ void ResponseComponent::vSetTempGradientCoefficients(dsp::IIR::Coefficients<floa
 void ResponseComponent::paint(Graphics& g)
 /*======================================================================================*/
 {
-    g.fillAll(Colours::darkseagreen);
+    Rectangle rect = getLocalBounds();
+    Rectangle<float> rcResponseComponent = rect.toFloat();
+
+    juce::Colour clBackGroundColour = juce::Colour(COLOUR_COMPONENT_BACKGROUND);
+    juce::Colour clOutlineColour = juce::Colour(COLOUR_COMPONENT_OUTLINE);
+
+    g.setColour(clBackGroundColour);
+    g.fillRect(rcResponseComponent);
+    g.setColour(clOutlineColour);
+    g.drawRect(rcResponseComponent, 2);
+
     g.setColour(Colours::black);
     g.setFont(20.0f);
 

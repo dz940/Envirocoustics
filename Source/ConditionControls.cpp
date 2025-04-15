@@ -1,5 +1,6 @@
 #include "ConditionControls.h"
 #include "MainComponent.h"
+#include "DrawingFunctions.h"
 
 /*======================================================================================*/
 ConditionControls::ConditionControls(MainComponent& parentComponent)
@@ -268,62 +269,70 @@ void ConditionControls::paint(Graphics& g)
 
     // Condition controls
     g.setColour(Colours::darkseagreen);
-    Rectangle<int> rcConditionControls = rect; // x, y, width, height
-    g.fillRect(rcConditionControls); 
+    Rectangle<float> rcConditionControls = rect.toFloat(); // x, y, width, height
+
+    juce::Colour clBackGroundColour = juce::Colour(COLOUR_COMPONENT_BACKGROUND);
+    juce::Colour clOutlineColour = juce::Colour(COLOUR_COMPONENT_OUTLINE);
+
+    g.setColour(clBackGroundColour);
+    g.fillRect(rcConditionControls);
+    g.setColour(clOutlineColour);
+    g.drawRect(rcConditionControls, 2);
+
     g.setFont(20.0f);
     g.setColour(Colours::black);
-    Rectangle<int> rcConditionControlsTitle(rcConditionControls.getX(),
-                            rcConditionControls.getY(),
-                            rcConditionControls.getWidth(),
-                            30);
+    Rectangle<int> rcConditionControlsTitle((int)rcConditionControls.getX(),
+        (int)rcConditionControls.getY(),
+        (int)rcConditionControls.getWidth(),
+        30);
     g.drawText("Weather controls", rcConditionControlsTitle, Justification::centred, true);
 
-    int nPanelWidths = (rcConditionControls.getWidth() - 20) / 4;
+    int nPanelWidths = ((int)rcConditionControls.getWidth() - 20) / 4;
     g.setFont(15.0f);
-    Rectangle<int> rcTemperatureText(rcConditionControls.getX() + rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
-                            rcConditionControls.getY() + 35,
-                            nPanelWidths,
-                            20);
+    Rectangle<int> rcTemperatureText((int)rcConditionControls.getX() + (int)rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+        (int)rcConditionControls.getY() + 35,
+        nPanelWidths,
+        20);
     g.drawText("Temperature", rcTemperatureText, Justification::centred, true);
 
-    Rectangle<int> rcGradientText(rcConditionControls.getX() + rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
-                            rcConditionControls.getY() + 110,
-                            nPanelWidths,
-                            20);
+    Rectangle<int> rcGradientText((int)rcConditionControls.getX() + (int)rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+        (int)rcConditionControls.getY() + 110,
+        nPanelWidths,
+        20);
     g.drawText("Day/Night", rcGradientText, Justification::centred, true);
 
-    Rectangle<int> rcWindControlsTitle(rcConditionControls.getX() + 3 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
-                            rcConditionControls.getY() + 35,
-                            nPanelWidths,
-                            20);
+    Rectangle<int> rcWindControlsTitle((int)rcConditionControls.getX() + 3 * (int)rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+        (int)rcConditionControls.getY() + 35,
+        nPanelWidths,
+        20);
     g.drawText("Wind Speed", rcWindControlsTitle, Justification::centred, true);
 
-    Rectangle<int> rcWindDirectionText(rcConditionControls.getX() + 3 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
-                            rcConditionControls.getY() + 110,
-                            nPanelWidths,
-                            20);
+    Rectangle<int> rcWindDirectionText((int)rcConditionControls.getX() + 3 * (int)rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+        (int)rcConditionControls.getY() + 110,
+        nPanelWidths,
+        20);
     g.drawText("Direction", rcWindDirectionText, Justification::centred, true);
 
-    Rectangle<int> rcHumidityControlsTitle(rcConditionControls.getX() + 5 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
-        rcConditionControls.getY() + 35,
+    Rectangle<int> rcHumidityControlsTitle((int)rcConditionControls.getX() + 5 * (int)rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+        (int)rcConditionControls.getY() + 35,
         nPanelWidths,
         20);
     g.drawText("Humidity", rcHumidityControlsTitle, Justification::centred, true);
 
-    Rectangle<int> rcPrecipitationText(rcConditionControls.getX() + 5 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
-        rcConditionControls.getY() + 110,
+    Rectangle<int> rcPrecipitationText((int)rcConditionControls.getX() + 5 * (int)rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+        (int)rcConditionControls.getY() + 110,
         nPanelWidths,
         20);
     g.drawText("Precipitation", rcPrecipitationText, Justification::centred, true);
 
-    Rectangle<int> rcPressureControlsTitle(rcConditionControls.getX() + 7 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
-        rcConditionControls.getY() + 35,
+    Rectangle<int> rcPressureControlsTitle((int)rcConditionControls.getX() + 7 * (int)rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+        (int)rcConditionControls.getY() + 35,
         nPanelWidths,
         20);
     g.drawText("Pressure", rcPressureControlsTitle, Justification::centred, true);
 
-    Rectangle<int> rcCloudCoverText(rcConditionControls.getX() + 7 * rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
-        rcConditionControls.getY() + 110,
+    Rectangle<int> rcCloudCoverText((int)rcConditionControls.getX() + 7 * (int)rcConditionControls.getWidth() / 8 - nPanelWidths / 2,
+        (int)rcConditionControls.getY() + 110,
         nPanelWidths,
         20);
     g.drawText("Clouds", rcCloudCoverText, Justification::centred, true);

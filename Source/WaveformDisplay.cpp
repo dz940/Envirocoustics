@@ -6,17 +6,22 @@ WaveformDisplay::WaveformDisplay(MainComponent& pcParentComponent)
     : m_pcMainComponent(pcParentComponent)
 /*======================================================================================*/
 {
-    m_cVisualiser.setBufferSize(128); // Number of samples per visual segment
-    m_cVisualiser.setSamplesPerBlock(16); // Number of samples to process per block
-    m_cVisualiser.setColours(Colours::darkseagreen, Colours::black); // Background and waveform colors
-    m_cVisualiser.setNumChannels(1);
-    addAndMakeVisible(m_cVisualiser);
+    m_pcVisualiser = new AudioVisualiserComponent(1);
+    addAndMakeVisible(m_pcVisualiser);
+    m_pcVisualiser->setOpaque(true);
+
+    m_pcVisualiser->setBufferSize(128); // Number of samples per visual segment
+    m_pcVisualiser->setSamplesPerBlock(16); // Number of samples to process per block
+    juce::Colour clBackGroundColour = juce::Colour(COLOUR_COMPONENT_BACKGROUND);
+    m_pcVisualiser->setColours(clBackGroundColour, Colours::black); // Background and waveform colors
+    m_pcVisualiser->setNumChannels(1);
 }
 
 /*======================================================================================*/
 WaveformDisplay::~WaveformDisplay()
 /*======================================================================================*/
 {
+    delete m_pcVisualiser;
 }
 
 /*======================================================================================*/
@@ -30,14 +35,16 @@ void WaveformDisplay::vPushBuffer(const AudioBuffer<float>& buffer)
     for (int nChannel = 0; nChannel < buffer.getNumChannels(); ++nChannel)
     { monoBuffer.addFrom(0, 0, buffer, nChannel, 0, buffer.getNumSamples(), 1.0f / buffer.getNumChannels()); }
 
-    m_cVisualiser.pushBuffer(buffer); // Forward the buffer to the visualizer
+    m_pcVisualiser->pushBuffer(buffer); // Forward the buffer to the visualizer
 }
 
 /*======================================================================================*/
 void WaveformDisplay::resized()
 /*======================================================================================*/
 {
-    m_cVisualiser.setBounds(getLocalBounds()); // Make the visualizer fill the component
+    Rectangle rcRect = getLocalBounds();
+    rcRect.reduce(2, 2);
+    m_pcVisualiser->setBounds(rcRect); // Make the visualizer fill the component
 }
 
 /*======================================================================================*/
@@ -45,6 +52,9 @@ void WaveformDisplay::paint(Graphics& g)
 /*======================================================================================*/
 {
     Rectangle rcRect = getLocalBounds();
-    g.setColour(Colours::white); // Border color
-    g.drawRect(rcRect.expanded(2), 2); // Border thickness
+    Rectangle<float> rcWaveform = rcRect.toFloat(); // x, y, width, height
+
+    juce::Colour clOutlineColour = juce::Colour(COLOUR_COMPONENT_OUTLINE);
+    g.setColour(clOutlineColour);
+    g.drawRect(rcWaveform, 2);
 }

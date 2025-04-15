@@ -14,6 +14,6 @@ public:
     void paint(Graphics& g) override;
 
 private:
-    AudioVisualiserComponent m_cVisualiser{ 1 };
+    AudioVisualiserComponent* m_pcVisualiser;
     MainComponent& m_pcMainComponent;
 };

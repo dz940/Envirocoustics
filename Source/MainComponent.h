@@ -3,11 +3,13 @@
 #include <JuceHeader.h>
 using namespace juce;
 
+// Presets
 #define SUNNY_PRESET    1
 #define WINDY_PRESET    2
 #define RAINY_PRESET    3
 #define SNOWY_PRESET    4
 
+// Parameters
 #define PARAMETER_TEMPERATURE       1
 #define PARAMETER_WIND_SPEED        2
 #define PARAMETER_HUMIDITY          3
@@ -19,12 +21,19 @@ using namespace juce;
 #define PARAMETER_DISTANCE          9
 #define PARAMETER_MAKEUP_GAIN       10
 
+// Wind direction
 #define WIND_DIRECTION_UPWIND       0
 #define WIND_DIRECTION_DOWNWIND     1
 
+// Temperature gradient
 #define TEMPERATURE_LAPSE       0
 #define TEMPERATURE_INVERSION   1
 
+// Colours
+#define COLOUR_COMPONENT_BACKGROUND     0xFF43C59E  // Pale green
+#define COLOUR_COMPONENT_OUTLINE        0xFF3D7068  // Dark grey
+
+// States
 #define OFF  0
 #define ON   1
 

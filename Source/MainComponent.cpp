@@ -116,7 +116,7 @@ MainComponent::MainComponent() : AudioAppComponent(m_cAudioDeviceManager)
     addAndMakeVisible(m_pcShowSpectrogramButton);
 
     m_pcDisablePowerLossCheck = new ToggleButton();
-    m_pcDisablePowerLossCheck->setButtonText("Enable Make-up Gain");
+    m_pcDisablePowerLossCheck->setButtonText("Enable Distance Volume Lock");
     m_pcDisablePowerLossCheck->onClick = [this] { if (m_pcDisablePowerLossCheck->getToggleState() == ON) { vShowVolumeWarningBox(); }
                                                   else { vSetParameter(PARAMETER_MAKEUP_GAIN, 0, false); }; };
     m_pcDisablePowerLossCheck->setColour(ToggleButton::tickColourId, Colours::black);
@@ -521,7 +521,7 @@ void MainComponent::changeListenerCallback(ChangeBroadcaster* source)
 {
     if (source == &m_cTransportSource)
     {
-        if (!m_cTransportSource.isPlaying() && m_cTransportSourceState != Stopped)
+        if (!m_cTransportSource.isPlaying() && m_cTransportSourceState != Stopped && m_cTransportSourceState != Pausing)
         { vTransportSourceStateChanged(Stopping); }
     }
 }
@@ -689,14 +689,33 @@ void MainComponent::paint(Graphics& g)
     juce::Rectangle<float> rcTitle(10, 10, 940, 130);
     { g.drawImage(m_iTitleImage, rcTitle, RectanglePlacement::centred, false); }
 
-    g.setColour(Colours::darkseagreen);
-    g.fillRect(430, 460, 520, 30);
+    juce::Colour clBackGroundColour = juce::Colour(COLOUR_COMPONENT_BACKGROUND);
+    juce::Colour clOutlineColour = juce::Colour(COLOUR_COMPONENT_OUTLINE);
+    
+    juce::Rectangle<float> rcPreProcessingComponent((float)m_pcPreProcessingSpectrogram->getX(),
+        (float)m_pcPreProcessingSpectrogram->getY() - 30,
+        (float)m_pcPreProcessingSpectrogram->getWidth(),
+        (float)m_pcPreProcessingSpectrogram->getHeight() + 30);
+
+    g.setColour(clBackGroundColour);
+    g.fillRect(rcPreProcessingComponent);
+    g.setColour(clOutlineColour);
+    g.drawRect(rcPreProcessingComponent, 2);
+
     g.setFont(20.0f);
     g.setColour(Colours::black);
     g.drawText("Original audio", 430, 460, 520, 30, Justification::centred, true);
 
-    g.setColour(Colours::darkseagreen);
-    g.fillRect(430, 660, 520, 30);
+    juce::Rectangle<float> rcPostProcessingComponent((float)m_pcPostProcessingSpectrogram->getX(),
+        (float)m_pcPostProcessingSpectrogram->getY() - 30,
+        (float)m_pcPostProcessingSpectrogram->getWidth(),
+        (float)m_pcPostProcessingSpectrogram->getHeight() + 30);
+
+    g.setColour(clBackGroundColour);
+    g.fillRect(rcPostProcessingComponent);
+    g.setColour(clOutlineColour);
+    g.drawRect(rcPostProcessingComponent, 2);
+
     g.setFont(20.0f);
     g.setColour(Colours::black);
     g.drawText("Processed audio", 430, 660, 520, 30, Justification::centred, true);

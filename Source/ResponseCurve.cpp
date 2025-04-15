@@ -21,7 +21,8 @@ ResponseCurve::~ResponseCurve()
 void ResponseCurve::paint(Graphics& g)
 /*======================================================================================*/
 {
-    g.fillAll(Colours::darkseagreen);
+    juce::Colour clBackGroundColour = juce::Colour(COLOUR_COMPONENT_BACKGROUND);
+    g.fillAll(clBackGroundColour);
 
     // Define drawing bounds
     float fWidth = (float)getWidth();

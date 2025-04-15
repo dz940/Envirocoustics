@@ -121,20 +121,27 @@ void WeatherPresets::resized()
 void WeatherPresets::paint(Graphics& g)
 /*======================================================================================*/
 {
-    g.setColour(Colours::darkseagreen);
-    Rectangle<int> rcWeatherPresets = getLocalBounds(); // x, y, width, height
+    Rectangle rect = getLocalBounds();
+    Rectangle<float> rcWeatherPresets = rect.toFloat();
+
+    juce::Colour clBackGroundColour = juce::Colour(COLOUR_COMPONENT_BACKGROUND);
+    juce::Colour clOutlineColour = juce::Colour(COLOUR_COMPONENT_OUTLINE);
+
+    g.setColour(clBackGroundColour);
     g.fillRect(rcWeatherPresets);
+    g.setColour(clOutlineColour);
+    g.drawRect(rcWeatherPresets, 2);
 
     g.setFont(20.0f);
     g.setColour(Colours::black);
-    Rectangle<int> rcWeatherPresetsTitle1(rcWeatherPresets.getX(),
-        rcWeatherPresets.getY(),
-        rcWeatherPresets.getWidth(),
+    Rectangle<int> rcWeatherPresetsTitle1((int)rcWeatherPresets.getX(),
+        (int)rcWeatherPresets.getY(),
+        (int)rcWeatherPresets.getWidth(),
         25);
     g.drawText("Weather", rcWeatherPresetsTitle1, Justification::centred, true);
-    Rectangle<int> rcWeatherPresetsTitle2(rcWeatherPresets.getX(),
-        rcWeatherPresets.getY() + 25,
-        rcWeatherPresets.getWidth(),
+    Rectangle<int> rcWeatherPresetsTitle2((int)rcWeatherPresets.getX(),
+        (int)rcWeatherPresets.getY() + 25,
+        (int)rcWeatherPresets.getWidth(),
         25);
     g.drawText("presets", rcWeatherPresetsTitle2, Justification::centred, true);
 }

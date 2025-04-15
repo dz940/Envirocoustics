@@ -9,7 +9,7 @@ class RotaryLookAndFeel : public LookAndFeel_V4
 public:
     RotaryLookAndFeel()
     {
-        m_iKnobImage = ImageFileFormat::loadFrom(BinaryData::knob5_png, BinaryData::knob5_pngSize);
+        m_iKnobImage = ImageFileFormat::loadFrom(BinaryData::knob4_png, BinaryData::knob4_pngSize);
     }
 
     void drawRotarySlider(Graphics& g, int x, int y, int nWidth, int nHeight,
