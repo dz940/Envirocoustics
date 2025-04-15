@@ -49,18 +49,35 @@ void Spectrogram::vDrawNextFrameOfSpectrogram()
     FloatVectorOperations::multiply(fftData, window.getData(), fftSize);
 
     forwardFFT.performFrequencyOnlyForwardTransform(fftData);
-    int spectrogramWidth = m_iSpectrogramImage.getWidth();
+    int nSpectrogramWidth = m_iSpectrogramImage.getWidth();
     vShiftImageLeft(); // Scroll image left for real-time effect
+
+    float fMinFreq = 20.0f;        // Lowest frequency (20 Hz)
+    float fMaxFreq = 15000.0f;     // Highest frequency (15,000 Hz)
+    float fNyquist = 48000 / 2.0f; // Nyquist frequency (half of the sample rate)
 
     for (int y = 0; y < m_iSpectrogramImage.getHeight(); ++y)
     {
-        int nFftIndex = int((fftSize / 2 - 1) * (1.0f - (float)y / m_iSpectrogramImage.getHeight())); // Flip index
-        nFftIndex = jlimit(0, (fftSize / 2) - 1, nFftIndex);
+        // Reverse the Y-axis and map to a frequency range between 20 Hz and 15,000 Hz
+        float fFreq = fMaxFreq - (fMaxFreq - fMinFreq) * (float)y / (m_iSpectrogramImage.getHeight() - 1);
 
-        float fMagnitude = fftData[nFftIndex] * 20.0f; // Adjust scale
-        float fHue = jlimit(0.0f, 0.67f, 0.67f - (fMagnitude * 0.005f)); // Map high magnitude to red, low to blue
-        Colour clColor = Colour::fromHSV(fHue, 1.0f, 1.0f, 1.0f);
-        m_iSpectrogramImage.setPixelAt(spectrogramWidth - 1, y, clColor);
+        // Convert that frequency to the corresponding FFT bin index
+        int fFftIndex = int(fFreq / fNyquist * (fftSize / 2));
+
+        fFftIndex = jlimit(0, (fftSize / 2) - 1, fFftIndex); // Ensure within bounds
+
+        float fMagnitude = fftData[fFftIndex];
+        float fMagnitudeDB = 20.0f * std::log10(jmax(fMagnitude, 1.0e-9f)); // dB conversion
+
+        float fMinDb = 0.0f;
+        float fMaxDb = 50.0f;
+        float fNormalisedMag = jlimit(0.0f, 1.0f, (fMagnitudeDB - fMinDb) / (fMaxDb - fMinDb));
+
+        float hue = 0.67f - fNormalisedMag * 0.67f;
+        Colour clColor = Colour::fromHSV(hue, 1.0f, 1.0f, 1.0f);
+
+        // Set the color at the current Y pixel
+        m_iSpectrogramImage.setPixelAt(nSpectrogramWidth - 1, y, clColor);
     }
     repaint();
 }

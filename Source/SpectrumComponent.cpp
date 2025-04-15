@@ -47,7 +47,7 @@ void SpectrumComponent::paint(Graphics& g)
     g.setFont(10.0f);
     g.setColour(Colours::white);
 
-    int ndBValue = 10;
+    int ndBValue = 50;
 
     int nLabelX = rcRect.getX() + 10; // Position for labels (just before the gradient)
     for (int y = rcRect.getY(); y <= rcRect.getY() + (rcRect.getHeight() - 20); y += ((rcRect.getHeight() - 20) / 5)) // 6 label positions (spread out)

@@ -64,7 +64,7 @@ void SpectrogramComponent::paint(Graphics& g)
     g.setFont(10.0f);
     g.setColour(Colours::white);
 
-    int ndBValue = 10;
+    int ndBValue = 50;
 
     int nLabelX = rcRect.getX() + 10; // Position for labels (just before the gradient)
     for (int y = rcRect.getY(); y <= rcRect.getY() + (rcRect.getHeight() - 10); y += ((rcRect.getHeight() - 10) / 5)) // 6 label positions (spread out)
@@ -75,11 +75,11 @@ void SpectrogramComponent::paint(Graphics& g)
     }
  
     // Define the linear scaling for the vertical axis
-    const float fMinFreq = 0.0f;    // Minimum frequency (e.g., 0 Hz)
-    const float fMaxFreq = 20000.0f; // Maximum frequency (e.g., 20 kHz)
+    const float fMinFreq = 20.0f;    
+    const float fMaxFreq = 15000.0f;
 
     // Define the major frequencies for fewer labels, linearly spaced
-    std::vector<int> nMajorFrequencies = { 20, 5000, 10000, 15000, 20000 }; // Linearly spaced frequencies
+    std::vector<int> nMajorFrequencies = { 20, 5000, 10000, 15000 }; // Linearly spaced frequencies
 
     nLabelX = getLocalBounds().getX();  // Position for labels (just before the gradient)
 
@@ -100,23 +100,13 @@ void SpectrogramComponent::paint(Graphics& g)
         {
             // Place 0 Hz at the top of the spectrogram area (or a little below)
             y = getLocalBounds().getY() + getLocalBounds().getHeight() - 10; // Adding a margin of 10 pixels for visibility
+            g.drawText(String(nFreq) + "Hz", nLabelX, y, 30, 10, Justification::centredRight);
         }
         else 
         {
             // Map this normalized value to the height of the spectrogram
             y = getLocalBounds().getY() + getLocalBounds().getHeight() - (int)(fNormalizedFreq * getLocalBounds().getHeight());
-        }
-
-        // Format the label and display it
-        if (nFreq != 20)
-        {
-            // Use kHz for frequencies >= 1000 Hz
             g.drawText(String(nFreq / 1000.0f, 0) + "kHz", nLabelX, y, 30, 10, Justification::centredRight);
-        }
-        else 
-        {
-            // Use Hz for frequencies < 1000 Hz
-            g.drawText(String(nFreq) + "Hz", nLabelX, y, 30, 10, Justification::centredRight);
         }
     }
 }
