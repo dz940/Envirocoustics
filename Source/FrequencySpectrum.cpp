@@ -60,10 +60,10 @@ void FrequencySpectrum::vDrawNextFrameOfFrequencySpectrum()
 
     Path frequencyCurve;
 
-    float fMinBin = 1.0f;
-    float fMaxBin = fftSize / 2;
-    float fLogMin = std::log10(fMinBin);
-    float fLogMax = std::log10(fMaxBin);
+    float fMinFreq = 20.0f;
+    float fMaxFreq = 20000.0f;
+    float fLogMin = std::log10(fMinFreq);
+    float fLogMax = std::log10(fMaxFreq);
 
     float fPrevX = 0, fPrevY = (float)nHeight;
 
@@ -72,8 +72,12 @@ void FrequencySpectrum::vDrawNextFrameOfFrequencySpectrum()
     for (int x = 0; x < nWidth; ++x)
     {
         float fNormX = (float)x / nWidth;
-        float fLogBin = fLogMin + fNormX * (fLogMax - fLogMin);
-        float fBinPos = std::pow(10.0f, fLogBin);
+        float fLogFreq = fLogMin + fNormX * (fLogMax - fLogMin);
+        float fFreq = std::pow(10.0f, fLogFreq);
+
+        // Convert frequency to bin index
+        float binFreqResolution = (float)48000 / (float)fftSize;
+        float fBinPos = fFreq / binFreqResolution;
 
         int nBinIndex = jlimit(0, (fftSize / 2) - 1, (int)fBinPos);
         int nNextBinIndex = jlimit(0, (fftSize / 2) - 1, nBinIndex + 1);

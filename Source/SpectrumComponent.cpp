@@ -7,7 +7,7 @@ SpectrumComponent::SpectrumComponent(MainComponent& pcParentComponent)
     : m_pcMainComponent(pcParentComponent)
 /*======================================================================================*/
 {
-    m_pcFreqSpectrum = new FrequencySpectrum(480, 150);
+    m_pcFreqSpectrum = new FrequencySpectrum(465, 150);
     addAndMakeVisible(m_pcFreqSpectrum);
     m_pcFreqSpectrum->setOpaque(true);
 }
@@ -31,7 +31,7 @@ void SpectrumComponent::resized()
 /*======================================================================================*/
 {
     Rectangle<int> rcSpectrumComponent = getLocalBounds();
-    m_pcFreqSpectrum->setBounds(rcSpectrumComponent.getX() + 40, rcSpectrumComponent.getY(), 480, 150);
+    m_pcFreqSpectrum->setBounds(rcSpectrumComponent.getX() + 40, rcSpectrumComponent.getY(), 465, 150);
 }
 /*======================================================================================*/
 void SpectrumComponent::paint(Graphics& g)
@@ -59,8 +59,8 @@ void SpectrumComponent::paint(Graphics& g)
 
     int nLabelY = rcRect.getY() + rcRect.getHeight() - 10; // Position for labels (just before the gradient)
 
-    int nStart = rcRect.getX() + 30;
-    int nFinish = rcRect.getX() + getLocalBounds().getWidth() - 30;
+    int nStart = getLocalBounds().getX() + 40;
+    int nFinish = getLocalBounds().getX() + 40 + (getLocalBounds().getWidth() - 55);
 
     // Define logarithmic scaling
     float fMinFreq = 20;  // Minimum frequency (e.g., 20 Hz)
@@ -83,12 +83,12 @@ void SpectrumComponent::paint(Graphics& g)
         if (nFreq >= 1000)
         {
             // Use kHz for frequencies >= 1000 Hz
-            g.drawText(String(nFreq / 1000.0f, 0) + "kHz", x, nLabelY, 30, 10, Justification::horizontallyCentred);
+            g.drawText(String(nFreq / 1000.0f, 0) + "kHz", x - 15, nLabelY, 30, 10, Justification::horizontallyCentred);
         }
         else 
         {
             // Use Hz for frequencies < 1000 Hz
-            g.drawText(String(nFreq) + "Hz", x, nLabelY, 30, 10, Justification::horizontallyCentred);
+            g.drawText(String(nFreq) + "Hz", x-15, nLabelY, 30, 10, Justification::horizontallyCentred);
         }
     }
 }
