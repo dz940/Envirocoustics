@@ -410,7 +410,7 @@ void MainComponent::vOpenTextButtonClicked()
 {
     // Choose file to load and import into the audio player
     m_pcFileChooser = std::make_unique<FileChooser>(
-        "Please select the mp3 you want to load...",
+        "Please select the audio file you want to load",
         File::getSpecialLocation(File::userHomeDirectory),
         "*.mp3;*.wav");
 
